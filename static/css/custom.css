@@ -1,3 +1,43 @@
 .btn-lg{
 	margin-left: 20px;
 }
+
+#accounts{
+	margin-top: 25px;
+}
+
+.account{
+	height: 100px;
+	margin-right: 35px;
+}
+
+.account .name{
+	margin-top: 10px;
+	font-size: 20px;
+}
+
+.account .credit{
+	font-size: 30px;
+}
+
+.detail{
+	margin-top: 25px;
+}
+
+.detail .name{
+	margin-top: 25px;
+	font-size: 40px;
+}
+
+.detail .credit{
+	margin-top: -15px;
+	font-size: 60px;
+}
+
+.userinfo{
+	height: 230px;
+}
+
+.pager li>a{
+	font-size: 30px;
+}

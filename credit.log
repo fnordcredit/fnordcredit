@@ -1,0 +1,6 @@
+2014-04-11T00:46:50.036Z - info: Hello distributed log files!
+2014-04-11T00:49:33.521Z - info: Server started!
+2014-04-11T01:07:13.407Z - info: Server started!
+2014-04-11T01:07:13.409Z - error: Can't read database: Error: ENOENT, open '/Users/silsha/Proj/credit/database.json'
+2014-04-11T01:08:27.620Z - info: Server started!
+2014-04-11T01:11:30.997Z - info: Server started!

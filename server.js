@@ -1,7 +1,10 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var fs = require('fs');
+var winston = require('winston');
 var app = express();
+
+winston.add(winston.transports.File, { filename: 'credit.log', json: false });
 
 var database = __dirname + '/database.json';
 
@@ -14,8 +17,8 @@ app.use(bodyParser());
 // Read database
 fs.readFile(database, 'utf8', function(err, data){
 	if(err){
-		console.log("Can't read database: " + err);
-		return;
+		winston.log('error', 'Can\'t read database: ' + err);
+		process.exit();
 	}
 
 	users = JSON.parse(data);
@@ -64,5 +67,5 @@ function getAllUsers(){
 }
 
 var server = app.listen(8000, function(){
-	console.log("Server running ...");
+	winston.log('info', 'Server started!');
 })

@@ -11,16 +11,26 @@ function showUser(userData){
 
 function showDetail(userData){
 	var detail = $('<div class="detail">');
-	detail.append($('<div>').addClass("name").text(userData.name));
-	detail.append($('<div>').addClass("credit").text(userData.credit + " €"));
+
+	var row = $('<div class="row">');
+	detail.append(row);
+
+	var userinfo = $('<div class="userinfo col-md-3 panel panel-default">');
+	row.append(userinfo);
+
+	userinfo.append($('<div>').addClass("name").text(userData.name));
+	userinfo.append($('<div>').addClass("credit").text(userData.credit + " €"));
 
 	// Add Credit-Area
-	var addCreditArea = $('<div>').addClass('panel').addClass('panel-default');
+	var addCreditArea = $('<div>').addClass('panel panel-default');
 	addCreditArea.append($('<div>').addClass('panel-heading')
 		.append($('<h3>').addClass('panel-title').text('Add Credit'))
 	);
 
-	detail.append(addCreditArea);
+	var creditarea = $('<div class="creditarea col-md-9">');
+	row.append(creditarea);
+
+	creditarea.append(addCreditArea);
 
 	var plus5Button = $('<div>').addClass('panel-body')
 		.append($('<button>').addClass('btn btn-primary btn-lg').text("+ 5€"));
