@@ -1,0 +1,17 @@
+{
+	"name": "fnordcredit",
+	"version": "1.0.0",
+	"author": "silsha <hallo@silsha.me>",
+	"description": "SAP™ easy credit system®",
+
+	"scripts": {
+		"start": "node ./server.js"
+	},
+	"dependencies" : {
+		"express"		:	"4.0.x",
+		"body-parser"	:	"1.0.x",
+		"winston"		:	"0.7.x",
+		"dateformat"	:	"1.0.x"
+	},
+	"license": "MIT"
+}
