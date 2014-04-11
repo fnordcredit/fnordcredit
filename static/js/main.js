@@ -98,6 +98,7 @@ function getAllUsers(){
 			newUser();
 		});
 	});
+	setTimeout(getAllUsers, 500);
 }
 
 function newUser(){
