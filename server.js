@@ -2,6 +2,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var fs = require('fs');
 var winston = require('winston');
+var dateFormat = require('dateformat');
 var app = express();
 
 winston.add(winston.transports.File, { filename: 'credit.log', json: false });
@@ -23,16 +24,29 @@ fs.readFile(database, 'utf8', function(err, data){
 
 	users = JSON.parse(data);
 	saveDatabase();
+	backupDatabase();
 });
 
 // Write database
 function saveDatabase(){
 	fs.writeFile(database, JSON.stringify(users), function(err){
 		if(err){
-			console.log("Can't write database: " + err);
+			winston.log('error', "Can't write database: " + err);
 			return;
 		}
 		setTimeout(saveDatabase, 1000);
+	});
+}
+
+function backupDatabase(){
+	var now = new Date();
+	var dateformated = dateFormat(now, "isoDateTime");
+	fs.writeFile(__dirname+'/backup/'+dateformated+'.json', JSON.stringify(users), function(err){
+		if(err){
+			winston.log('error', "Can't backup database: " + err);
+			return;
+		}
+		setTimeout(backupDatabase, 60000);
 	});
 }
 
