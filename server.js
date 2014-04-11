@@ -1,9 +1,37 @@
 var express = require("express");
 var bodyParser = require("body-parser");
+var fs = require('fs');
 var app = express();
+
+var database = __dirname + '/database.json';
+
+var users;
 
 app.use('/', express.static(__dirname + '/static'));
 app.use(bodyParser());
+
+
+// Read database
+fs.readFile(database, 'utf8', function(err, data){
+	if(err){
+		console.log("Can't read database: " + err);
+		return;
+	}
+
+	users = JSON.parse(data);
+	saveDatabase();
+});
+
+// Write database
+function saveDatabase(){
+	fs.writeFile(database, JSON.stringify(users), function(err){
+		if(err){
+			console.log("Can't write database: " + err);
+			return;
+		}
+		setTimeout(saveDatabase, 1000);
+	});
+}
 
 app.get("/users/all", function(req, res){
 	res.send(JSON.stringify(getAllUsers()));
@@ -20,11 +48,6 @@ app.post("/user/credit", function(req, res){
 	res.send(JSON.stringify(user));
 });
 
-
-var users = {
-	xandy: {"name":"xandy", "credit":5},
-	silsha: {"name":"silsha", "credit":5}
-}
 function getUser(username){
 	return users[username];
 }
