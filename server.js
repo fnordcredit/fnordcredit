@@ -54,6 +54,7 @@ app.post("/user/credit", function(req, res){
 		return;
 	}
 	user.credit += +req.body.delta;
+	winston.log('info', '[userCredit] Changed credit from user ' + user.name + ' by ' + req.body.delta + '. New credit: ' + user.credit);
 	saveUser(user);
 	res.send(JSON.stringify(user));
 });
