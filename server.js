@@ -40,6 +40,13 @@ app.get("/users/all", function(req, res){
 	res.send(JSON.stringify(getAllUsers()));
 });
 
+app.post('/user/add', function(req, res){
+	var username = req.body.username;
+	addUser(username);
+	res.send(200);
+	
+});
+
 app.post("/user/credit", function(req, res){
 	var user = getUser(req.body.username);
 	if(user == undefined){
@@ -57,6 +64,10 @@ function getUser(username){
 
 function saveUser(user){
 	users[user.name] = user;
+}
+
+function addUser(username){
+	users[username] = {"name": username, "credit": 0};
 }
 
 function getAllUsers(){

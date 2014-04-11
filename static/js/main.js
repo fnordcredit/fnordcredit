@@ -87,7 +87,37 @@ function getAllUsers(){
 		data.forEach(function(user){
 			showUser(user);
 		});
+		var newuser = $('<div>').addClass('account col-md-2 panel panel-default')
+			.append($('<div>').addClass('newuser').text('+'));
+		$('#accounts').append(newuser);
+
+		newuser.click(function(){
+			newUser();
+		});
 	});
+}
+
+function newUser(){
+	$('#newuser').empty();
+	var newUserForm = $('<form role="form" id="newUserForm">');
+	var newUserFormGroup = $('<div id="newUserForm" class="form-group">');
+	newUserForm.append(newUserFormGroup);
+	newUserFormGroup.append($('<input type="username" name="username" required class="form-control">'));
+	newUserFormGroup.append($('<input type="submit" value="Add user" class="form-control">'));
+
+	$(document).on('submit', '#newUserForm', function(e){
+	    e.preventDefault();
+	    $.ajax({
+            url: '/user/add',
+            type: "POST",
+            data: $('#newUserForm').serialize(),
+            success: changeView('accounts')
+        });
+	});
+
+	$('#newuser').append(newUserForm);
+
+	changeView('new');
 }
 
 function changeView(view){
@@ -99,6 +129,9 @@ function changeView(view){
 		case 'accounts':
 			getAllUsers();
 			$('#accounts').show();
+			break;
+		case 'new':
+			$('#newuser').show();
 			break;
 
 		default:

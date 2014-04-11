@@ -41,3 +41,17 @@
 .pager li>a{
 	font-size: 30px;
 }
+
+.newuser{
+	margin-top: -5px;
+	font-size: 70px;
+	text-align: center;
+}
+
+#newUserForm{
+	margin-top: 20px;
+}
+
+#newUserForm input{
+	margin-top: 20px;
+}
