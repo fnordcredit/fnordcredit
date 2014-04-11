@@ -1,5 +1,5 @@
 function showUser(userData){
-	var account = $('<div>').addClass("account").addClass("col-md-2 panel panel-default");
+	var account = $('<div>').addClass("account col-md-2 panel panel-default");
 	if(userData.credit < 0){
 		account.addClass("debt");
 	}
@@ -38,15 +38,14 @@ function showDetail(userData){
 	addCreditArea.append(addCreditAreaBody);
 
 	var plus50Button = $('<button>').addClass('btn btn-primary btn-lg').text("+ 0.50€");
-	var plus1Button = $('<button>').addClass('btn btn-primary btn-lg').text("+ 1€");
-	var plus2Button = $('<button>').addClass('btn btn-primary btn-lg').text("+ 2€");
-	var plus5Button = $('<button>').addClass('btn btn-primary btn-lg').text("+ 5€");
-	addCreditAreaBody.append(plus50Button);
-	addCreditAreaBody.append(plus1Button);
-	addCreditAreaBody.append(plus2Button);
-	addCreditAreaBody.append(plus5Button);
+	var plus100Button = $('<button>').addClass('btn btn-primary btn-lg').text("+ 1,00€");
+	var plus200Button = $('<button>').addClass('btn btn-primary btn-lg').text("+ 2,00€");
+	var plus500Button = $('<button>').addClass('btn btn-primary btn-lg').text("+ 5,00€");
+
+	var plusbuttons = [plus50Button, plus100Button, plus200Button, plus500Button];
+	addCreditAreaBody.append(plusbuttons);
 	
-	var removeCreditArea = $('<div>').addClass('panel').addClass('panel-default');
+	var removeCreditArea = $('<div>').addClass('panel panel-default');
 	addCreditArea.append($('<div>').addClass('panel-heading')
 		.append($('<h3>').addClass('panel-title').text('Remove Credit'))
 	);
@@ -59,10 +58,8 @@ function showDetail(userData){
 	var minus150Button = $('<button>').addClass('btn btn-danger btn-lg').text("- 1,50€");
 	var minus200Button = $('<button>').addClass('btn btn-danger btn-lg').text("- 2,00€");
 
-	removeCreditAreaBody.append(minus50Button);
-	removeCreditAreaBody.append(minus100Button);
-	removeCreditAreaBody.append(minus150Button);
-	removeCreditAreaBody.append(minus200Button);
+	var minusbuttons = [minus50Button, minus100Button, minus150Button, minus200Button]
+	removeCreditAreaBody.append(minusbuttons);
 
 	var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
 	detail.append(backButton);
@@ -70,19 +67,21 @@ function showDetail(userData){
 	$('#details').empty().append(detail);
 	changeView('detail');
 
+	// Plus Buttons
 	plus50Button.click(function(){
 		changeCredit(userData, 0.5);
 	});
-	plus1Button.click(function(){
+	plus100Button.click(function(){
 		changeCredit(userData, 1);
 	});
-	plus2Button.click(function(){
+	plus200Button.click(function(){
 		changeCredit(userData, 2);
 	});
-
-	plus5Button.click(function(){
+	plus500Button.click(function(){
 		changeCredit(userData, 5);
 	});
+
+	// Minus Buttons
 	minus50Button.click(function(){
 		changeCredit(userData, -0.5);
 	});
@@ -96,6 +95,7 @@ function showDetail(userData){
 		changeCredit(userData, -2);
 	});
 
+	// Back Button
 	backButton.click(function(){
 		changeView('accounts');
 	});
