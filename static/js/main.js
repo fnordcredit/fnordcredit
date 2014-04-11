@@ -111,7 +111,12 @@ function newUser(){
             url: '/user/add',
             type: "POST",
             data: $('#newUserForm').serialize(),
-            success: changeView('accounts')
+            success: function(){
+            	changeView('accounts');
+            },
+            error: function(err){
+            	alert(err.responseText);
+            }
         });
 	});
 

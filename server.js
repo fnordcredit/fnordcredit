@@ -42,15 +42,15 @@ app.get("/users/all", function(req, res){
 
 app.post('/user/add', function(req, res){
 	var username = req.body.username;
-	addUser(username);
-	res.send(200);
+	addUser(username, res);
 	
 });
 
 app.post("/user/credit", function(req, res){
 	var user = getUser(req.body.username);
 	if(user == undefined){
-		res.send(404, "User not found.");
+		res.send(404, "User not found");
+		winston.log('error', '[userCredit] No user ' + req.body.username + ' found.')
 		return;
 	}
 	user.credit += +req.body.delta;
@@ -66,8 +66,22 @@ function saveUser(user){
 	users[user.name] = user;
 }
 
-function addUser(username){
+function addUser(username, res){
+	if(username == undefined || username == ""){
+		res.send(406, "No username set");
+		winston.log('error', '[addUser] No username set.')
+		return false;
+	}
+	if(users[username]){
+		res.send(409, "User already exists");
+		winston.log('error', '[addUser] User ' + username + ' already exists.');
+		return false;
+	}
+
 	users[username] = {"name": username, "credit": 0};
+	res.send(200);
+	winston.log('info', '[addUser] New user ' + username + ' created');
+	return true;
 }
 
 function getAllUsers(){
