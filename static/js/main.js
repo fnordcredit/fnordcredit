@@ -105,6 +105,9 @@ function newUser(){
 	newUserFormGroup.append($('<input type="username" name="username" required class="form-control">'));
 	newUserFormGroup.append($('<input type="submit" value="Add user" class="form-control">'));
 
+	var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
+	$('#newuser').append(backButton);
+
 	$(document).on('submit', '#newUserForm', function(e){
 	    e.preventDefault();
 	    $.ajax({
@@ -118,6 +121,10 @@ function newUser(){
             	alert(err.responseText);
             }
         });
+	});
+
+	backButton.click(function(){
+		changeView('accounts');
 	});
 
 	$('#newuser').append(newUserForm);
