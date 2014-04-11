@@ -1,5 +1,8 @@
 function showUser(userData){
 	var account = $('<div>').addClass("account").addClass("col-md-2 panel panel-default");
+	if(userData.credit < 0){
+		account.addClass("debt");
+	}
 	account.append($('<div>').addClass("name").text(userData.name));
 	account.append($('<div>').addClass("credit").text(userData.credit + " €"));
 
