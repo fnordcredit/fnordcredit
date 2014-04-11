@@ -34,10 +34,17 @@ function showDetail(userData){
 	row.append(creditarea);
 
 	creditarea.append(addCreditArea);
+	var addCreditAreaBody = $('<div>').addClass('panel-body');
+	addCreditArea.append(addCreditAreaBody);
 
-	var plus5Button = $('<div>').addClass('panel-body')
-		.append($('<button>').addClass('btn btn-primary btn-lg').text("+ 5€"));
-	addCreditArea.append(plus5Button);
+	var plus50Button = $('<button>').addClass('btn btn-primary btn-lg').text("+ 0.50€");
+	var plus1Button = $('<button>').addClass('btn btn-primary btn-lg').text("+ 1€");
+	var plus2Button = $('<button>').addClass('btn btn-primary btn-lg').text("+ 2€");
+	var plus5Button = $('<button>').addClass('btn btn-primary btn-lg').text("+ 5€");
+	addCreditAreaBody.append(plus50Button);
+	addCreditAreaBody.append(plus1Button);
+	addCreditAreaBody.append(plus2Button);
+	addCreditAreaBody.append(plus5Button);
 	
 	var removeCreditArea = $('<div>').addClass('panel').addClass('panel-default');
 	addCreditArea.append($('<div>').addClass('panel-heading')
@@ -62,6 +69,16 @@ function showDetail(userData){
 
 	$('#details').empty().append(detail);
 	changeView('detail');
+
+	plus50Button.click(function(){
+		changeCredit(userData, 0.5);
+	});
+	plus1Button.click(function(){
+		changeCredit(userData, 1);
+	});
+	plus2Button.click(function(){
+		changeCredit(userData, 2);
+	});
 
 	plus5Button.click(function(){
 		changeCredit(userData, 5);
