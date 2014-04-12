@@ -5,6 +5,11 @@ var winston = require('winston');
 var dateFormat = require('dateformat');
 var app = express();
 
+server = require('http').createServer(app);
+var io = require('socket.io').listen(server);
+
+var sock = { emit: function(){} }; // stub
+
 process.stdin.resume();
 winston.add(winston.transports.File, { filename: 'credit.log', json: false });
 var database = __dirname + '/database.json';
@@ -24,8 +29,7 @@ fs.readFile(database, 'utf8', function(err, data){
 	}
 
 	users = JSON.parse(data);
-	saveDatabase();
-	backupDatabase();
+	setInterval(backupDatabase, 24 * 60 * 60 * 1000); // 1 day
 });
 
 // Write database
@@ -35,19 +39,17 @@ function saveDatabase(){
 			winston.log('error', "Can't write database: " + err);
 			return;
 		}
-		savedbtimeout = setTimeout(saveDatabase, 1000);
 	});
 }
 
 function backupDatabase(){
 	var now = new Date();
-	var dateformated = dateFormat(now, "isoDateTime");
+	var dateformated = dateFormat(now, "yyyy-mm-dd");
 	fs.writeFile(__dirname+'/backup/'+dateformated+'.json', JSON.stringify(users), function(err){
 		if(err){
 			winston.log('error', "Can't backup database: " + err);
 			return;
 		}
-		setTimeout(backupDatabase, 60000);
 	});
 }
 
@@ -60,7 +62,7 @@ app.get("/users/all", function(req, res){
 app.post('/user/add', function(req, res){
 	var username = req.body.username;
 	addUser(username, res);
-	
+	saveDatabase();
 });
 
 app.post("/user/credit", function(req, res){
@@ -81,8 +83,20 @@ app.post("/user/credit", function(req, res){
 	user.credit = Math.round(user.credit * 100) / 100;
 	winston.log('info', '[userCredit] Changed credit from user ' + user.name + ' by ' + delta + '. New credit: ' + user.credit);
 	saveUser(user);
+	sock.broadcast.emit('accounts', JSON.stringify(getAllUsers()));
+	sock.emit('accounts', JSON.stringify(getAllUsers()));
 	res.send(JSON.stringify(user));
+	saveDatabase();
 });
+
+io.sockets
+	.on('connection', function (socket) {
+		sock = socket;
+		socket.emit('accounts', JSON.stringify(getAllUsers()));
+	})
+	.on('getAccounts', function (socket) {
+		socket.emit('accounts', JSON.stringify(getAllUsers()));
+	});
 
 function getUser(username){
 	return users[username];
@@ -105,6 +119,8 @@ function addUser(username, res){
 	}
 
 	users[username] = {"name": username, "credit": 0};
+	sock.broadcast.emit('accounts', JSON.stringify(getAllUsers()));
+	sock.emit('accounts', JSON.stringify(getAllUsers()));
 	res.send(200);
 	winston.log('info', '[addUser] New user ' + username + ' created');
 	return true;
@@ -123,6 +139,6 @@ process.on('SIGTERM', function() {
 	process.exit();
 });
 
-var server = app.listen(8000, function(){
+var server = server.listen(8000, function(){
 	winston.log('info', 'Server started!');
 })
