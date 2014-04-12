@@ -72,7 +72,7 @@ app.post("/user/credit", function(req, res){
 		winston.log('error', '[userCredit] No user ' + req.body.username + ' found.')
 		return;
 	}
-	if(isNaN(delta)){
+	if(isNaN(delta) || delta >= 100 || delta <= -100){
 		res.send(406);
 		winston.log('error', "[userCredit] delta must be a number.");
 		return;
