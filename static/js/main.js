@@ -1,3 +1,6 @@
+var socket = io.connect('http://' + window.location.host);
+var accounts = undefined;
+
 function showUser(userData){
 	var account = $('<div>').addClass("account col-md-2 panel panel-default");
 	if(userData.credit < 0){
@@ -106,20 +109,17 @@ function showDetail(userData){
 }
 
 function getAllUsers(){
-	$.getJSON("/users/all", function(data){
-		$('#accounts').empty();
-		data.forEach(function(user){
-			showUser(user);
-		});
-		var newuser = $('<div>').addClass('account col-md-2 panel panel-default')
-			.append($('<div>').addClass('newuser').text('+'));
-		$('#accounts').append(newuser);
-
-		newuser.click(function(){
-			newUser();
-		});
+	$('#accounts').empty();
+	accounts.forEach(function(user){
+		showUser(user);
 	});
-	setTimeout(getAllUsers, 500);
+	var newuser = $('<div>').addClass('account col-md-2 panel panel-default')
+		.append($('<div>').addClass('newuser').text('+'));
+	$('#accounts').append(newuser);
+
+	newuser.click(function(){
+		newUser();
+	});
 }
 
 function newUser(){
@@ -133,7 +133,7 @@ function newUser(){
 	var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
 	$('#newuser').append(backButton);
 
-	$(document).on('submit', '#newUserForm', function(e){
+	newUserForm.submit(function(e){
 	    e.preventDefault();
 	    $.ajax({
             url: '/user/add',
@@ -164,7 +164,7 @@ function changeView(view){
 			$('#details').show();
 			break;
 		case 'accounts':
-			getAllUsers();
+			socket.emit('getAccounts');
 			$('#accounts').show();
 			break;
 		case 'new':
@@ -190,7 +190,10 @@ function changeCredit(userData, delta){
 	});
 }
 
-$(function(){
-	changeView('accounts');
+socket.on('accounts', function (data) {
+	data = JSON.parse(data);
+	accounts = data;
 	getAllUsers();
 });
+
+changeView('accounts');
