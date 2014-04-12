@@ -65,13 +65,14 @@ app.post('/user/add', function(req, res){
 
 app.post("/user/credit", function(req, res){
 	var user = getUser(req.body.username);
-	var delta = req.body.delta;
+	var delta = parseFloat(req.body.delta);
+
 	if(user == undefined){
 		res.send(404, "User not found");
 		winston.log('error', '[userCredit] No user ' + req.body.username + ' found.')
 		return;
 	}
-	if(typeof delta !== "number"){
+	if(isNaN(delta)){
 		res.send(406);
 		winston.log('error', "[userCredit] delta must be a number.");
 		return;
