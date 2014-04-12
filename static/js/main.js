@@ -196,4 +196,11 @@ socket.on('accounts', function (data) {
 	getAllUsers();
 });
 
+socket.on('ka-ching', function() {
+    var p = $('#ka-ching').get(0);
+    p.pause();
+    p.currentTime = 0;
+    p.play();
+});
+
 changeView('accounts');
