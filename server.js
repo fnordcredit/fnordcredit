@@ -85,6 +85,7 @@ app.post("/user/credit", function(req, res){
 	saveUser(user);
 	sock.broadcast.emit('accounts', JSON.stringify(getAllUsers()));
 	sock.emit('accounts', JSON.stringify(getAllUsers()));
+	sock.emit('ka-ching', JSON.stringify(getAllUsers()));
 	res.send(JSON.stringify(user));
 	saveDatabase();
 });
