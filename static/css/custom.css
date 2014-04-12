@@ -41,6 +41,7 @@
 
 .pager li>a{
 	font-size: 30px;
+	cursor:pointer;
 }
 
 .newuser{
