@@ -12,10 +12,6 @@ var database = __dirname + '/database.json';
 var users,
 	savedbtimeout;
 
-app.all('/', function(req, res, next) {
-
- });
-
 app.use('/', express.static(__dirname + '/static'));
 app.use(bodyParser());
 
