@@ -12,6 +12,10 @@ var database = __dirname + '/database.json';
 var users,
 	savedbtimeout;
 
+app.all('/', function(req, res, next) {
+
+ });
+
 app.use('/', express.static(__dirname + '/static'));
 app.use(bodyParser());
 
@@ -52,6 +56,8 @@ function backupDatabase(){
 }
 
 app.get("/users/all", function(req, res){
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "X-Requested-With");
 	res.send(JSON.stringify(getAllUsers()));
 });
 
