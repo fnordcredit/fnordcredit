@@ -9,7 +9,8 @@ process.stdin.resume();
 winston.add(winston.transports.File, { filename: 'credit.log', json: false });
 var database = __dirname + '/database.json';
 
-var users;
+var users,
+	savedbtimeout;
 
 app.use('/', express.static(__dirname + '/static'));
 app.use(bodyParser());
@@ -34,7 +35,7 @@ function saveDatabase(){
 			winston.log('error', "Can't write database: " + err);
 			return;
 		}
-		setTimeout(saveDatabase, 1000);
+		savedbtimeout = setTimeout(saveDatabase, 1000);
 	});
 }
 
@@ -107,8 +108,9 @@ function getAllUsers(){
 	});
 }
 
-process.on('SIGINT', function() {
+process.on('SIGTERM', function() {
 	winston.log('info', 'Server shutting down. Good bye!');
+	clearTimeout(savedbtimeout);
 	process.exit();
 });
 
