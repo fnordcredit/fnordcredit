@@ -10,6 +10,7 @@
 .account{
 	height: 100px;
 	margin-right: 35px;
+    cursor: pointer;
 }
 
 .account .name{
