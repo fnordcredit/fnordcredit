@@ -29,8 +29,7 @@ fs.readFile(database, 'utf8', function(err, data){
 	}
 
 	users = JSON.parse(data);
-	saveDatabase();
-	backupDatabase();
+	setInterval(backupDatabase, 24 * 60 * 60 * 1000); // 1 day
 });
 
 // Write database
@@ -40,19 +39,17 @@ function saveDatabase(){
 			winston.log('error', "Can't write database: " + err);
 			return;
 		}
-		savedbtimeout = setTimeout(saveDatabase, 1000);
 	});
 }
 
 function backupDatabase(){
 	var now = new Date();
-	var dateformated = dateFormat(now, "isoDateTime");
+	var dateformated = dateFormat(now, "yyyy-mm-dd");
 	fs.writeFile(__dirname+'/backup/'+dateformated+'.json', JSON.stringify(users), function(err){
 		if(err){
 			winston.log('error', "Can't backup database: " + err);
 			return;
 		}
-		setTimeout(backupDatabase, 60000);
 	});
 }
 
@@ -65,6 +62,7 @@ app.get("/users/all", function(req, res){
 app.post('/user/add', function(req, res){
 	var username = req.body.username;
 	addUser(username, res);
+	saveDatabase();
 });
 
 app.post("/user/credit", function(req, res){
@@ -88,6 +86,7 @@ app.post("/user/credit", function(req, res){
 	sock.broadcast.emit('accounts', JSON.stringify(getAllUsers()));
 	sock.emit('accounts', JSON.stringify(getAllUsers()));
 	res.send(JSON.stringify(user));
+	saveDatabase();
 });
 
 io.sockets
