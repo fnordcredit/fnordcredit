@@ -4,7 +4,7 @@ function showUser(userData){
 		account.addClass("debt");
 	}
 	account.append($('<div>').addClass("name").text(userData.name));
-	account.append($('<div>').addClass("credit").text(userData.credit + " €"));
+	account.append($('<div>').addClass("credit").text(userData.credit.toFixed(2) + " €"));
 
 	$('#accounts').append(account);
 	account.click(function(){
@@ -22,7 +22,7 @@ function showDetail(userData){
 	row.append(userinfo);
 
 	userinfo.append($('<div>').addClass("name").text(userData.name));
-	userinfo.append($('<div>').addClass("credit").text(userData.credit + " €"));
+	userinfo.append($('<div>').addClass("credit").text(userData.credit.toFixed(2) + " €"));
 
 	// Add Credit-Area
 	var addCreditArea = $('<div>').addClass('panel panel-default');
