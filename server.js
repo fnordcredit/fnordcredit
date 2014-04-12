@@ -5,8 +5,8 @@ var winston = require('winston');
 var dateFormat = require('dateformat');
 var app = express();
 
+process.stdin.resume();
 winston.add(winston.transports.File, { filename: 'credit.log', json: false });
-
 var database = __dirname + '/database.json';
 
 var users;
@@ -106,6 +106,11 @@ function getAllUsers(){
 		return users[name];
 	});
 }
+
+process.on('SIGINT', function() {
+	winston.log('info', 'Server shutting down. Good bye!');
+	process.exit();
+});
 
 var server = app.listen(8000, function(){
 	winston.log('info', 'Server started!');
