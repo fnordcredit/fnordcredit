@@ -65,14 +65,20 @@ app.post('/user/add', function(req, res){
 
 app.post("/user/credit", function(req, res){
 	var user = getUser(req.body.username);
+	var delta = req.body.delta;
 	if(user == undefined){
 		res.send(404, "User not found");
 		winston.log('error', '[userCredit] No user ' + req.body.username + ' found.')
 		return;
 	}
-	user.credit += +req.body.delta;
+	if(typeof delta !== "number"){
+		res.send(406);
+		winston.log('error', "[userCredit] delta must be a number.");
+		return;
+	}
+	user.credit += +delta;
 	user.credit = Math.round(user.credit * 100) / 100;
-	winston.log('info', '[userCredit] Changed credit from user ' + user.name + ' by ' + req.body.delta + '. New credit: ' + user.credit);
+	winston.log('info', '[userCredit] Changed credit from user ' + user.name + ' by ' + delta + '. New credit: ' + user.credit);
 	saveUser(user);
 	res.send(JSON.stringify(user));
 });
