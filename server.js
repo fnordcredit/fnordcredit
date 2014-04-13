@@ -123,7 +123,7 @@ function addUser(username, res){
 		return false;
 	}
 
-	users[username] = {"name": username, "credit": 0};
+	users[username] = {"name": username, "credit": 0, "lastchanged": Date.now()};
 	sock.broadcast.emit('accounts', JSON.stringify(getAllUsers()));
 	sock.emit('accounts', JSON.stringify(getAllUsers()));
 	res.send(200);
@@ -133,14 +133,17 @@ function addUser(username, res){
 
 function getAllUsers(){
 	var names = Object.keys(users);
-	return names.map(function(name){
+	userlist = names.map(function(name){
 		return users[name];
 	});
+
+	return userlist;
 }
 
 function updateCredit(user, delta) {
 	user.credit += +delta;
 	user.credit = Math.round(user.credit * 100) / 100;
+	user.lastchanged = Date.now();
 	winston.log('info', '[userCredit] Changed credit from user ' + user.name + ' by ' + delta + '. New credit: ' + user.credit);
 }
 
