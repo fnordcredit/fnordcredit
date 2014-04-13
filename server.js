@@ -83,9 +83,9 @@ app.post("/user/credit", function(req, res){
 		winston.log('error', "[userCredit] delta must be a number.");
 		return;
 	}
-	user.credit += +delta;
-	user.credit = Math.round(user.credit * 100) / 100;
-	winston.log('info', '[userCredit] Changed credit from user ' + user.name + ' by ' + delta + '. New credit: ' + user.credit);
+	
+	updateCredit(user, delta);
+	
 	saveUser(user);
 	sock.broadcast.emit('accounts', JSON.stringify(getAllUsers()));
 	sock.emit('accounts', JSON.stringify(getAllUsers()));
@@ -136,6 +136,12 @@ function getAllUsers(){
 	return names.map(function(name){
 		return users[name];
 	});
+}
+
+function updateCredit(user, delta) {
+	user.credit += +delta;
+	user.credit = Math.round(user.credit * 100) / 100;
+	winston.log('info', '[userCredit] Changed credit from user ' + user.name + ' by ' + delta + '. New credit: ' + user.credit);
 }
 
 process.on('SIGTERM', function() {

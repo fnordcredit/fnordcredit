@@ -14,5 +14,14 @@
 		"dateformat"	:	"1.0.x",
 		"socket.io"		:	"0.9.x"
 	},
-	"license": "MIT"
+	"license": "MIT",
+	
+	"repository" : {
+		"type" : "git",
+		"url" : "https://github.com/silsha/fnordcredit.git"
+	},
+	"bugs" : {
+		"url" : "https://github.com/silsha/fnordcredit/issues"
+	}
+	
 }
