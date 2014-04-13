@@ -20,15 +20,19 @@ var users,
 app.use('/', express.static(__dirname + '/static'));
 app.use(bodyParser());
 
-
 // Read database
 fs.readFile(database, 'utf8', function(err, data){
 	if(err){
-		winston.log('error', 'Can\'t read database: ' + err);
-		process.exit();
+		if (err.code == "ENOENT") {
+			winston.log('warn', 'No database found. Starting from scratch.');
+			users = {};
+		} else {
+			winston.log('error', 'Can\'t read database: ' + err);
+			process.exit();
+		}
+	} else {
+		users = JSON.parse(data);
 	}
-
-	users = JSON.parse(data);
 	setInterval(backupDatabase, 24 * 60 * 60 * 1000); // 1 day
 });
 
