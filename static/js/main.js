@@ -40,13 +40,14 @@ function showDetail(userData){
 	var addCreditAreaBody = $('<div>').addClass('panel-body');
 	addCreditArea.append(addCreditAreaBody);
 
+	var plus1Button = $('<button>').addClass('btn btn-success btn-lg').text("+ 0.01€");
 	var plus10Button = $('<button>').addClass('btn btn-success btn-lg').text("+ 0.10€");
 	var plus50Button = $('<button>').addClass('btn btn-success btn-lg').text("+ 0.50€");
 	var plus100Button = $('<button>').addClass('btn btn-success btn-lg').text("+ 1,00€");
 	var plus200Button = $('<button>').addClass('btn btn-success btn-lg').text("+ 2,00€");
 	var plus500Button = $('<button>').addClass('btn btn-success btn-lg').text("+ 5,00€");
 
-	var plusbuttons = [plus10Button, plus50Button, plus100Button, plus200Button, plus500Button];
+	var plusbuttons = [plus1Button, plus10Button, plus50Button, plus100Button, plus200Button, plus500Button];
 	addCreditAreaBody.append(plusbuttons);
 	
 	var removeCreditArea = $('<div>').addClass('panel panel-default');
@@ -72,6 +73,9 @@ function showDetail(userData){
 	changeView('detail');
 
 	// Plus Buttons
+	plus1Button.click(function(){
+		changeCredit(userData, 0.01);
+	});
 	plus10Button.click(function(){
 		changeCredit(userData, 0.1);
 	});
