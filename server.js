@@ -137,7 +137,7 @@ function getAllUsers(){
 		return users[name];
 	});
 	userlist.sort(function (a, b) {
-		return (a.lastchanged < b.lastchanged);
+		return (a.lastchanged < b.lastchanged) ? 1 : -1;
 	});
 	return userlist;
 }
