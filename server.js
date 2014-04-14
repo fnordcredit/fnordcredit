@@ -136,9 +136,7 @@ function getAllUsers(){
 	userlist = names.map(function(name){
 		return users[name];
 	});
-	userlist.sort(function (a, b) {
-		return (a.lastchanged < b.lastchanged);
-	});
+
 	return userlist;
 }
 
