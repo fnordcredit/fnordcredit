@@ -114,6 +114,11 @@ function showDetail(userData){
 
 function getAllUsers(){
 	$('#accounts').empty();
+	
+	accounts.sort(function (a, b) {
+		return (a.lastchanged < b.lastchanged) ? 1 : -1;
+	});
+	
 	accounts.forEach(function(user){
 		showUser(user);
 	});
