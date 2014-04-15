@@ -98,9 +98,9 @@ io.sockets
 	.on('connection', function (socket) {
 		sock = socket;
 		socket.emit('accounts', JSON.stringify(getAllUsers()));
-	})
-	.on('getAccounts', function (socket) {
-		socket.emit('accounts', JSON.stringify(getAllUsers()));
+		socket.on('getAccounts', function (data) {
+			socket.emit('accounts', JSON.stringify(getAllUsers()));
+		})
 	});
 
 function getUser(username){

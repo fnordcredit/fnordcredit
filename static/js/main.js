@@ -1,5 +1,5 @@
 var socket = io.connect('http://' + window.location.host);
-var accounts = undefined;
+var accounts = [];
 
 function showUser(userData){
 	var account = $('<div>').addClass("account col-md-2 panel panel-default");
@@ -200,7 +200,7 @@ function changeCredit(userData, delta){
 }
 
 socket.on('accounts', function (data) {
-	data = JSON.parse(data);
+	var data = JSON.parse(data);
 	accounts = data;
 	getAllUsers();
 });
