@@ -3,10 +3,10 @@ var bodyParser = require("body-parser");
 var fs = require('fs');
 var winston = require('winston');
 var dateFormat = require('dateformat');
+var r = require('rethinkdb');
+var config = require('./config')
 var app = express();
-
-server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
+var io;
 
 var sock = { emit: function(){} }; // stub
 
@@ -16,6 +16,14 @@ var database = __dirname + '/database.json';
 
 var users,
 	savedbtimeout;
+
+
+var connection = null;
+r.connect( {host: 'localhost', port: 28015}, function(err, conn) {
+	if (err) throw err;
+    connection = conn;
+    serverStart(connection);
+})
 
 app.use('/', express.static(__dirname + '/static'));
 app.use(bodyParser());
@@ -35,6 +43,52 @@ fs.readFile(database, 'utf8', function(err, data){
 	}
 	setInterval(backupDatabase, 24 * 60 * 60 * 1000); // 1 day
 });
+
+function serverStart(connection){
+	server = require('http').createServer(app);
+	io = require('socket.io').listen(server);
+
+	io.sockets
+	.on('connection', function (socket) {
+		sock = socket;
+		socket.emit('accounts', JSON.stringify(getAllUsers()));
+	})
+	.on('getAccounts', function (socket) {
+		socket.emit('accounts', JSON.stringify(getAllUsers()));
+	});
+
+	var server = server.listen(8000, function(){
+		winston.log('info', 'Server started!');
+	})
+
+	r.dbList().run(connection, function(err, list){
+		if(list.indexOf(config.rethinkdb.db) == -1){
+			r.dbCreate(config.rethinkdb.db).run(connection, function(err){
+				if(err)
+					criticalError("Couldn't create database.");
+			});
+		}
+	});
+
+	// Check if tables are present.
+	r.db(config.rethinkdb.db).tableList().run(connection, function(err, tables){
+		if(err)
+			criticalError("Couldn't read table list.");
+
+		if(tables.indexOf("users") == -1){
+			r.db(config.rethinkdb.db).tableCreate('users').run(connection, function(err){
+				if(err)
+					criticalError("Couldn't create table 'users'.");
+			})
+		}
+		if(tables.indexOf("transactions") == -1){
+			r.db(config.rethinkdb.db).tableCreate('transactions').run(connection, function(err){
+				if(err)
+					criticalError("Couldn't create table 'transactions'.");
+			})
+		}
+	});
+}
 
 // Write database
 function saveDatabase(){
@@ -94,15 +148,6 @@ app.post("/user/credit", function(req, res){
 	saveDatabase();
 });
 
-io.sockets
-	.on('connection', function (socket) {
-		sock = socket;
-		socket.emit('accounts', JSON.stringify(getAllUsers()));
-	})
-	.on('getAccounts', function (socket) {
-		socket.emit('accounts', JSON.stringify(getAllUsers()));
-	});
-
 function getUser(username){
 	return users[username];
 }
@@ -147,12 +192,13 @@ function updateCredit(user, delta) {
 	winston.log('info', '[userCredit] Changed credit from user ' + user.name + ' by ' + delta + '. New credit: ' + user.credit);
 }
 
+function criticalError(errormsg){
+	winston.log('error', errormsg);
+	process.exit();
+}
+
 process.on('SIGTERM', function() {
 	winston.log('info', 'Server shutting down. Good bye!');
 	clearTimeout(savedbtimeout);
 	process.exit();
 });
-
-var server = server.listen(8000, function(){
-	winston.log('info', 'Server started!');
-})
