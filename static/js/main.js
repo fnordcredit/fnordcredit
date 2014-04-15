@@ -1,5 +1,6 @@
 var socket = io.connect('http://' + window.location.host);
 var accounts = [];
+var filter = ""
 
 function showUser(userData){
 	var account = $('<div>').addClass("account col-md-2 panel panel-default");
@@ -118,8 +119,12 @@ function getAllUsers(){
 	accounts.sort(function (a, b) {
 		return (a.lastchanged < b.lastchanged) ? 1 : -1;
 	});
+
+	var filtered = accounts.filter(function(account){
+		return account.name.toLowerCase().indexOf(filter)!=-1
+	});
 	
-	accounts.forEach(function(user){
+	filtered.forEach(function(user){
 		showUser(user);
 	});
 	var newuser = $('<div>').addClass('account col-md-2 panel panel-default')
@@ -175,6 +180,7 @@ function changeView(view){
 		case 'accounts':
 			socket.emit('getAccounts');
 			$('#accounts').show();
+			$("nav").show();
 			break;
 		case 'new':
 			$('#newuser').show();
@@ -212,4 +218,21 @@ socket.on('ka-ching', function() {
     p.play();
 });
 
+function updateFilter(){
+	filter = $("#search input").get(0).value.toLowerCase()
+	changeView("accounts")
+}
+
+function setupBinds(){
+	$("#search input").change(updateFilter)
+	$("#search button").click(function(e){
+		//fix because click fires before the field is actually reseted
+		e.preventDefault();
+		$("#search").get(0).reset();
+		updateFilter();
+	})
+}
+
+
+setupBinds();
 changeView('accounts');
