@@ -52,9 +52,9 @@ function serverStart(connection){
 	.on('connection', function (socket) {
 		sock = socket;
 		socket.emit('accounts', JSON.stringify(getAllUsers()));
-	})
-	.on('getAccounts', function (socket) {
-		socket.emit('accounts', JSON.stringify(getAllUsers()));
+		socket.on('getAccounts', function (data) {
+			socket.emit('accounts', JSON.stringify(getAllUsers()));
+		})
 	});
 
 	var server = server.listen(8000, function(){

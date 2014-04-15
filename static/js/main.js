@@ -1,5 +1,7 @@
 var socket = io.connect('http://' + window.location.host);
-var accounts = undefined;
+var accounts = [];
+var filter = ""
+var sortby = "time" //valid values: time abc zyx
 
 function showUser(userData){
 	var account = $('<div>').addClass("account col-md-2 panel panel-default");
@@ -116,10 +118,24 @@ function getAllUsers(){
 	$('#accounts').empty();
 	
 	accounts.sort(function (a, b) {
-		return (a.lastchanged < b.lastchanged) ? 1 : -1;
+		switch(sortby){
+			case "time":
+				return (a.lastchanged < b.lastchanged) ? 1 : -1;
+			case "abc":
+				return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+			case "zyx":
+				return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
+			default:
+				throw "Invalid sorting criteria"
+		}
+		
+	});
+
+	var filtered = accounts.filter(function(account){
+		return account.name.toLowerCase().indexOf(filter)!=-1
 	});
 	
-	accounts.forEach(function(user){
+	filtered.forEach(function(user){
 		showUser(user);
 	});
 	var newuser = $('<div>').addClass('account col-md-2 panel panel-default')
@@ -143,15 +159,18 @@ function newUser(){
 	$('#newuser').append(backButton);
 
 	newUserForm.submit(function(e){
+		lockUi()
 	    e.preventDefault();
 	    $.ajax({
             url: '/user/add',
             type: "POST",
             data: $('#newUserForm').serialize(),
             success: function(){
+            	releaseUi()
             	changeView('accounts');
             },
             error: function(err){
+            	releaseUi()
             	alert(err.responseText);
             }
         });
@@ -175,6 +194,7 @@ function changeView(view){
 		case 'accounts':
 			socket.emit('getAccounts');
 			$('#accounts').show();
+			$("nav").show();
 			break;
 		case 'new':
 			$('#newuser').show();
@@ -186,6 +206,7 @@ function changeView(view){
 }
 
 function changeCredit(userData, delta){
+	lockUi()
 	$.ajax({
 		url: "/user/credit",
 		type: "POST",
@@ -196,11 +217,24 @@ function changeCredit(userData, delta){
 		}
 	}).done(function(data){
 		showDetail(data);
+		releaseUi()
 	});
 }
 
+function lockUi(){
+	$("#uilock").modal({
+		backdrop: false,
+		keyboard: false,
+
+	})
+}
+
+function releaseUi(){
+	$("#uilock").modal('hide')
+}
+
 socket.on('accounts', function (data) {
-	data = JSON.parse(data);
+	var data = JSON.parse(data);
 	accounts = data;
 	getAllUsers();
 });
@@ -212,4 +246,44 @@ socket.on('ka-ching', function() {
     p.play();
 });
 
+function updateFilter(){
+	filter = $("#search input").get(0).value.toLowerCase()
+	changeView("accounts")
+}
+
+function setup(){
+	$("#search input").on("input", null, null, updateFilter)
+	$("#search button").click(function(e){
+		//fix because click fires before the field is actually reseted
+		e.preventDefault();
+		$("#search").get(0).reset();
+		updateFilter();
+	})
+	$("#searchtoggle").click(function(){
+		if($("#search").is(":visible")){
+			$("#search").get(0).reset();
+			updateFilter();
+			$("#searchtoggle").removeClass("active");
+			$("#search").hide();
+		}else{
+			$("#searchtoggle").addClass("active");
+			$("#search").show();
+		}
+	})
+	$("#search").hide();
+
+
+	$("#sorttime").click(function(){setSort("time")});
+	$("#sortabc").click(function(){setSort("abc")});
+	$("#sortzyx").click(function(){setSort("zyx")});
+}
+
+function setSort(by){
+	sortby = by;
+	changeView("accounts");
+	$(".sortbtn").removeClass("active");
+	$("#sort"+by).addClass("active");
+}
+
+setup();
 changeView('accounts');
