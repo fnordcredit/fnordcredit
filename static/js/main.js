@@ -224,7 +224,7 @@ function updateFilter(){
 }
 
 function setupBinds(){
-	$("#search input").change(updateFilter)
+	$("#search input").on("input", null, null, updateFilter)
 	$("#search button").click(function(e){
 		//fix because click fires before the field is actually reseted
 		e.preventDefault();
