@@ -167,8 +167,17 @@ function addUser(username, res){
 		winston.log('error', '[addUser] User ' + username + ' already exists.');
 		return false;
 	}
-
 	users[username] = {"name": username, "credit": 0, "lastchanged": Date.now()};
+
+	r.table("users").insert({
+	    username: username,
+	    credit: 0,
+	    time: r.now()
+	}).run(connection, function(err){
+		if(err)
+			winston.log('error', "Couldn't save user " + user.name + err);
+	});
+
 	sock.broadcast.emit('accounts', JSON.stringify(getAllUsers()));
 	sock.emit('accounts', JSON.stringify(getAllUsers()));
 	res.send(200);
