@@ -51,9 +51,13 @@ function serverStart(connection){
 	io.sockets
 	.on('connection', function (socket) {
 		sock = socket;
-		socket.emit('accounts', JSON.stringify(getAllUsers()));
+		getAllUsersAsync(function(data){
+			socket.emit('accounts', JSON.stringify(data));
+		});
 		socket.on('getAccounts', function (data) {
-			socket.emit('accounts', JSON.stringify(getAllUsers()));
+			getAllUsersAsync(function(data){
+				socket.emit('accounts', JSON.stringify(data));
+			});
 		})
 	});
 
@@ -152,6 +156,17 @@ function getUser(username){
 	return users[username];
 }
 
+function getAllUsersAsync(cb){
+    r.table("users").run(connection, function(e, table){
+        if(e){throw e}
+        table.toArray(function(e, data){
+        	if(e){throw e}
+        	cb(data);
+        })
+    })
+}
+
+
 function saveUser(user){
 	users[user.name] = user;
 }
@@ -170,9 +185,9 @@ function addUser(username, res){
 	users[username] = {"name": username, "credit": 0, "lastchanged": Date.now()};
 
 	r.table("users").insert({
-	    username: username,
+	    name: username,
 	    credit: 0,
-	    time: r.now()
+	    lastchanged: r.now()
 	}).run(connection, function(err){
 		if(err)
 			winston.log('error', "Couldn't save user " + user.name + err);
@@ -208,7 +223,7 @@ function updateCredit(user, delta) {
 			winston.log('error', "Couldn't save transaction for user " + user.name + err);
 	});
 	r.table("users")
-		.filter({"username": user.name})
+		.filter({name: user.name})
 		.update({credit: user.credit})
 		.run(connection, function(err){
 			if(err)
