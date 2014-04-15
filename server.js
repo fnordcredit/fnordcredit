@@ -19,7 +19,7 @@ var users,
 
 
 var connection = null;
-r.connect( {host: 'localhost', port: 28015, db: "fnordcredit"}, function(err, conn) {
+r.connect( {host: config.rethinkdb.host, port: config.rethinkdb.port, db: config.rethinkdb.db}, function(err, conn) {
 	if (err) throw err;
     connection = conn;
     serverStart(connection);
