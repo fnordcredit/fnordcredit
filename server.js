@@ -177,7 +177,6 @@ function addUser(username, res){
 		if(err)
 			winston.log('error', "Couldn't save user " + user.name + err);
 	});
-
 	sock.broadcast.emit('accounts', JSON.stringify(getAllUsers()));
 	sock.emit('accounts', JSON.stringify(getAllUsers()));
 	res.send(200);
@@ -208,6 +207,13 @@ function updateCredit(user, delta) {
 		if(err)
 			winston.log('error', "Couldn't save transaction for user " + user.name + err);
 	});
+	r.table("users")
+		.filter({"username": user.name})
+		.update({credit: user.credit})
+		.run(connection, function(err){
+			if(err)
+				winston.log('error', "Couldn't save transaction for user " + user.name + err);
+		});
 
 	winston.log('info', '[userCredit] Changed credit from user ' + user.name + ' by ' + delta + '. New credit: ' + user.credit);
 }
