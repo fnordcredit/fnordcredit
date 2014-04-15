@@ -159,15 +159,18 @@ function newUser(){
 	$('#newuser').append(backButton);
 
 	newUserForm.submit(function(e){
+		lockUi()
 	    e.preventDefault();
 	    $.ajax({
             url: '/user/add',
             type: "POST",
             data: $('#newUserForm').serialize(),
             success: function(){
+            	releaseUi()
             	changeView('accounts');
             },
             error: function(err){
+            	releaseUi()
             	alert(err.responseText);
             }
         });
@@ -203,6 +206,7 @@ function changeView(view){
 }
 
 function changeCredit(userData, delta){
+	lockUi()
 	$.ajax({
 		url: "/user/credit",
 		type: "POST",
@@ -213,7 +217,20 @@ function changeCredit(userData, delta){
 		}
 	}).done(function(data){
 		showDetail(data);
+		releaseUi()
 	});
+}
+
+function lockUi(){
+	$("#uilock").modal({
+		backdrop: false,
+		keyboard: false,
+
+	})
+}
+
+function releaseUi(){
+	$("#uilock").modal('hide')
 }
 
 socket.on('accounts', function (data) {
