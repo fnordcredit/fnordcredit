@@ -19,7 +19,7 @@ var users,
 
 
 var connection = null;
-r.connect( {host: 'localhost', port: 28015}, function(err, conn) {
+r.connect( {host: 'localhost', port: 28015, db: "fnordcredit"}, function(err, conn) {
 	if (err) throw err;
     connection = conn;
     serverStart(connection);
@@ -189,6 +189,17 @@ function updateCredit(user, delta) {
 	user.credit += +delta;
 	user.credit = Math.round(user.credit * 100) / 100;
 	user.lastchanged = Date.now();
+
+	r.table("transactions").insert({
+	    username: user.name,
+	    delta: delta,
+	    credit: user.credit,
+	    time: r.now()
+	}).run(connection, function(err){
+		if(err)
+			winston.log('error', "Couldn't save transaction for user " + user.name + err);
+	});
+
 	winston.log('info', '[userCredit] Changed credit from user ' + user.name + ' by ' + delta + '. New credit: ' + user.credit);
 }
 
