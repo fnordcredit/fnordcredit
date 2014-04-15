@@ -122,9 +122,9 @@ function getAllUsers(){
 			case "time":
 				return (a.lastchanged < b.lastchanged) ? 1 : -1;
 			case "abc":
-				return a.name.localeCompare(b.name);
+				return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
 			case "zyx":
-				return b.name.localeCompare(a.name);
+				return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
 			default:
 				throw "Invalid sorting criteria"
 		}
