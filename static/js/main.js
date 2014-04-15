@@ -1,6 +1,7 @@
 var socket = io.connect('http://' + window.location.host);
 var accounts = [];
 var filter = ""
+var sortby = "time" //valid values: time abc zyx
 
 function showUser(userData){
 	var account = $('<div>').addClass("account col-md-2 panel panel-default");
@@ -117,7 +118,17 @@ function getAllUsers(){
 	$('#accounts').empty();
 	
 	accounts.sort(function (a, b) {
-		return (a.lastchanged < b.lastchanged) ? 1 : -1;
+		switch(sortby){
+			case "time":
+				return (a.lastchanged < b.lastchanged) ? 1 : -1;
+			case "abc":
+				return a.name.localeCompare(b.name);
+			case "zyx":
+				return b.name.localeCompare(a.name);
+			default:
+				throw "Invalid sorting criteria"
+		}
+		
 	});
 
 	var filtered = accounts.filter(function(account){
@@ -223,7 +234,7 @@ function updateFilter(){
 	changeView("accounts")
 }
 
-function setupBinds(){
+function setup(){
 	$("#search input").on("input", null, null, updateFilter)
 	$("#search button").click(function(e){
 		//fix because click fires before the field is actually reseted
@@ -231,8 +242,31 @@ function setupBinds(){
 		$("#search").get(0).reset();
 		updateFilter();
 	})
+	$("#searchtoggle").click(function(){
+		if($("#search").is(":visible")){
+			$("#search").get(0).reset();
+			updateFilter();
+			$("#searchtoggle").removeClass("active");
+			$("#search").hide();
+		}else{
+			$("#searchtoggle").addClass("active");
+			$("#search").show();
+		}
+	})
+	$("#search").hide();
+
+
+	$("#sorttime").click(function(){setSort("time")});
+	$("#sortabc").click(function(){setSort("abc")});
+	$("#sortzyx").click(function(){setSort("zyx")});
 }
 
+function setSort(by){
+	sortby = by;
+	changeView("accounts");
+	$(".sortbtn").removeClass("active");
+	$("#sort"+by).addClass("active");
+}
 
-setupBinds();
+setup();
 changeView('accounts');
