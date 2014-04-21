@@ -82,7 +82,9 @@ function serverStart(connection){
 app.get("/users/all", function(req, res){
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "X-Requested-With");
-	res.send(JSON.stringify(getAllUsersAsync()));
+	getAllUsersAsync(function(data){
+		res.send(JSON.stringify(data));
+	});
 });
 
 app.post('/user/add', function(req, res){
