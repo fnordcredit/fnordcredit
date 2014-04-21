@@ -180,7 +180,7 @@ function updateCredit(user, delta) {
 	});
 	r.table("users")
 		.filter({name: user.name})
-		.update({credit: user.credit})
+		.update({credit: user.credit, lastchanged: r.now()})
 		.run(connection, function(err){
 			if(err)
 				winston.log('error', "Couldn't save transaction for user " + user.name + err);
