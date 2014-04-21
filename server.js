@@ -1,10 +1,9 @@
 var express = require("express");
 var bodyParser = require("body-parser");
-var fs = require('fs');
 var winston = require('winston');
 var dateFormat = require('dateformat');
 var r = require('rethinkdb');
-var config = require('./config')
+var config = require('./config');
 var app = express();
 var io;
 
