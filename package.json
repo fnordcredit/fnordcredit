@@ -12,7 +12,8 @@
 		"body-parser"	:	"1.0.x",
 		"winston"		:	"0.7.x",
 		"dateformat"	:	"1.0.x",
-		"socket.io"		:	"0.9.x"
+		"socket.io"		:	"0.9.x",
+		"rethinkdb"		:	"1.12.x"
 	},
 	"license": "MIT",
 	
