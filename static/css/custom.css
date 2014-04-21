@@ -1,6 +1,7 @@
 .btn-lg{
-	width: 110px;
-	margin-left: 20px;
+	width: 100px;
+	margin-left: 10px;
+	padding-left: 11px;
 }
 
 #accounts{
@@ -19,7 +20,7 @@
 }
 
 .account .credit{
-	font-size: 30px;
+	font-size: 20px;
 }
 
 .detail{
@@ -28,12 +29,12 @@
 
 .detail .name{
 	margin-top: 25px;
-	font-size: 40px;
+	font-size: 30px;
 }
 
 .detail .credit{
 	margin-top: -15px;
-	font-size: 60px;
+	font-size: 40px;
 }
 
 .userinfo{
