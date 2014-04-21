@@ -86,6 +86,23 @@ app.get("/users/all", function(req, res){
 	});
 });
 
+app.get("/transactions/all", function(req, res){
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "X-Requested-With");
+	getAllTransactionsAsync(function(data){
+		res.send(JSON.stringify(data));
+	});
+});
+
+app.get("/transactions/:name", function(req, res){
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "X-Requested-With");
+	getUserTransactionsAsync(req.params.name, function(data){
+		console.log(data);
+		res.send(data);
+	});
+});
+
 app.post('/user/add', function(req, res){
 	var username = req.body.username;
 	addUser(username, res);
@@ -130,6 +147,27 @@ function getUserAsync(username, cb){
 
 function getAllUsersAsync(cb){
     r.table("users").run(connection, function(e, table){
+        if(e){throw e}
+        table.toArray(function(e, data){
+        	if(e){throw e}
+        	cb(data);
+        })
+    })
+}
+
+function getUserTransactionsAsync(username, cb){
+	r.table('transactions').filter(r.row('username').eq(username)).
+    run(connection, function(err, cursor) {
+        if (err) throw err;
+        cursor.toArray(function(err, result) {
+            if (err) throw err;
+            cb(JSON.stringify(result, null, 2));
+        });
+    });
+}
+
+function getAllTransactionsAsync(cb){
+    r.table("transactions").run(connection, function(e, table){
         if(e){throw e}
         table.toArray(function(e, data){
         	if(e){throw e}
