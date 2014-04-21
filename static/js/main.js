@@ -120,7 +120,9 @@ function getAllUsers(){
 	accounts.sort(function (a, b) {
 		switch(sortby){
 			case "time":
-				return (a.lastchanged < b.lastchanged) ? 1 : -1;
+				var aDate = new Date(a.lastchanged)
+				var bDate = new Date(b.lastchanged)
+				return (aDate < bDate) ? 1 : -1;
 			case "abc":
 				return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
 			case "zyx":
