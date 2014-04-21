@@ -1,0 +1,10 @@
+var config = {}
+
+config.rethinkdb = {};
+
+config.rethinkdb.host = "";
+config.rethinkdb.port = 28015;
+config.rethinkdb.db = "fnordcredit";
+config.rethinkdb.authKey = "";
+
+module.exports = config;
