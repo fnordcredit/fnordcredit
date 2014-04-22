@@ -4,22 +4,26 @@
 	padding-left: 11px;
 }
 
-#accounts{
+#accounts,
+#statistics{
 	margin-top: 25px;
 }
 
-.account{
+.account,
+.statistic{
 	height: 100px;
 	margin-right: 35px;
     cursor: pointer;
 }
 
-.account .name{
+.account .name,
+.statistic .title{
 	margin-top: 10px;
 	font-size: 20px;
 }
 
-.account .credit{
+.account .credit,
+.statistic .value{
 	font-size: 20px;
 }
 
@@ -64,4 +68,8 @@
 
 .debt{
 	background-color: #785D6C;
+}
+
+.pager a{
+	width: 100%;
 }

@@ -106,6 +106,26 @@ function showDetail(userData){
 	});
 }
 
+function showStatistics(){
+	$('#statistics').empty();
+	var saldo = 0;
+	accounts.forEach(function(account){
+		saldo += account.credit;
+	});
+	var statistic = $('<div>').addClass("statistic col-md-2 panel panel-default");
+	statistic.append($('<div>').addClass("title").text("Gesamtsaldo"));
+	statistic.append($('<div>').addClass("value").text(saldo + " €"));
+
+	$('#statistics').append(statistic);
+
+	var backButton = $('<ul">').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
+	$('#statistics').append(backButton);
+
+	backButton.click(function(){
+		changeView('accounts');
+	});
+}
+
 function getAllUsers(){
 	$('#accounts').empty();
 	
@@ -193,6 +213,11 @@ function changeView(view){
 		case 'new':
 			$('#newuser').show();
 			break;
+		case 'statistics':
+			socket.emit('getAccounts');
+			showStatistics();
+			$('#statistics').show();
+			break;
 
 		default:
 			throw 'Invalid View: ' + view;
@@ -267,6 +292,7 @@ function setup(){
 	$("#search").hide();
 
 
+	$("#stats").click(function(){changeView('statistics')});
 	$("#sorttime").click(function(){setSort("time")});
 	$("#sortabc").click(function(){setSort("abc")});
 	$("#sortzyx").click(function(){setSort("zyx")});
