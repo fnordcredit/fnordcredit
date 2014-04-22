@@ -228,7 +228,7 @@ function changeView(view){
         return;
     if (timer !== null)
         clearTimeout(timer);
-    timer = setTimer(function() {
+    timer = setTimeout(function() {
         changeView('accounts');
         timer = null;
     }, 23.42 * 1000);
