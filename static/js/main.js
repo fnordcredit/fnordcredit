@@ -200,6 +200,7 @@ function newUser(){
 }
 
 function changeView(view){
+    var timer = null;
 	$('.view').hide();
 	switch(view){
 		case 'detail':
@@ -222,6 +223,15 @@ function changeView(view){
 		default:
 			throw 'Invalid View: ' + view;
 	}
+
+    if (view === 'accounts')
+        return;
+    if (timer !== null)
+        clearTimeout(timer);
+    timer = setTimer(function() {
+        changeView('accounts');
+        timer = null;
+    }, 23.42 * 1000);
 }
 
 function changeCredit(userData, delta){
