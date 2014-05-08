@@ -199,8 +199,10 @@ function newUser(){
 	changeView('new');
 }
 
+var timer = null;
+
 function changeView(view){
-    var timer = null;
+   resetTimer();
 	$('.view').hide();
 	switch(view){
 		case 'detail':
@@ -223,9 +225,9 @@ function changeView(view){
 		default:
 			throw 'Invalid View: ' + view;
 	}
+}
 
-    if (view === 'accounts')
-        return;
+function resetTimer(){
     if (timer !== null)
         clearTimeout(timer);
     timer = setTimeout(function() {

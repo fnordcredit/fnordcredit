@@ -12,8 +12,7 @@ var sock = { emit: function(){} }; // stub
 process.stdin.resume();
 winston.add(winston.transports.File, { filename: 'credit.log', json: false });
 
-var users,
-	savedbtimeout;
+var users;
 
 
 var connection = null;
@@ -237,6 +236,5 @@ function criticalError(errormsg){
 
 process.on('SIGTERM', function() {
 	winston.log('info', 'Server shutting down. Good bye!');
-	clearTimeout(savedbtimeout);
 	process.exit();
 });
