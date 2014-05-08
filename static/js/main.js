@@ -275,6 +275,13 @@ socket.on('ka-ching', function() {
     p.play();
 });
 
+socket.on('one-up', function() {
+    var p = $('#one-up').get(0);
+    p.pause();
+    p.currentTime = 0;
+    p.play();
+});
+
 function updateFilter(){
 	filter = $("#search input").get(0).value.toLowerCase()
 	changeView("accounts")

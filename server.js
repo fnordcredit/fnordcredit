@@ -131,7 +131,6 @@ app.post("/user/credit", function(req, res){
 		getAllUsersAsync(function(users){
 			sock.broadcast.emit('accounts', JSON.stringify(users));
 			sock.emit('accounts', JSON.stringify(users));
-			sock.emit('ka-ching', JSON.stringify(users));
 			res.send(JSON.stringify(user));
 		});
 
@@ -224,6 +223,10 @@ function updateCredit(user, delta) {
 				winston.log('error', "Couldn't save transaction for user " + user.name + err);
 		});
 
+      if(delta < 0)
+         sock.emit('ka-ching', JSON.stringify(users));
+      else
+         sock.emit('one-up', JSON.stringify(users));
 	winston.log('info', '[userCredit] Changed credit from user ' + user.name + ' by ' + delta + '. New credit: ' + user.credit);
 }
 
