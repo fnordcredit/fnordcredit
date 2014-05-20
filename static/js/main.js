@@ -65,6 +65,9 @@ function showDetail(userData){
 
 	var minusbuttons = [minus50Button, minus100Button, minus150Button, minus200Button]
 	removeCreditAreaBody.append(minusbuttons);
+	
+	var renameButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('rename')));
+	detail.append(renameButton);
 
 	var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
 	detail.append(backButton);
@@ -103,6 +106,11 @@ function showDetail(userData){
 	// Back Button
 	backButton.click(function(){
 		changeView('accounts');
+	});
+	
+	// rename Button
+	renameButton.click(function(){
+		renameUser();
 	});
 }
 
@@ -199,6 +207,45 @@ function newUser(){
 	changeView('new');
 }
 
+function renameUser(){
+	$('#renameuser').empty();
+	var renameUserForm = $('<form role="form" id="renameUserForm">');
+	var renameUserFormGroup = $('<div id="renameUserForm" class="form-group">');
+	renameUserForm.append(renameUserFormGroup);
+	renameUserFormGroup.append($('<input type="username" name="username" required class="form-control">'));
+	renameUserFormGroup.append($('<input type="username" name="newname" required class="form-control">'));
+	renameUserFormGroup.append($('<input type="submit" value="rename user" class="form-control">'));
+
+	var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
+	$('#renameUser').append(backButton);
+
+	renameUserForm.submit(function(e){
+		lockUi()
+	    e.preventDefault();
+	    $.ajax({
+            url: '/user/rename',
+            type: "POST",
+            data: $('#renameUserForm').serialize(),
+            success: function(){
+            	releaseUi()
+            	changeView('details');
+            },
+            error: function(err){
+            	releaseUi()
+            	alert(err.responseText);
+            }
+        });
+	});
+
+	backButton.click(function(){
+		changeView('details');
+	});
+
+	$('#renameuser').append(renameUserForm);
+
+	changeView('rename');
+}
+
 var timer = null;
 
 function changeView(view){
@@ -215,6 +262,9 @@ function changeView(view){
 			break;
 		case 'new':
 			$('#newuser').show();
+			break;
+		case 'rename':
+			$('#renameuser').show();
 			break;
 		case 'statistics':
 			socket.emit('getAccounts');

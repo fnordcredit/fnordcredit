@@ -107,6 +107,30 @@ app.post('/user/add', function(req, res){
 	addUser(username, res);
 });
 
+app.post('/user/rename', function(req, res){
+	var user = undefined;
+	getUserAsync(req.body.username, function(userObj){
+		user = userObj;
+
+		var newname = req.body.newname;
+
+		if(user == undefined){
+			res.send(404, "User not found");
+			winston.log('error', '[userCredit] No user ' + req.body.username + ' found.')
+			return;
+		}
+
+		renameUser(user, newname, res);
+		
+		getAllUsersAsync(function(users){
+			sock.broadcast.emit('accounts', JSON.stringify(users));
+			sock.emit('accounts', JSON.stringify(users));
+			res.send(JSON.stringify(user));
+		});
+
+	})
+});
+
 app.post("/user/credit", function(req, res){
 	var user = undefined;
 	getUserAsync(req.body.username, function(userObj){
@@ -195,10 +219,17 @@ function addUser(username, res){
 			});
 		}
 	});
-
-	
 }
 
+function renameUser(user, newname, res) {
+	r.table("users")
+		.filter({name: user.name})
+		.update({name: newname, lastchanged: r.now()})
+		.run(connection, function(err, dbres){
+			if(dbres.errors)
+				winston.log('error', "Couldn't rename user " + user.name + ", because " + err + " " + dbres);
+		});
+}
 
 function updateCredit(user, delta) {
 	user.credit += +delta;
