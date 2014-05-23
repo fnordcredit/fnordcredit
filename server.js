@@ -52,26 +52,27 @@ function serverStart(connection){
 			r.dbCreate(config.rethinkdb.db).run(connection, function(err){
 				if(err)
 					criticalError("Couldn't create database.");
+
+            // Check if tables are present.
+            r.db(config.rethinkdb.db).tableList().run(connection, function(err, tables){
+               if(err)
+                  criticalError("Couldn't read table list.");
+
+               if(tables.indexOf("users") == -1){
+                  r.db(config.rethinkdb.db).tableCreate('users', {primaryKey: "name"}).run(connection, function(err){
+                     if(err)
+                        criticalError("Couldn't create table 'users'.");
+                  })
+               }
+               if(tables.indexOf("transactions") == -1){
+                  r.db(config.rethinkdb.db).tableCreate('transactions').run(connection, function(err){
+                     if(err)
+                        criticalError("Couldn't create table 'transactions'.");
+                  })
+               }
+            });
+            
 			});
-		}
-	});
-
-	// Check if tables are present.
-	r.db(config.rethinkdb.db).tableList().run(connection, function(err, tables){
-		if(err)
-			criticalError("Couldn't read table list.");
-
-		if(tables.indexOf("users") == -1){
-			r.db(config.rethinkdb.db).tableCreate('users', {primaryKey: "name"}).run(connection, function(err){
-				if(err)
-					criticalError("Couldn't create table 'users'.");
-			})
-		}
-		if(tables.indexOf("transactions") == -1){
-			r.db(config.rethinkdb.db).tableCreate('transactions').run(connection, function(err){
-				if(err)
-					criticalError("Couldn't create table 'transactions'.");
-			})
 		}
 	});
 }
