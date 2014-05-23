@@ -11,6 +11,7 @@
 
 .account,
 .statistic{
+	width: 150px; /* yolo */
 	height: 100px;
 	margin-right: 35px;
     cursor: pointer;
