@@ -4,6 +4,10 @@ var winston = require('winston');
 var dateFormat = require('dateformat');
 var r = require('rethinkdb');
 var config = require('./config');
+if(config.mqtt.enable){
+   var mqtt = require('mqtt');
+   var mqttclient = mqtt.createClient(config.mqtt.port, config.mqtt.host);
+}
 var app = express();
 var io;
 
@@ -206,14 +210,17 @@ function updateCredit(user, delta) {
 	user.credit = Math.round(user.credit * 100) / 100;
 	user.lastchanged = Date.now();
 
-	r.table("transactions").insert({
-	    username: user.name,
-	    delta: delta,
-	    credit: user.credit,
-	    time: r.now()
-	}).run(connection, function(err){
+   var transaction = {
+       username: user.name,
+       delta: delta,
+       credit: user.credit,
+       time: r.now()
+   }
+
+	r.table("transactions").insert(transaction).run(connection, function(err){
 		if(err)
 			winston.log('error', "Couldn't save transaction for user " + user.name + err);
+      mqttPost('transactions', transaction);
 	});
 	r.table("users")
 		.filter({name: user.name})
@@ -228,6 +235,10 @@ function updateCredit(user, delta) {
       else
          sock.emit('one-up', JSON.stringify(users));
 	winston.log('info', '[userCredit] Changed credit from user ' + user.name + ' by ' + delta + '. New credit: ' + user.credit);
+}
+
+function mqttPost(service, payload){
+   mqttclient.publish(config.mqtt.prefix + '/' + service, JSON.stringify(payload));
 }
 
 function criticalError(errormsg){

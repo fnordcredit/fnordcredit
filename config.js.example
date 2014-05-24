@@ -1,5 +1,13 @@
 var config = {}
 
+config.mqtt = {};
+
+config.mqtt.enable = false;
+config.mqtt.host = "localhost";
+config.mqtt.port = 1883;
+config.mqtt.prefix = "service/fnordcredit";
+
+
 config.rethinkdb = {};
 
 config.rethinkdb.host = "";
