@@ -245,6 +245,15 @@ function renameUser(user, newname, res) {
 							res.send(409, "Can't delete old user");
 						}
 					});
+				r.table("transactions")
+					.filter({username: user.name})
+					.update({username: newname})
+					.run(connection, function(err){
+						if(err){
+							winston.log('error', "Couldn't update transactions of old user " + user.name);
+							res.send(409, "Can't update transactions. Better call silsha!");
+						}
+					});
 			}
 		});
 }
