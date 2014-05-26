@@ -112,6 +112,30 @@ app.post('/user/add', function(req, res){
 	addUser(username, res);
 });
 
+app.post('/user/rename', function(req, res){
+	var user = undefined;
+	getUserAsync(req.body.username, function(userObj){
+		user = userObj;
+
+		var newname = req.body.newname;
+
+		if(user == undefined){
+			res.send(404, "User not found");
+			winston.log('error', '[userCredit] No user ' + req.body.username + ' found.')
+			return;
+		}
+
+		renameUser(user, newname, res);
+		
+		getAllUsersAsync(function(users){
+			sock.broadcast.emit('accounts', JSON.stringify(users));
+			sock.emit('accounts', JSON.stringify(users));
+			res.send(JSON.stringify(user));
+		});
+
+	})
+});
+
 app.post("/user/credit", function(req, res){
 	var user = undefined;
 	getUserAsync(req.body.username, function(userObj){
@@ -200,10 +224,39 @@ function addUser(username, res){
 			});
 		}
 	});
-
-	
 }
 
+function renameUser(user, newname, res) {
+	r.table("users").insert({
+			name: newname, 
+			credit: user.credit, 
+			lastchanged: r.now()
+	}).run(connection, function(err, dbres){
+		if(dbres.errors){
+			winston.log('error', "Couldn't save user " + newname);
+			res.send(409, "That username is already taken");
+		}else{
+				r.table("users")
+					.filter({name: user.name})
+					.delete()
+					.run(connection, function(err){
+						if(err){
+							winston.log('error', "Couldn't delete old user " + user.name);
+							res.send(409, "Can't delete old user");
+						}
+					});
+				r.table("transactions")
+					.filter({username: user.name})
+					.update({username: newname})
+					.run(connection, function(err){
+						if(err){
+							winston.log('error', "Couldn't update transactions of old user " + user.name);
+							res.send(409, "Can't update transactions. Better call silsha!");
+						}
+					});
+			}
+		});
+}
 
 function updateCredit(user, delta) {
 	user.credit += +delta;
@@ -220,7 +273,9 @@ function updateCredit(user, delta) {
 	r.table("transactions").insert(transaction).run(connection, function(err){
 		if(err)
 			winston.log('error', "Couldn't save transaction for user " + user.name + err);
-      mqttPost('transactions', transaction);
+			if(config.mqtt.enable){
+	      mqttPost('transactions', transaction);
+	    }
 	});
 	r.table("users")
 		.filter({name: user.name})
