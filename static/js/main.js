@@ -110,7 +110,7 @@ function showDetail(userData){
 	
 	// rename Button
 	renameButton.click(function(){
-		renameUser();
+		renameUser(userData);
 	});
 }
 
@@ -174,7 +174,7 @@ function newUser(){
 	var newUserForm = $('<form role="form" id="newUserForm">');
 	var newUserFormGroup = $('<div id="newUserForm" class="form-group">');
 	newUserForm.append(newUserFormGroup);
-	newUserFormGroup.append($('<input type="username" name="username" required class="form-control">'));
+	newUserFormGroup.append($('<input type="username" name="username" placeholder="user name" required class="form-control">'));
 	newUserFormGroup.append($('<input type="submit" value="Add user" class="form-control">'));
 
 	var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
@@ -207,17 +207,17 @@ function newUser(){
 	changeView('new');
 }
 
-function renameUser(){
+function renameUser(userData){
 	$('#renameuser').empty();
 	var renameUserForm = $('<form role="form" id="renameUserForm">');
 	var renameUserFormGroup = $('<div id="renameUserForm" class="form-group">');
 	renameUserForm.append(renameUserFormGroup);
-	renameUserFormGroup.append($('<input type="username" name="username" required class="form-control">'));
-	renameUserFormGroup.append($('<input type="username" name="newname" required class="form-control">'));
+	renameUserFormGroup.append($('<input type="hidden" name="username" value="'+userData.name+'" required class="form-control">'));
+	renameUserFormGroup.append($('<input type="username" name="newname" id="newname" placeholder="new name" required class="form-control" >'));
 	renameUserFormGroup.append($('<input type="submit" value="rename user" class="form-control">'));
 
 	var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
-	$('#renameUser').append(backButton);
+	$('#renameuser').append(backButton);
 
 	renameUserForm.submit(function(e){
 		lockUi()
@@ -227,8 +227,10 @@ function renameUser(){
             type: "POST",
             data: $('#renameUserForm').serialize(),
             success: function(){
+            	userData.name = $('#newname').val();
+	            showDetail(userData);
             	releaseUi()
-            	changeView('details');
+            	changeView('detail');
             },
             error: function(err){
             	releaseUi()
@@ -238,7 +240,7 @@ function renameUser(){
 	});
 
 	backButton.click(function(){
-		changeView('details');
+		changeView('detail');
 	});
 
 	$('#renameuser').append(renameUserForm);
@@ -281,7 +283,7 @@ function resetTimer(){
     if (timer !== null)
         clearTimeout(timer);
     timer = setTimeout(function() {
-        changeView('accounts');
+//        changeView('accounts');
         timer = null;
     }, 23.42 * 1000);
 }

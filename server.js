@@ -227,12 +227,25 @@ function addUser(username, res){
 }
 
 function renameUser(user, newname, res) {
-	r.table("users")
-		.filter({name: user.name})
-		.update({name: newname, lastchanged: r.now()})
-		.run(connection, function(err, dbres){
-			if(dbres.errors)
-				winston.log('error', "Couldn't rename user " + user.name + ", because " + err + " " + dbres);
+	r.table("users").insert({
+			name: newname, 
+			credit: user.credit, 
+			lastchanged: r.now()
+	}).run(connection, function(err, dbres){
+		if(dbres.errors){
+			winston.log('error', "Couldn't save user " + newname);
+			res.send(409, "That username is already taken");
+		}else{
+				r.table("users")
+					.filter({name: user.name})
+					.delete()
+					.run(connection, function(err){
+						if(err){
+							winston.log('error', "Couldn't delete old user " + user.name);
+							res.send(409, "Can't delete old user");
+						}
+					});
+			}
 		});
 }
 
@@ -251,7 +264,9 @@ function updateCredit(user, delta) {
 	r.table("transactions").insert(transaction).run(connection, function(err){
 		if(err)
 			winston.log('error', "Couldn't save transaction for user " + user.name + err);
-      mqttPost('transactions', transaction);
+			if(config.mqtt.enable){
+	      mqttPost('transactions', transaction);
+	    }
 	});
 	r.table("users")
 		.filter({name: user.name})
