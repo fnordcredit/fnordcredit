@@ -65,12 +65,15 @@ function showDetail(userData){
 
 	var minusbuttons = [minus50Button, minus100Button, minus150Button, minus200Button]
 	removeCreditAreaBody.append(minusbuttons);
+	
+	var renameButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('rename')));
+	detail.append(renameButton);
 
 	var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
 	detail.append(backButton);
 
 	$('#details').empty().append(detail);
-	changeView('detail');
+	changeView('details');
 
 	// Plus Buttons
 	plus50Button.click(function(){
@@ -103,6 +106,11 @@ function showDetail(userData){
 	// Back Button
 	backButton.click(function(){
 		changeView('accounts');
+	});
+	
+	// rename Button
+	renameButton.click(function(){
+		renameUser(userData);
 	});
 }
 
@@ -166,7 +174,7 @@ function newUser(){
 	var newUserForm = $('<form role="form" id="newUserForm">');
 	var newUserFormGroup = $('<div id="newUserForm" class="form-group">');
 	newUserForm.append(newUserFormGroup);
-	newUserFormGroup.append($('<input type="username" name="username" required class="form-control">'));
+	newUserFormGroup.append($('<input type="username" name="username" placeholder="user name   (15 characters maximum)" maxlength=15 required class="form-control">'));
 	newUserFormGroup.append($('<input type="submit" value="Add user" class="form-control">'));
 
 	var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
@@ -196,7 +204,48 @@ function newUser(){
 
 	$('#newuser').append(newUserForm);
 
-	changeView('new');
+	changeView('newuser');
+}
+
+function renameUser(userData){
+	$('#renameuser').empty();
+	var renameUserForm = $('<form role="form" id="renameUserForm">');
+	var renameUserFormGroup = $('<div id="renameUserForm" class="form-group">');
+	renameUserForm.append(renameUserFormGroup);
+	renameUserFormGroup.append($('<input type="hidden" name="username" value="'+userData.name+'" required class="form-control">'));
+	renameUserFormGroup.append($('<input type="username" name="newname" id="newname" placeholder="new name   (15 characters maximum)" maxlength=15 required class="form-control" >'));
+	renameUserFormGroup.append($('<input type="submit" value="rename user" class="form-control">'));
+
+	var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
+	$('#renameuser').append(backButton);
+
+	renameUserForm.submit(function(e){
+		lockUi()
+	    e.preventDefault();
+	    $.ajax({
+            url: '/user/rename',
+            type: "POST",
+            data: $('#renameUserForm').serialize(),
+            success: function(){
+            	userData.name = $('#newname').val();
+	            showDetail(userData);
+            	releaseUi()
+            	changeView('details');
+            },
+            error: function(err){
+            	releaseUi()
+            	alert(err.responseText);
+            }
+        });
+	});
+
+	backButton.click(function(){
+		changeView('details');
+	});
+
+	$('#renameuser').append(renameUserForm);
+
+	changeView('rename');
 }
 
 var timer = null;
@@ -205,7 +254,7 @@ function changeView(view){
    resetTimer();
 	$('.view').hide();
 	switch(view){
-		case 'detail':
+		case 'details':
 			$('#details').show();
 			break;
 		case 'accounts':
@@ -213,8 +262,11 @@ function changeView(view){
 			$('#accounts').show();
 			$("nav").show();
 			break;
-		case 'new':
+		case 'newuser':
 			$('#newuser').show();
+			break;
+		case 'rename':
+			$('#renameuser').show();
 			break;
 		case 'statistics':
 			socket.emit('getAccounts');
@@ -231,7 +283,7 @@ function resetTimer(){
     if (timer !== null)
         clearTimeout(timer);
     timer = setTimeout(function() {
-        changeView('accounts');
+//        changeView('accounts');
         timer = null;
     }, 23.42 * 1000);
 }

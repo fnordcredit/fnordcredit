@@ -4,6 +4,10 @@ var winston = require('winston');
 var dateFormat = require('dateformat');
 var r = require('rethinkdb');
 var config = require('./config');
+if(config.mqtt.enable){
+   var mqtt = require('mqtt');
+   var mqttclient = mqtt.createClient(config.mqtt.port, config.mqtt.host);
+}
 var app = express();
 var io;
 
@@ -52,26 +56,27 @@ function serverStart(connection){
 			r.dbCreate(config.rethinkdb.db).run(connection, function(err){
 				if(err)
 					criticalError("Couldn't create database.");
+
+            // Check if tables are present.
+            r.db(config.rethinkdb.db).tableList().run(connection, function(err, tables){
+               if(err)
+                  criticalError("Couldn't read table list.");
+
+               if(tables.indexOf("users") == -1){
+                  r.db(config.rethinkdb.db).tableCreate('users', {primaryKey: "name"}).run(connection, function(err){
+                     if(err)
+                        criticalError("Couldn't create table 'users'.");
+                  })
+               }
+               if(tables.indexOf("transactions") == -1){
+                  r.db(config.rethinkdb.db).tableCreate('transactions').run(connection, function(err){
+                     if(err)
+                        criticalError("Couldn't create table 'transactions'.");
+                  })
+               }
+            });
+            
 			});
-		}
-	});
-
-	// Check if tables are present.
-	r.db(config.rethinkdb.db).tableList().run(connection, function(err, tables){
-		if(err)
-			criticalError("Couldn't read table list.");
-
-		if(tables.indexOf("users") == -1){
-			r.db(config.rethinkdb.db).tableCreate('users', {primaryKey: "name"}).run(connection, function(err){
-				if(err)
-					criticalError("Couldn't create table 'users'.");
-			})
-		}
-		if(tables.indexOf("transactions") == -1){
-			r.db(config.rethinkdb.db).tableCreate('transactions').run(connection, function(err){
-				if(err)
-					criticalError("Couldn't create table 'transactions'.");
-			})
 		}
 	});
 }
@@ -105,6 +110,30 @@ app.get("/transactions/:name", function(req, res){
 app.post('/user/add', function(req, res){
 	var username = req.body.username;
 	addUser(username, res);
+});
+
+app.post('/user/rename', function(req, res){
+	var user = undefined;
+	getUserAsync(req.body.username, function(userObj){
+		user = userObj;
+
+		var newname = req.body.newname;
+
+		if(user == undefined){
+			res.send(404, "User not found");
+			winston.log('error', '[userCredit] No user ' + req.body.username + ' found.')
+			return;
+		}
+
+		renameUser(user, newname, res);
+		
+		getAllUsersAsync(function(users){
+			sock.broadcast.emit('accounts', JSON.stringify(users));
+			sock.emit('accounts', JSON.stringify(users));
+			res.send(JSON.stringify(user));
+		});
+
+	})
 });
 
 app.post("/user/credit", function(req, res){
@@ -195,24 +224,58 @@ function addUser(username, res){
 			});
 		}
 	});
-
-	
 }
 
+function renameUser(user, newname, res) {
+	r.table("users").insert({
+			name: newname, 
+			credit: user.credit, 
+			lastchanged: r.now()
+	}).run(connection, function(err, dbres){
+		if(dbres.errors){
+			winston.log('error', "Couldn't save user " + newname);
+			res.send(409, "That username is already taken");
+		}else{
+				r.table("users")
+					.filter({name: user.name})
+					.delete()
+					.run(connection, function(err){
+						if(err){
+							winston.log('error', "Couldn't delete old user " + user.name);
+							res.send(409, "Can't delete old user");
+						}
+					});
+				r.table("transactions")
+					.filter({username: user.name})
+					.update({username: newname})
+					.run(connection, function(err){
+						if(err){
+							winston.log('error', "Couldn't update transactions of old user " + user.name);
+							res.send(409, "Can't update transactions. Better call silsha!");
+						}
+					});
+			}
+		});
+}
 
 function updateCredit(user, delta) {
 	user.credit += +delta;
 	user.credit = Math.round(user.credit * 100) / 100;
 	user.lastchanged = Date.now();
 
-	r.table("transactions").insert({
-	    username: user.name,
-	    delta: delta,
-	    credit: user.credit,
-	    time: r.now()
-	}).run(connection, function(err){
+   var transaction = {
+       username: user.name,
+       delta: delta,
+       credit: user.credit,
+       time: r.now()
+   }
+
+	r.table("transactions").insert(transaction).run(connection, function(err){
 		if(err)
 			winston.log('error', "Couldn't save transaction for user " + user.name + err);
+			if(config.mqtt.enable){
+	      mqttPost('transactions', transaction);
+	    }
 	});
 	r.table("users")
 		.filter({name: user.name})
@@ -227,6 +290,10 @@ function updateCredit(user, delta) {
       else
          sock.emit('one-up', JSON.stringify(users));
 	winston.log('info', '[userCredit] Changed credit from user ' + user.name + ' by ' + delta + '. New credit: ' + user.credit);
+}
+
+function mqttPost(service, payload){
+   mqttclient.publish(config.mqtt.prefix + '/' + service, JSON.stringify(payload));
 }
 
 function criticalError(errormsg){

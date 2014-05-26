@@ -67,6 +67,22 @@
 	height: 60px;
 }
 
+.renameuser{
+	margin-top: -5px;
+	font-size: 70px;
+	text-align: center;
+}
+
+#renameUserForm{
+	margin-top: 20px;
+}
+
+#renameUserForm input{
+	margin-top: 20px;
+	font-size: 30px;
+	height: 60px;
+}
+
 .debt{
 	background-color: #785D6C;
 }

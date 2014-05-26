@@ -1,2 +1,5 @@
 *.log
 database.json
+node_modules/
+rethinkdb_data/
+config.js
