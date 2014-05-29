@@ -283,7 +283,7 @@ function resetTimer(){
     if (timer !== null)
         clearTimeout(timer);
     timer = setTimeout(function() {
-//        changeView('accounts');
+        changeView('accounts');
         timer = null;
     }, 23.42 * 1000);
 }
