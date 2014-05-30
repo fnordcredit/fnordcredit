@@ -78,29 +78,37 @@ function showDetail(userData){
 	// Plus Buttons
 	plus50Button.click(function(){
 		changeCredit(userData, 0.5);
+		resetTimer();
 	});
 	plus100Button.click(function(){
 		changeCredit(userData, 1);
+		resetTimer();
 	});
 	plus200Button.click(function(){
 		changeCredit(userData, 2);
+		resetTimer();
 	});
 	plus500Button.click(function(){
 		changeCredit(userData, 5);
+		resetTimer();
 	});
 
 	// Minus Buttons
 	minus50Button.click(function(){
 		changeCredit(userData, -0.5);
+		resetTimer();
 	});
 	minus100Button.click(function(){
 		changeCredit(userData, -1);
+		resetTimer();
 	});
 	minus150Button.click(function(){
 		changeCredit(userData, -1.5);
+		resetTimer();
 	});
 	minus200Button.click(function(){
 		changeCredit(userData, -2);
+		resetTimer();
 	});
 
 	// Back Button
@@ -248,10 +256,8 @@ function renameUser(userData){
 	changeView('rename');
 }
 
-var timer = null;
-
 function changeView(view){
-   resetTimer();
+  resetTimer();
 	$('.view').hide();
 	switch(view){
 		case 'details':
@@ -279,12 +285,11 @@ function changeView(view){
 	}
 }
 
+var timer = null;
 function resetTimer(){
-    if (timer !== null)
-        clearTimeout(timer);
+    clearTimeout(timer);
     timer = setTimeout(function() {
         changeView('accounts');
-        timer = null;
     }, 23.42 * 1000);
 }
 
