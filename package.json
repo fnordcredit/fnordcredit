@@ -14,7 +14,7 @@
     "rethinkdb": "1.12.x",
     "socket.io": "0.9.x",
     "winston": "0.7.x",
-    "q": "0.0.x"
+    "q": "1.0.x"
   },
   "license": "MIT",
   "repository": {
