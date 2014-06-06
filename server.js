@@ -175,7 +175,7 @@ function getAllTransactionsAsync(cb){
 }
 
 
-function addUser(username, res){
+exports.addUser = function addUser(username, res){
 	r.table("users").insert({
 	    name: username,
 	    credit: 0,
