@@ -16,7 +16,7 @@ To start a local development server, have rethinkDB installed and running, then 
 As last step, start the local development server using ```npm start``` and point your browser to http://127.0.0.1:8000.
 
 ## License
-Copyright © 2014 silsha <hallo@silsha.me>
+Copyright © 2014 silsha &lt;hallo@silsha.me&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
