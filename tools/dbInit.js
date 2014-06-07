@@ -50,4 +50,3 @@ q.nfcall(r.connect, {host: config.rethinkdb.host, port: config.rethinkdb.port, d
         process.exit(1);
     })
 .done();
-
