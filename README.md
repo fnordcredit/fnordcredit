@@ -12,6 +12,7 @@ To start a local development server, have rethinkDB installed and running, then 
 	cd fnordcredit
 	npm install
 	cp config.js.example config.js
+	node tools/dbInit.js
 
 As last step, start the local development server using ```npm start``` and point your browser to http://127.0.0.1:8000.
 
