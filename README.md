@@ -1,4 +1,4 @@
-# fnordcredit   [![Build Status](https://travis-ci.org/tabascoeye/fnordcredit.svg?branch=master)](https://travis-ci.org/tabascoeye/fnordcredit)
+# fnordcredit   [![Build Status](https://travis-ci.org/silsha/fnordcredit.svg?branch=master)](https://travis-ci.org/silsha/fnordcredit)
 Open source credit system.
 
 Innovative, easy to use credit system for multiple users that comes with an intuitive design: Create an account and charge or discharge your credit.
