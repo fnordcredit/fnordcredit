@@ -1,4 +1,4 @@
-# fnordcredit
+# fnordcredit   [![Build Status](https://travis-ci.org/silsha/fnordcredit.svg?branch=master)](https://travis-ci.org/silsha/fnordcredit)
 Open source credit system.
 
 Innovative, easy to use credit system for multiple users that comes with an intuitive design: Create an account and charge or discharge your credit.
@@ -12,6 +12,7 @@ To start a local development server, have rethinkDB installed and running, then 
 	cd fnordcredit
 	npm install
 	cp config.js.example config.js
+	node tools/dbInit.js
 
 As last step, start the local development server using ```npm start``` and point your browser to http://127.0.0.1:8000.
 
