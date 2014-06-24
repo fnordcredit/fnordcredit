@@ -2,7 +2,7 @@
   "name": "fnordcredit",
   "version": "1.0.0",
   "author": "silsha <hallo@silsha.me>",
-  "description": "SAP™ easy credit system®",
+  "description": "SAP easy credit system",
   "scripts": {
     "start": "node ./server.js"
   },
@@ -11,10 +11,16 @@
     "dateformat": "1.0.x",
     "express": "4.0.x",
     "mqtt": "^0.3.8",
-    "rethinkdb": "1.12.x",
-    "socket.io": "0.9.x",
     "winston": "0.7.x",
-    "q": "1.0.x"
+    "q": "1.0.x",
+    "rethinkdb": "1.12.x",
+    "socket.io": "0.9.x"
+  },
+  "devDependencies": {
+    "mocha": "^1.20.1"
+  },
+  "script": {
+    "test": "mocha test"
   },
   "license": "MIT",
   "repository": {

@@ -1,92 +1,92 @@
 .btn-lg{
-	width: 100px;
-	margin-left: 10px;
-	padding-left: 11px;
+    width: 100px;
+    margin-left: 10px;
+    padding-left: 11px;
 }
 
 #accounts,
 #statistics{
-	margin-top: 25px;
+    margin-top: 25px;
 }
 
 .account,
 .statistic{
-	width: 150px; /* yolo */
-	height: 100px;
-	margin-right: 35px;
+    width: 150px; /* yolo */
+    height: 100px;
+    margin-right: 35px;
     cursor: pointer;
 }
 
 .account .name,
 .statistic .title{
-	margin-top: 10px;
-	font-size: 20px;
+    margin-top: 10px;
+    font-size: 20px;
 }
 
 .account .credit,
 .statistic .value{
-	font-size: 20px;
+    font-size: 20px;
 }
 
 .detail{
-	margin-top: 25px;
+    margin-top: 25px;
 }
 
 .detail .name{
-	margin-top: 25px;
-	font-size: 30px;
+    margin-top: 25px;
+    font-size: 30px;
 }
 
 .detail .credit{
-	margin-top: -15px;
-	font-size: 40px;
+    margin-top: -15px;
+    font-size: 40px;
 }
 
 .userinfo{
-	height: 239px;
+    height: 239px;
 }
 
 .pager li>a{
-	font-size: 30px;
-	cursor:pointer;
+    font-size: 30px;
+    cursor:pointer;
 }
 
 .newuser{
-	margin-top: -5px;
-	font-size: 70px;
-	text-align: center;
+    margin-top: -5px;
+    font-size: 70px;
+    text-align: center;
 }
 
 #newUserForm{
-	margin-top: 20px;
+    margin-top: 20px;
 }
 
 #newUserForm input{
-	margin-top: 20px;
-	font-size: 30px;
-	height: 60px;
+    margin-top: 20px;
+    font-size: 30px;
+    height: 60px;
 }
 
 .renameuser{
-	margin-top: -5px;
-	font-size: 70px;
-	text-align: center;
+    margin-top: -5px;
+    font-size: 70px;
+    text-align: center;
 }
 
 #renameUserForm{
-	margin-top: 20px;
+    margin-top: 20px;
 }
 
 #renameUserForm input{
-	margin-top: 20px;
-	font-size: 30px;
-	height: 60px;
+    margin-top: 20px;
+    font-size: 30px;
+    height: 60px;
 }
 
 .debt{
-	background-color: #785D6C;
+    background-color: #785D6C;
 }
 
 .pager a{
-	width: 100%;
+    width: 100%;
 }
