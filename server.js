@@ -125,10 +125,17 @@ app.post("/user/credit", function(req, res){
             return;
         }
 
-        if(delta < 0 && (user.credit + delta) < 0 && config.settings.allowDebt == false){
-            res.send(406, "negative credit not allowed in configuration.");
-            winston.log('error', "[userCredit] negative credit not allowed in configuration");
-            return;
+        if(delta < 0 && (user.credit + delta) < 0){
+            if(config.settings.allowDebt == false){
+                res.send(406, "negative credit not allowed in configuration.");
+                winston.log('error', "[userCredit] negative credit not allowed in configuration");
+                return;
+            }
+            if((user.credit + delta) < config.settings.maxDebt){
+                res.send(406, "credit below "+config.settings.maxDebt+"€ not allowed in configuration.");
+                winston.log('error', "[userCredit] credit below maxDebt not allowed in configuration");
+                return;
+            }
         }
         updateCredit(user, delta);
 

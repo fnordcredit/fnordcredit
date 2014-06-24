@@ -18,5 +18,6 @@ config.rethinkdb.authKey = "";
 config.settings = {};
 
 config.settings.allowDebt = true;
+config.settings.maxDebt = -150;
 
 module.exports = config;
