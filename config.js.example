@@ -15,4 +15,8 @@ config.rethinkdb.port = 28015;
 config.rethinkdb.db = "fnordcredit";
 config.rethinkdb.authKey = "";
 
+config.settings = {};
+
+config.settings.allowDebt = true;
+
 module.exports = config;

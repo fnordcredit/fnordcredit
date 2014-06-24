@@ -49,7 +49,7 @@ function showDetail(userData){
 
     var plusbuttons = [plus50Button, plus100Button, plus200Button, plus500Button];
     addCreditAreaBody.append(plusbuttons);
-    
+
     var removeCreditArea = $('<div>').addClass('panel panel-default');
     addCreditArea.append($('<div>').addClass('panel-heading')
         .append($('<h3>').addClass('panel-title').text('Remove Credit'))
@@ -65,7 +65,7 @@ function showDetail(userData){
 
     var minusbuttons = [minus50Button, minus100Button, minus150Button, minus200Button]
     removeCreditAreaBody.append(minusbuttons);
-    
+
     var renameButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('rename')));
     detail.append(renameButton);
 
@@ -115,7 +115,7 @@ function showDetail(userData){
     backButton.click(function(){
         changeView('accounts');
     });
-    
+
     // rename Button
     renameButton.click(function(){
         renameUser(userData);
@@ -144,7 +144,7 @@ function showStatistics(){
 
 function getAllUsers(){
     $('#accounts').empty();
-    
+
     accounts.sort(function (a, b) {
         switch(sortby){
             case "time":
@@ -158,13 +158,13 @@ function getAllUsers(){
             default:
                 throw "Invalid sorting criteria"
         }
-        
+
     });
 
     var filtered = accounts.filter(function(account){
         return account.name.toLowerCase().indexOf(filter)!=-1
     });
-    
+
     filtered.forEach(function(user){
         showUser(user);
     });
@@ -302,10 +302,15 @@ function changeCredit(userData, delta){
         data: {
             "username": userData.name,
             "delta": delta
+        },
+        success: function(data){
+            showDetail(data);
+            releaseUi()
+        },
+        error: function(err){
+            releaseUi()
+            alert(err.responseText);
         }
-    }).done(function(data){
-        showDetail(data);
-        releaseUi()
     });
 }
 
