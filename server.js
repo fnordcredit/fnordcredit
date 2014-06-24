@@ -97,7 +97,7 @@ app.post('/user/rename', function(req, res){
         }
 
         renameUser(user, newname, res);
-        
+
         getAllUsersAsync(function(users){
             sock.broadcast.emit('accounts', JSON.stringify(users));
             sock.emit('accounts', JSON.stringify(users));
@@ -124,9 +124,21 @@ app.post("/user/credit", function(req, res){
             winston.log('error', "[userCredit] delta must be a number.");
             return;
         }
-        
+
+        if(delta < 0 && (user.credit + delta) < 0){
+            if(config.settings.allowDebt == false){
+                res.send(406, "negative credit not allowed in configuration.");
+                winston.log('error', "[userCredit] negative credit not allowed in configuration");
+                return;
+            }
+            if((user.credit + delta) < config.settings.maxDebt){
+                res.send(406, "credit below "+config.settings.maxDebt+"€ not allowed in configuration.");
+                winston.log('error', "[userCredit] credit below maxDebt not allowed in configuration");
+                return;
+            }
+        }
         updateCredit(user, delta);
-        
+
         getAllUsersAsync(function(users){
             sock.broadcast.emit('accounts', JSON.stringify(users));
             sock.emit('accounts', JSON.stringify(users));
@@ -140,7 +152,7 @@ function getUserAsync(username, cb){
     r.table("users").get(username).run(connection, function(e, table){
         if(e){throw e}
         cb(table);
-    })  
+    })
 }
 
 function getAllUsersAsync(cb){
@@ -175,7 +187,7 @@ function getAllTransactionsAsync(cb){
 }
 
 
-exports.addUser = function addUser(username, res){
+function addUser(username, res){
     r.table("users").insert({
         name: username,
         credit: 0,
@@ -199,8 +211,8 @@ exports.addUser = function addUser(username, res){
 
 function renameUser(user, newname, res) {
     r.table("users").insert({
-            name: newname, 
-            credit: user.credit, 
+            name: newname,
+            credit: user.credit,
             lastchanged: r.now()
     }).run(connection, function(err, dbres){
         if(dbres.errors){
