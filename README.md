@@ -1,4 +1,4 @@
-# fnordcredit   [![Build Status](https://travis-ci.org/silsha/fnordcredit.svg?branch=master)](https://travis-ci.org/silsha/fnordcredit)
+# fnordcredit   [![Build Status](https://travis-ci.org/silsha/fnordcredit.svg?branch=master)](https://travis-ci.org/silsha/fnordcredit) [![Flattr this](https://api.flattr.com/button/flattr-badge-large.png)](http://flattr.com/thing/2873952/silshafnordcredit-on-GitHub)
 Open source credit system.
 
 Innovative, easy to use credit system for multiple users that comes with an intuitive design: Create an account and charge or discharge your credit.
