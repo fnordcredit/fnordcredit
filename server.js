@@ -1,5 +1,5 @@
-var express = require("express");
-var bodyParser = require("body-parser");
+var express = require('express');
+var bodyParser = require('body-parser');
 var winston = require('winston');
 var r = require('rethinkdb');
 var config = require('./config');
@@ -25,7 +25,7 @@ var users;
 var connection = null;
 r.connect({host: config.rethinkdb.host, port: config.rethinkdb.port, db: config.rethinkdb.db}, function (err, conn) {
     if (err) {
-        criticalError("Couldn't connect to RethinkDB.");
+        criticalError('Couldn\'t connect to RethinkDB.');
     }
     connection = conn;
     serverStart(connection);
@@ -55,32 +55,32 @@ function serverStart(connection) {
         });
 
     var server = server.listen(8000, function () {
-        winston.log('info', 'Server started!');
+        winston.info('Server started!');
     });
 }
 
 
-app.get("/users/all", function (req, res) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+app.get('/users/all', function (req, res) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With');
 
     getAllUsersAsync(function (data) {
         res.send(JSON.stringify(data));
     });
 });
 
-app.get("/transactions/all", function (req, res) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+app.get('/transactions/all', function (req, res) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With');
 
     getAllTransactionsAsync(function (data) {
         res.send(JSON.stringify(data));
     });
 });
 
-app.get("/transactions/:name", function (req, res) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+app.get('/transactions/:name', function (req, res) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With');
 
     getUserTransactionsAsync(req.params.name, function (data) {
         console.log(data);
@@ -102,8 +102,8 @@ app.post('/user/rename', function (req, res) {
         var newname = req.body.newname;
 
         if (user == undefined) {
-            res.send(404, "User not found");
-            winston.log('error', '[userCredit] No user ' + req.body.username + ' found.')
+            res.send(404, 'User not found');
+            winston.error('[userCredit] No user ' + req.body.username + ' found.')
             return;
         }
 
@@ -118,7 +118,7 @@ app.post('/user/rename', function (req, res) {
     })
 });
 
-app.post("/user/credit", function (req, res) {
+app.post('/user/credit', function (req, res) {
     var user = undefined;
 
     getUserAsync(req.body.username, function (userObj) {
@@ -127,25 +127,25 @@ app.post("/user/credit", function (req, res) {
         var delta = parseFloat(req.body.delta);
 
         if (user == undefined) {
-            res.send(404, "User not found");
-            winston.log('error', '[userCredit] No user ' + req.body.username + ' found.')
+            res.send(404, 'User not found');
+            winston.error('[userCredit] No user ' + req.body.username + ' found.')
             return;
         }
         if (isNaN(delta) || delta >= 100 || delta <= -100) {
             res.send(406);
-            winston.log('error', "[userCredit] delta must be a number.");
+            winston.error('[userCredit] delta must be a number.');
             return;
         }
 
         if (delta < 0 && (user.credit + delta) < 0) {
             if (config.settings.allowDebt == false) {
-                res.send(406, "negative credit not allowed in configuration.");
-                winston.log('error', "[userCredit] negative credit not allowed in configuration");
+                res.send(406, 'negative credit not allowed in configuration.');
+                winston.error('[userCredit] negative credit not allowed in configuration');
                 return;
             }
             if ((user.credit + delta) < config.settings.maxDebt) {
-                res.send(406, "credit below " + config.settings.maxDebt + "€ not allowed in configuration.");
-                winston.log('error', "[userCredit] credit below maxDebt not allowed in configuration");
+                res.send(406, 'credit below ' + config.settings.maxDebt + '€ not allowed in configuration.');
+                winston.error('[userCredit] credit below maxDebt not allowed in configuration');
                 return;
             }
         }
@@ -161,7 +161,7 @@ app.post("/user/credit", function (req, res) {
 });
 
 function getUserAsync(username, cb) {
-    r.table("users").get(username).run(connection, function (e, table) {
+    r.table('users').get(username).run(connection, function (e, table) {
         if (e) {
             throw e
         }
@@ -170,7 +170,7 @@ function getUserAsync(username, cb) {
 }
 
 function getAllUsersAsync(cb) {
-    r.table("users").run(connection, function (e, table) {
+    r.table('users').run(connection, function (e, table) {
         if (e) {
             throw e
         }
@@ -201,7 +201,7 @@ function getUserTransactionsAsync(username, cb) {
 }
 
 function getAllTransactionsAsync(cb) {
-    r.table("transactions").run(connection, function (e, table) {
+    r.table('transactions').run(connection, function (e, table) {
         if (e) {
             throw e
         }
@@ -222,7 +222,7 @@ function addUser(username, res) {
         lastchanged: r.now()
     }).run(connection, function (err, dbres) {
         if (dbres.errors) {
-            winston.log('error', "Couldn't save user " + username + err);
+            winston.error('Couldn\'t save user ' + username + err);
             res.send(409, "User exists already.");
         } else {
             getAllUsersAsync(function (users) {
@@ -230,7 +230,7 @@ function addUser(username, res) {
                 sock.emit('accounts', JSON.stringify(users));
 
                 res.send(200);
-                winston.log('info', '[addUser] New user ' + username + ' created');
+                winston.info('[addUser] New user ' + username + ' created');
                 return true;
             });
         }
@@ -238,22 +238,22 @@ function addUser(username, res) {
 }
 
 function renameUser(user, newname, res) {
-    r.table("users").insert({
+    r.table('users').insert({
         name: newname,
         credit: user.credit,
         lastchanged: r.now()
     }).run(connection, function (err, dbres) {
         if (dbres.errors) {
-            winston.log('error', "Couldn't save user " + newname);
-            res.send(409, "That username is already taken");
+            winston.error('Couldn\'t save user ' + newname);
+            res.send(409, 'That username is already taken');
         } else {
             r.table("users")
                 .filter({name: user.name})
                 .delete()
                 .run(connection, function (err) {
                     if (err) {
-                        winston.log('error', "Couldn't delete old user " + user.name);
-                        res.send(409, "Can't delete old user");
+                        winston.error('Couldn\'t delete old user ' + user.name);
+                        res.send(409, 'Can\'t delete old user');
                     }
                 });
             r.table("transactions")
@@ -261,8 +261,8 @@ function renameUser(user, newname, res) {
                 .update({username: newname})
                 .run(connection, function (err) {
                     if (err) {
-                        winston.log('error', "Couldn't update transactions of old user " + user.name);
-                        res.send(409, "Can't update transactions. Better call silsha!");
+                        winston.error('Couldn\'t update transactions of old user ' + user.name);
+                        res.send(409, 'Can\'t update transactions. Better call silsha!');
                     }
                 });
         }
@@ -283,7 +283,7 @@ function updateCredit(user, delta) {
 
     r.table("transactions").insert(transaction).run(connection, function (err) {
         if (err) {
-            winston.log('error', "Couldn't save transaction for user " + user.name + err);
+            winston.error('Couldn\'t save transaction for user ' + user.name + err);
         }
 
         if (config.mqtt.enable) {
@@ -295,7 +295,7 @@ function updateCredit(user, delta) {
         .update({credit: user.credit, lastchanged: r.now()})
         .run(connection, function (err) {
             if (err) {
-                winston.log('error', "Couldn't save transaction for user " + user.name + err);
+                winston.error('Couldn\'t save transaction for user ' + user.name + err);
             }
         });
 
@@ -305,7 +305,7 @@ function updateCredit(user, delta) {
         sock.emit('one-up', JSON.stringify(users));
     }
 
-    winston.log('info', '[userCredit] Changed credit from user ' + user.name + ' by ' + delta + '. New credit: ' + user.credit);
+    winston.info('[userCredit] Changed credit from user ' + user.name + ' by ' + delta + '. New credit: ' + user.credit);
 }
 
 function mqttPost(service, payload) {
@@ -313,11 +313,11 @@ function mqttPost(service, payload) {
 }
 
 function criticalError(errormsg) {
-    winston.log('error', errormsg);
+    winston.error(errormsg);
     process.exit(1);
 }
 
 process.on('SIGTERM', function () {
-    winston.log('info', 'Server shutting down. Good bye!');
+    winston.info('Server shutting down. Good bye!');
     process.exit();
 });
