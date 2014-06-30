@@ -73,6 +73,11 @@ app.get('/users/all', function (req, res) {
     res.header('Access-Control-Allow-Headers', 'X-Requested-With');
 
     getAllUsersAsync(function (err, users) {
+
+        if (err) {
+            return res.send(500, 'Can\'t retrieve users from database');
+        }
+
         res.send(JSON.stringify(users));
     });
 });
