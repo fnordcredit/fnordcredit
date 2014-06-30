@@ -43,12 +43,20 @@ function serverStart(connection) {
         .on('connection', function (socket) {
             sock = socket;
 
-            getAllUsersAsync(function (data) {
+            getAllUsersAsync(function (err, data) {
+                if(err) {
+                    return;
+                }
+
                 socket.emit('accounts', JSON.stringify(data));
             });
 
             socket.on('getAccounts', function (data) {
-                getAllUsersAsync(function (data) {
+                getAllUsersAsync(function (err, data) {
+                    if (err) {
+                        return;
+                    }
+
                     socket.emit('accounts', JSON.stringify(data));
                 });
             });
@@ -64,8 +72,8 @@ app.get('/users/all', function (req, res) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'X-Requested-With');
 
-    getAllUsersAsync(function (data) {
-        res.send(JSON.stringify(data));
+    getAllUsersAsync(function (err, users) {
+        res.send(JSON.stringify(users));
     });
 });
 
@@ -73,62 +81,84 @@ app.get('/transactions/all', function (req, res) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'X-Requested-With');
 
-    getAllTransactionsAsync(function (data) {
-        res.send(JSON.stringify(data));
+    getAllTransactionsAsync(function (err, data) {
+        if (err) {
+           return res.send(500, 'Can\'t retrieve transactions from database');
+        }
+
+        res.send(200, JSON.stringify(data));
     });
 });
 
-app.get('/transactions/:name', function (req, res) {
+app.get('/transactions/:username', function (req, res) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'X-Requested-With');
 
-    getUserTransactionsAsync(req.params.name, function (data) {
-        console.log(data);
-        res.send(data);
+    getUserTransactionsAsync(req.params.username, function (err, data) {
+
+        if (err) {
+            return res.send(500, 'Error retrieving transactions for ' + req.params.username)
+        }
+
+        res.send(200, JSON.stringify(data));
     });
 });
 
 app.post('/user/add', function (req, res) {
-    var username = req.body.username;
-    addUser(username, res);
+    addUser(req.body.username, res);
 });
 
 app.post('/user/rename', function (req, res) {
-    var user = undefined;
 
-    getUserAsync(req.body.username, function (userObj) {
-        user = userObj;
+    var username = req.body.username;
+
+    getUserAsync(username, function (err, user) {
+
+        if (err) {
+            return res.send(500, 'Error retrieving user ' + username + ' from database');
+        }
 
         var newname = req.body.newname;
 
         if (user == undefined) {
             res.send(404, 'User not found');
-            winston.error('[userCredit] No user ' + req.body.username + ' found.')
+            winston.error('[userCredit] No user ' + username + ' found.')
             return;
         }
 
         renameUser(user, newname, res);
 
-        getAllUsersAsync(function (users) {
+        getAllUsersAsync(function (err, users) {
+
+            if (err) {
+                return res.send(500, 'Error retrieving users from database');
+            }
+
             sock.broadcast.emit('accounts', JSON.stringify(users));
             sock.emit('accounts', JSON.stringify(users));
-            res.send(JSON.stringify(user));
+
+            res.send(200, JSON.stringify(user));
         });
 
     })
 });
 
 app.post('/user/credit', function (req, res) {
-    var user = undefined;
 
-    getUserAsync(req.body.username, function (userObj) {
-        user = userObj;
+    var username = req.body.username;
+
+    getUserAsync(username, function (err, user) {
+
+        if(err) {
+            winston.error('[userCredit] database error while retrieving user');
+            return res.send(500, 'Error retrieving ' + username + ' from database ');
+        }
 
         var delta = parseFloat(req.body.delta);
 
         if (user == undefined) {
             res.send(404, 'User not found');
-            winston.error('[userCredit] No user ' + req.body.username + ' found.')
+            winston.error('[userCredit] No user ' + username + ' found.')
             return;
         }
         if (isNaN(delta) || delta >= 100 || delta <= -100) {
@@ -151,67 +181,59 @@ app.post('/user/credit', function (req, res) {
         }
         updateCredit(user, delta);
 
-        getAllUsersAsync(function (users) {
+        getAllUsersAsync(function (err, users) {
+
+            if (err) {
+                return res.send(500, 'Error retrieving users from database');
+            }
+
             sock.broadcast.emit('accounts', JSON.stringify(users));
             sock.emit('accounts', JSON.stringify(users));
-            res.send(JSON.stringify(user));
+
+            res.send(200, JSON.stringify(user));
         });
 
     })
 });
 
 function getUserAsync(username, cb) {
-    r.table('users').get(username).run(connection, function (e, table) {
-        if (e) {
-            throw e
-        }
-        cb(table);
-    })
+    r.table('users').get(username).run(connection, cb);
 }
 
 function getAllUsersAsync(cb) {
-    r.table('users').run(connection, function (e, table) {
-        if (e) {
-            throw e
+
+    r.table('users').run(connection, function (err, table) {
+
+        if (err) {
+            return cb(err, null);
         }
-        table.toArray(function (e, data) {
-            if (e) {
-                throw e
-            }
-            cb(data);
-        })
+        
+        table.toArray(cb);
     })
 }
 
 function getUserTransactionsAsync(username, cb) {
-    r.table('transactions').filter(r.row('username').eq(username)).
-        run(connection, function (err, cursor) {
+    r.table('transactions')
+        .filter(r.row('username').eq(username))
+        .run(connection, function (err, cursor) {
+
             if (err) {
-                throw err;
+                return cb(err, null);
             }
 
-            cursor.toArray(function (err, result) {
-                if (err) {
-                    throw err;
-                }
-
-                cb(JSON.stringify(result, null, 2));
-            });
+            cursor.toArray(cb);
         });
 }
 
 function getAllTransactionsAsync(cb) {
-    r.table('transactions').run(connection, function (e, table) {
-        if (e) {
-            throw e
-        }
-        table.toArray(function (e, data) {
-            if (e) {
-                throw e
+    r.table('transactions')
+        .run(connection, function (err, table) {
+            if (err) {
+                return cb(err, null);
             }
-            cb(data);
-        })
-    })
+
+            table.toArray(cb);
+        });
 }
 
 
@@ -225,7 +247,12 @@ function addUser(username, res) {
             winston.error('Couldn\'t save user ' + username + err);
             res.send(409, "User exists already.");
         } else {
-            getAllUsersAsync(function (users) {
+            getAllUsersAsync(function (err, users) {
+
+                if (err) {
+                    return res.send(500, 'Error retrieving users from database');
+                }
+
                 sock.broadcast.emit('accounts', JSON.stringify(users));
                 sock.emit('accounts', JSON.stringify(users));
 
