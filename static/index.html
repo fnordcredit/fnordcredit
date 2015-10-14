@@ -14,9 +14,9 @@
 <body>
     <nav class="navbar navbar-default view" role="navigation" style="text-align:center;">
         <ul class="nav navbar-nav">
-            <li ><button id="stats" type="button" class="btn btn-default btn-lg navbar-btn">
+            <!--<li ><button id="stats" type="button" class="btn btn-default btn-lg navbar-btn">
                 <span class="glyphicon glyphicon glyphicon-signal"></span>
-            </button></li>
+            </button></li>-->
             <li ><button id="sorttime" type="button" class="btn btn-default btn-lg navbar-btn sortbtn active">
                 <span class="glyphicon glyphicon-time"></span>
             </button></li>
@@ -46,6 +46,20 @@
                     <h4 class="modal-title" id="myModalLabel">Waiting for server</h4>
                 </div>
                 
+            </div>
+        </div>
+    </div>
+    <div id="pinwindow" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Enter PIN</h4>
+                </div>
+                <div id="pinwindow-content">
+                </div>
+
+                <div class="modal-footer" id="pinwindow-footer">
+                </div>
             </div>
         </div>
     </div>
