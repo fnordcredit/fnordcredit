@@ -5,3 +5,7 @@ rethinkdb_data/
 config.js
 .idea/
 *.iml
+.npm/
+.gitconfig
+.bash_history
+.bash_login
