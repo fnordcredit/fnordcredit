@@ -328,7 +328,7 @@ function getUserAsync(username, cb) {
 
 function getAllUsersAsync(cb) {
 
-    r.table('users').without("credit", "pincode").run(connection, function (err, table) {
+    r.table('users').without("pincode").run(connection, function (err, table) {
 
         if (err) {
             return cb(err, null);
