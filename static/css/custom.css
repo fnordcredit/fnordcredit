@@ -90,3 +90,24 @@
 .pager a{
     width: 100%;
 }
+
+#pinwindow-pin {
+    text-align: center;
+    font-size: x-large;
+    height: 60px;
+}
+
+#pinwindow-pad {
+    text-align: center;
+}
+
+
+#pinwindow-pad .btn {
+    height: 80px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    color: #ffffff;
+    font-size: xx-large;
+    display: table-cell;
+    vertical-align: middle;
+}
