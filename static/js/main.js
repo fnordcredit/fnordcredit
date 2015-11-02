@@ -424,7 +424,7 @@ function showPinpad(username, cb) {
 
     $("#pinwindow-content").empty().append(pinwindowForm);
 
-    for (var i = 0; i < 9; i++) {
+    for (var i = 0; i <= 9; i++) {
         $('#pinpad-num-'+ i).on('click', function(e) {
             var field = $('#pinwindow-pin');
             field.val(field.val() + e.target.textContent);
