@@ -9,3 +9,4 @@ config.js
 .gitconfig
 .bash_history
 .bash_login
+static/img/*.png
