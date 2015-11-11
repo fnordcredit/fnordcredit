@@ -3,6 +3,8 @@ var accounts = [];
 var filter = ""
 var sortby = "time" //valid values: time abc zyx
 
+var products = [];
+
 function showUser(userData){
     var account = $('<div>').addClass("account col-md-2 panel panel-default");
     if(userData.credit < 0){
@@ -57,43 +59,56 @@ function showDetail(userData, pincode){
     userinfo.append($('<div>').addClass("name").text(userData.name));
     userinfo.append($('<div>').addClass("credit").text(userData.credit.toFixed(2) + " €"));
 
+
+    var creditarea = $('<div class="creditarea col-md-9">');
+    row.append(creditarea);
+
     // Add Credit-Area
     var addCreditArea = $('<div>').addClass('panel panel-default');
     addCreditArea.append($('<div>').addClass('panel-heading')
         .append($('<h3>').addClass('panel-title').text('Add Credit'))
     );
 
-    var creditarea = $('<div class="creditarea col-md-9">');
-    row.append(creditarea);
-
-    creditarea.append(addCreditArea);
     var addCreditAreaBody = $('<div>').addClass('panel-body');
     addCreditArea.append(addCreditAreaBody);
 
-    var plus50Button = $('<button>').addClass('btn btn-success btn-lg').text("+ 0.50€");
-    var plus100Button = $('<button>').addClass('btn btn-success btn-lg').text("+ 1,00€");
-    var plus200Button = $('<button>').addClass('btn btn-success btn-lg').text("+ 2,00€");
-    var plus500Button = $('<button>').addClass('btn btn-success btn-lg').text("+ 5,00€");
+    var plus50Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 0.50€").attr("data-credit", "0.5");
+    var plus100Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 1.00€").attr("data-credit", "1");
+    var plus200Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 2.00€").attr("data-credit", "2");
+    var plus500Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 5.00€").attr("data-credit","5");
 
     var plusbuttons = [plus50Button, plus100Button, plus200Button, plus500Button];
     addCreditAreaBody.append(plusbuttons);
 
     var removeCreditArea = $('<div>').addClass('panel panel-default');
-    addCreditArea.append($('<div>').addClass('panel-heading')
-        .append($('<h3>').addClass('panel-title').text('Remove Credit'))
+    removeCreditArea.append($('<div>').addClass('panel-heading')
+            .append($('<h3>').addClass('panel-title').text('Remove Credit'))
     );
+
     var removeCreditAreaBody = $('<div>').addClass('panel-body');
+    removeCreditArea.append(removeCreditAreaBody);
 
-    addCreditArea.append(removeCreditAreaBody);
 
-    var minus50Button  = $('<button>').addClass('btn btn-danger btn-lg').text("- 0,50€");
-    var minus100Button = $('<button>').addClass('btn btn-danger btn-lg').text("- 1,00€");
-    var minus150Button = $('<button>').addClass('btn btn-danger btn-lg').text("- 1,50€");
-    var minus200Button = $('<button>').addClass('btn btn-danger btn-lg').text("- 2,00€");
+    var productsArray = [];
+
+    products.forEach(function (product) {
+        var button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').attr("data-credit", -product.price).attr("data-name",product.name);
+        button.append($('<img>').attr('src', product.image), $('<br>'), "-" + product.price.toFixed(2) + " €");
+        productsArray.push(button);
+    });
+
+    var minus50Button  = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 0.50€").attr("data-credit","-0.5");
+    var minus100Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 1.00€").attr("data-credit","-1");
+    var minus150Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 1.50€").attr("data-credit","-1.5");
+    var minus200Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 2.00€").attr("data-credit","-2");
 
     var minusbuttons = [minus50Button, minus100Button, minus150Button, minus200Button]
+    removeCreditAreaBody.append(productsArray);
+    removeCreditAreaBody.append($("<br>"));
     removeCreditAreaBody.append(minusbuttons);
 
+
+    creditarea.append([addCreditArea, removeCreditArea]);
 
     var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
     detail.append(backButton);
@@ -107,39 +122,9 @@ function showDetail(userData, pincode){
     $('#details').empty().append(detail);
     changeView('details');
 
-    // Plus Buttons
-    plus50Button.click(function(){
-        changeCredit(userData, pincode, 0.5);
-        resetTimer();
-    });
-    plus100Button.click(function(){
-        changeCredit(userData, pincode, 1);
-        resetTimer();
-    });
-    plus200Button.click(function(){
-        changeCredit(userData, pincode, 2);
-        resetTimer();
-    });
-    plus500Button.click(function(){
-        changeCredit(userData, pincode, 5);
-        resetTimer();
-    });
-
-    // Minus Buttons
-    minus50Button.click(function(){
-        changeCredit(userData, pincode, -0.5);
-        resetTimer();
-    });
-    minus100Button.click(function(){
-        changeCredit(userData, pincode, -1);
-        resetTimer();
-    });
-    minus150Button.click(function(){
-        changeCredit(userData, pincode, -1.5);
-        resetTimer();
-    });
-    minus200Button.click(function(){
-        changeCredit(userData, pincode, -2);
+    // Credit buttons
+    $("button.btn-credit-action[data-credit!=''][data-credit]").click(function() {
+        changeCredit(userData, pincode, $(this).attr("data-credit"));
         resetTimer();
     });
 
@@ -462,6 +447,11 @@ socket.on('accounts', function (data) {
     getAllUsers();
 });
 
+socket.on('products', function(data) {
+    var data = JSON.parse(data);
+    products = data;
+});
+
 socket.on('ka-ching', function() {
     var p = $('#ka-ching').get(0);
     p.pause();
@@ -507,6 +497,8 @@ function setup(){
     $("#sorttime").click(function(){setSort("time")});
     $("#sortabc").click(function(){setSort("abc")});
     $("#sortzyx").click(function(){setSort("zyx")});
+
+
 }
 
 function setSort(by){

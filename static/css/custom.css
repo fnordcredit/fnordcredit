@@ -120,3 +120,9 @@
 ul.navbar-nav {
     max-width: 100%;
 }
+
+.btn-credit-action {
+    padding: 0;
+    width: 150px;
+    height: 150px;
+}

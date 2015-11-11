@@ -1,5 +1,5 @@
-# fnordcredit   [![Build Status](https://travis-ci.org/silsha/fnordcredit.svg?branch=master)](https://travis-ci.org/silsha/fnordcredit) [![Flattr this](https://api.flattr.com/button/flattr-badge-large.png)](http://flattr.com/thing/2873952/silshafnordcredit-on-GitHub)
-Open source credit system.
+# fnordcredit-entropia
+Open source credit system with entropia flavour
 
 Innovative, easy to use credit system for multiple users that comes with an intuitive design: Create an account and charge or discharge your credit.
 
@@ -8,7 +8,7 @@ fnordcredit is written in Javascript/Node.js/jQuery/rethinkDB.
 
 To start a local development server, have rethinkDB installed and running, then do the following:
 
-	git clone git@github.com:silsha/fnordcredit.git
+	git clone git@github.com:entropia/fnordcredit.git
 	cd fnordcredit
 	npm install
 	cp config.js.example config.js
@@ -17,7 +17,9 @@ To start a local development server, have rethinkDB installed and running, then 
 As last step, start the local development server using ```npm start``` and point your browser to http://127.0.0.1:8000.
 
 ## License
-Copyright © 2014 silsha &lt;hallo@silsha.me&gt;
+Copyright © 2014 
+	silsha &lt;hallo@silsha.me&gt;
+	Twi &lt;twi@entropia.de&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

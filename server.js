@@ -53,6 +53,24 @@ function serverStart(connection) {
                 socket.emit('accounts', JSON.stringify(data));
             });
 
+            getAllProductsAsync(function (err, data){
+                if (err) {
+                    return;
+                }
+
+                socket.emit('products', JSON.stringify(data));
+            });
+
+            socket.on('getProducts', function(data) {
+               getAllProductsAsync(function (err, data) {
+                   if (err) {
+                       return;
+                   }
+
+                   socket.emit('products', JSON.stringify(data));
+               });
+            });
+
             socket.on('getAccounts', function (data) {
                 getAllUsersAsync(function (err, data) {
                     if (err) {
@@ -224,8 +242,19 @@ app.post('/user/credit', function (req, res) {
                     return;
                 }
                 if ((user.credit + delta) < config.settings.maxDebt) {
-                    res.send(406, 'credit below ' + config.settings.maxDebt + '€ not allowed in configuration.');
+                    res.send(406, 'credit below ' + config.settings.maxDebt + ' € not allowed in configuration.');
                     winston.error('[userCredit] credit below maxDebt not allowed in configuration');
+                    return;
+                }
+                if ((user.credit + delta) < 0 && (user.debtHardLimit == undefined || isNaN(parseFloat(user.debtHardLimit)))) {
+                    res.send(406, 'negative credit not allowed for this user');
+                    winston.error('[userCredit] transaction would result in negative credit but no debtHardLimit for user ' + user.name + ' configured');
+
+                    return;
+                }
+                if ((user.credit + delta) < user.debtHardLimit) {
+                    res.send(406, 'credit below ' + user.debtHardLimit + ' € not allowed for this user');
+                    winston.error('[userCredit] credit below ' + user.debtHardLimit + ' for user ' + user.name + ' not allowed');
                     return;
                 }
             }
@@ -287,6 +316,14 @@ app.post('/user/change-pin', function (req, res) {
     });
 });
 
+
+app.get('/products', function(req, res) {
+
+    getAllProductsAsync(function (err, data) {
+        res.send(200, JSON.stringify(data));
+    });
+
+});
 
 
 function checkUserPin(username, pincode, cbOk, cbFail) {
@@ -363,6 +400,17 @@ function getAllTransactionsAsync(cb) {
 }
 
 
+function getAllProductsAsync(cb) {
+    r.table('products').orderBy('order').run(connection, function (err, table) {
+        if (err) {
+            return cb(err, null);
+        }
+
+        table.toArray(cb);
+    });
+}
+
+
 function addUser(username, res) {
 
     r.table("users").insert({
@@ -425,7 +473,7 @@ function renameUser(user, newname, pincode, res) {
                 .run(connection, function (err) {
                     if (err) {
                         winston.error('Couldn\'t update transactions of old user ' + user.name);
-                        res.send(409, 'Can\'t update transactions. Better call silsha!');
+                        res.send(409, 'Can\'t update transactions!');
                     }
                 });
         }
