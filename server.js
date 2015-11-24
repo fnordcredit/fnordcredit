@@ -213,6 +213,8 @@ app.post('/user/credit', function (req, res) {
 
     var username = req.body.username;
     var pincode = req.header("X-User-Pincode");
+    var product = req.body.product || null;
+    var description = req.body.description || null;
 
     checkUserPin(username, pincode, function() {
         getUserAsync(username, function (err, user) {
@@ -258,7 +260,7 @@ app.post('/user/credit', function (req, res) {
                     return;
                 }
             }
-            updateCredit(user, delta);
+            updateCredit(user, delta, description, product);
 
             getAllUsersAsync(function (err, users) {
 
@@ -480,7 +482,11 @@ function renameUser(user, newname, pincode, res) {
     });
 }
 
-function updateCredit(user, delta) {
+function updateCredit(user, delta, description, product) {
+
+    description = description || null;
+    product = product || null;
+
     user.credit += +delta;
     user.credit = Math.round(user.credit * 100) / 100;
     user.lastchanged = Date.now();
@@ -489,7 +495,9 @@ function updateCredit(user, delta) {
         username: user.name,
         delta: delta,
         credit: user.credit,
-        time: r.now()
+        time: r.now(),
+        description: description,
+        product: product
     }
 
     r.table("transactions").insert(transaction).run(connection, function (err) {
