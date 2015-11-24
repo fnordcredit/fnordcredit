@@ -92,8 +92,12 @@ function showDetail(userData, pincode){
     var productsArray = [];
 
     products.forEach(function (product) {
-        var button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').attr("data-credit", -product.price).attr("data-name",product.name);
-        button.append($('<img>').attr('src', product.image), $('<br>'), "-" + product.price.toFixed(2) + " €");
+        var button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action')
+        button.attr("data-credit", -product.price).
+            attr("data-name",product.name).
+            attr("data-desc", product.description);
+
+        button.append($('<img>').attr('src', product.image).attr('style','height: 75px'), $('<br>'), "-" + product.price.toFixed(2) + " €");
         productsArray.push(button);
     });
 
@@ -124,7 +128,7 @@ function showDetail(userData, pincode){
 
     // Credit buttons
     $("button.btn-credit-action[data-credit!=''][data-credit]").click(function() {
-        changeCredit(userData, pincode, $(this).attr("data-credit"));
+        changeCredit(userData, pincode, $(this).attr("data-credit"), $(this).attr("data-desc"), $(this).attr("data-name"));
         resetTimer();
     });
 
@@ -344,15 +348,21 @@ function resetTimer(){
     }, 23.42 * 1000);
 }
 
-function changeCredit(userData, pincode, delta){
-    lockUi()
+
+function changeCredit(userData, pincode, delta, description, product){
+    description = description || null;
+    product = product || null;
+
+    lockUi();
     $.ajax({
         url: "/user/credit",
         type: "POST",
         dataType: "json",
         data: {
             "username": userData.name,
-            "delta": delta
+            "delta": delta,
+            "product": product,
+            "description": description
         },
         headers: {
           "X-User-Pincode": pincode
