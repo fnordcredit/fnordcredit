@@ -39,6 +39,14 @@ q.nfcall(r.connect, {host: config.rethinkdb.host, port: config.rethinkdb.port, d
         console.log("transactions table exists");
     }
 
+        if (tables.indexOf("products") == -1){
+            console.log("creating products table")
+            promises.push(q.nsend(r.db(config.rethinkdb.db).tableCreate('products', {primaryKey: "name"}), "run", connection)
+                .then(function() {console.log("creating products table")}))
+        } else {
+            console.log("products table exists")
+        }
+
     return q.all(promises)
 })
 .then(function(){
