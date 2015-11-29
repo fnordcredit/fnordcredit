@@ -97,7 +97,7 @@ function showDetail(userData, pincode){
             attr("data-name",product.name).
             attr("data-desc", product.description);
 
-        button.append($('<img>').attr('src', product.image).attr('style','height: 75px'), $('<br>'), "-" + product.price.toFixed(2) + " €");
+        button.append($('<img>').attr('src', product.image).attr('style','height: 90px'), $('<br>'), "-" + product.price.toFixed(2) + " €");
         productsArray.push(button);
     });
 
