@@ -20,7 +20,6 @@ var sock = {
 
 process.stdin.resume();
 winston.add(winston.transports.File, { filename: 'credit.log', json: false });
-
 var users;
 
 
@@ -84,6 +83,20 @@ function serverStart(connection) {
 
     var server = server.listen(8000, function () {
         winston.info('Server started!');
+
+        setInterval(function() {
+            if (sock.broadcast) {
+                getAllUsersAsync(function (err, users) {
+                    if (err) {
+                        return res.send(500, 'Error retrieving users from database');
+                    }
+                    sock.broadcast.emit('accounts', JSON.stringify(users));
+                });
+
+                sock.broadcast.emit('accounts', JSON.stringify(users));
+            }
+        }, 10 * 1000);
+
     });
 }
 
@@ -243,17 +256,19 @@ app.post('/user/credit', function (req, res) {
                     winston.error('[userCredit] negative credit not allowed in configuration');
                     return;
                 }
+
+                if (!user.debtAllowed) {
+                    res.send(406, 'negative credit not allowed for user');
+                    winston.error('[userCredit] negative credit not allowed for user ' + user.name);
+                    return;
+                }
+
                 if ((user.credit + delta) < config.settings.maxDebt) {
                     res.send(406, 'credit below ' + config.settings.maxDebt + ' € not allowed in configuration.');
                     winston.error('[userCredit] credit below maxDebt not allowed in configuration');
                     return;
                 }
-                if ((user.credit + delta) < 0 && (user.debtHardLimit == undefined || isNaN(parseFloat(user.debtHardLimit)))) {
-                    res.send(406, 'negative credit not allowed for this user');
-                    winston.error('[userCredit] transaction would result in negative credit but no debtHardLimit for user ' + user.name + ' configured');
 
-                    return;
-                }
                 if ((user.credit + delta) < user.debtHardLimit) {
                     res.send(406, 'credit below ' + user.debtHardLimit + ' € not allowed for this user');
                     winston.error('[userCredit] credit below ' + user.debtHardLimit + ' for user ' + user.name + ' not allowed');
