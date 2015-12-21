@@ -13,7 +13,7 @@
     "mqtt": "^1.6.0",
     "winston": "0.7.x",
     "q": "1.0.x",
-    "rethinkdb": "1.12.x",
+    "rethinkdb": "2.2.1",
     "socket.io": "0.9.x"
   },
   "devDependencies": {
