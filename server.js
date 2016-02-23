@@ -32,8 +32,15 @@ r.connect({host: config.rethinkdb.host, port: config.rethinkdb.port, db: config.
     serverStart(connection);
 });
 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 app.use('/', express.static(__dirname + '/static'));
 app.use(bodyParser());
+
 
 
 function serverStart(connection) {
@@ -102,8 +109,6 @@ function serverStart(connection) {
 
 
 app.get('/users/all', function (req, res) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'X-Requested-With');
 
     getAllUsersAsync(function (err, users) {
 
@@ -145,8 +150,6 @@ app.get('/user/:username', function (req, res) {
 });
 
 app.get('/transactions/all', function (req, res) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'X-Requested-With');
 
     getAllTransactionsAsync(function (err, data) {
         if (err) {
@@ -158,8 +161,6 @@ app.get('/transactions/all', function (req, res) {
 });
 
 app.get('/transactions/:username', function (req, res) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'X-Requested-With');
 
     var username = req.params.username;
     var pincode = req.header("X-User-Pincode");
@@ -342,6 +343,27 @@ app.get('/products', function(req, res) {
 
 });
 
+app.get('/token/:token', function (req, res) {
+
+    var token = req.params.token;
+
+    getUserByTokenAsync(token, function(err, user) {
+
+        winston.error(user.constructor.name);
+
+        if (user == undefined) {
+            res.send(404, 'User not found');
+            winston.error('[userCredit] No user for token ' + token + ' found.');
+            return;
+        }
+
+        return res.send(JSON.stringify(user));
+    });
+
+});
+
+
+
 
 function checkUserPin(username, pincode, cbOk, cbFail) {
     r.table('users').get(username).run(connection, function (err, user) {
@@ -353,8 +375,9 @@ function checkUserPin(username, pincode, cbOk, cbFail) {
         }
 
         dbPin = user.pincode;
+        dbToken = user.token;
 
-        if ( dbPin == undefined || dbPin == null || passwordHash.verify(pincode, dbPin) ) {
+        if ( dbPin == undefined || dbPin == null || passwordHash.verify(pincode, dbPin) || (dbToken != undefined && dbToken != null && dbToken == pincode) ) {
             cbOk();
         } else {
             cbFail();
@@ -377,12 +400,23 @@ function updatePin(username, newPincode, cb) {
 }
 
 function getUserAsync(username, cb) {
-    r.table('users').get(username).without("pincode").run(connection, cb);
+    r.table('users').get(username).pluck("name", "lastchanged", "credit").run(connection, cb);
+}
+
+function getUserByTokenAsync(token, cb) {
+    r.table('users').filter({"token": token}).pluck("name", "lastchanged", "credit").run(connection, function(err, cursor) {
+
+        cursor.next(function (err, row) {
+            if (err) return cb(err, null);
+
+            return cb(err, row);
+        });
+    });
 }
 
 function getAllUsersAsync(cb) {
 
-    r.table('users').without("pincode").run(connection, function (err, table) {
+    r.table('users').pluck("name", "lastchanged", "credit").run(connection, function (err, table) {
 
         if (err) {
             return cb(err, null);

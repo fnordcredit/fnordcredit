@@ -5,16 +5,16 @@ var sortby = "time" //valid values: time abc zyx
 
 var products = [];
 
-function showUser(userData){
+function showUser(userData) {
     var account = $('<div>').addClass("account col-md-2 panel panel-default");
-    if(userData.credit < 0){
+    if (userData.credit < 0) {
         account.addClass("debt");
     }
     account.append($('<div>').addClass("name").text(userData.name));
     account.append($('<div>').addClass("credit").text(userData.credit.toFixed(2) + " €"));
 
     $('#accounts').append(account);
-    account.click(function(){
+    account.click(function () {
         getUserDetail(userData.name, null);
     })
 }
@@ -28,15 +28,15 @@ function getUserDetail(username, pincode) {
         headers: {
             "X-User-Pincode": pincode
         },
-        success: function(data){
+        success: function (data) {
             releaseUi();
             showDetail(data, pincode);
         },
-        error: function(err){
+        error: function (err) {
             releaseUi();
             if (err.status == 401) {
                 hidePinpad();
-                showPinpad(username, function(username, pincode) {
+                showPinpad(username, function (username, pincode) {
                     hidePinpad();
                     getUserDetail(username, pincode);
                 });
@@ -47,18 +47,41 @@ function getUserDetail(username, pincode) {
     });
 }
 
-function showDetail(userData, pincode){
+function getUserByToken(token) {
+    lockUi();
+    $.ajax({
+        url: "/token/" + token,
+        type: "GET",
+        dataType: "json",
+
+        success: function (user) {
+            releaseUi();
+            if (!user != null) {
+                getUserDetail(user.name, token);
+            }
+        },
+        error: function (err) {
+            releaseUi();
+            alert(err.responseText);
+        }
+    });
+}
+
+function showDetail(userData, pincode) {
     var detail = $('<div class="detail">');
 
     var row = $('<div class="row">');
     detail.append(row);
 
-    var userinfo = $('<div class="userinfo col-md-3 panel panel-default">');
+    var userinfo = $('<div class="userinfo col-md-3">');
     row.append(userinfo);
 
     userinfo.append($('<div>').addClass("name").text(userData.name));
     userinfo.append($('<div>').addClass("credit").text(userData.credit.toFixed(2) + " €"));
 
+
+    var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
+    userinfo.append(backButton);
 
     var creditarea = $('<div class="creditarea col-md-9">');
     row.append(creditarea);
@@ -75,14 +98,14 @@ function showDetail(userData, pincode){
     var plus50Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 0.50€").attr("data-credit", "0.5");
     var plus100Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 1.00€").attr("data-credit", "1");
     var plus200Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 2.00€").attr("data-credit", "2");
-    var plus500Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 5.00€").attr("data-credit","5");
+    var plus500Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 5.00€").attr("data-credit", "5");
 
     var plusbuttons = [plus50Button, plus100Button, plus200Button, plus500Button];
     addCreditAreaBody.append(plusbuttons);
 
     var removeCreditArea = $('<div>').addClass('panel panel-default');
     removeCreditArea.append($('<div>').addClass('panel-heading')
-            .append($('<h3>').addClass('panel-title').text('Remove Credit'))
+        .append($('<h3>').addClass('panel-title').text('Remove Credit'))
     );
 
     var removeCreditAreaBody = $('<div>').addClass('panel-body');
@@ -93,18 +116,19 @@ function showDetail(userData, pincode){
 
     products.forEach(function (product) {
         var button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action')
-        button.attr("data-credit", -product.price).
-            attr("data-name",product.name).
-            attr("data-desc", product.description);
+        button.attr("data-credit", -product.price)
+            .attr("data-name", product.name)
+            .attr("data-desc", product.description)
+            .attr("data-ean", product.ean);
 
-        button.append($('<img>').attr('src', product.image).attr('style','height: 90px'), $('<br>'), "-" + product.price.toFixed(2) + " €");
+        button.append($('<img>').attr('src', product.image).attr('style', 'height: 90px'), $('<br>'), "-" + product.price.toFixed(2) + " €");
         productsArray.push(button);
     });
 
-    var minus50Button  = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 0.50€").attr("data-credit","-0.5");
-    var minus100Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 1.00€").attr("data-credit","-1");
-    var minus150Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 1.50€").attr("data-credit","-1.5");
-    var minus200Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 2.00€").attr("data-credit","-2");
+    var minus50Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 0.50€").attr("data-credit", "-0.5");
+    var minus100Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 1.00€").attr("data-credit", "-1");
+    var minus150Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 1.50€").attr("data-credit", "-1.5");
+    var minus200Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 2.00€").attr("data-credit", "-2");
 
     var minusbuttons = [minus50Button, minus100Button, minus150Button, minus200Button]
     removeCreditAreaBody.append(productsArray);
@@ -114,8 +138,6 @@ function showDetail(userData, pincode){
 
     creditarea.append([addCreditArea, removeCreditArea]);
 
-    var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
-    detail.append(backButton);
 
     var changeSetPinButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('change/set PIN')));
     detail.append(changeSetPinButton);
@@ -127,34 +149,34 @@ function showDetail(userData, pincode){
     changeView('details');
 
     // Credit buttons
-    $("button.btn-credit-action[data-credit!=''][data-credit]").click(function() {
+    $("button.btn-credit-action[data-credit!=''][data-credit]").click(function () {
         changeCredit(userData, pincode, $(this).attr("data-credit"), $(this).attr("data-desc"), $(this).attr("data-name"));
         resetTimer();
     });
 
     // Back Button
-    backButton.click(function(){
+    backButton.click(function () {
         changeView('accounts');
     });
 
     // rename Button
-    renameButton.click(function(){
+    renameButton.click(function () {
         renameUser(userData, pincode);
     });
 
     // set PIN button
-    changeSetPinButton.click(function() {
-        showPinpad(userData.name, function(username, newPincode) {
+    changeSetPinButton.click(function () {
+        showPinpad(userData.name, function (username, newPincode) {
             hidePinpad();
             changePin(username, pincode, newPincode);
         });
     })
 }
 
-function showStatistics(){
+function showStatistics() {
     $('#statistics').empty();
     var saldo = 0;
-    accounts.forEach(function(account){
+    accounts.forEach(function (account) {
         saldo += account.credit;
     });
     var statistic = $('<div>').addClass("statistic col-md-2 panel panel-default");
@@ -166,16 +188,16 @@ function showStatistics(){
     var backButton = $('<ul">').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
     $('#statistics').append(backButton);
 
-    backButton.click(function(){
+    backButton.click(function () {
         changeView('accounts');
     });
 }
 
-function getAllUsers(){
+function getAllUsers() {
     $('#accounts').empty();
 
     accounts.sort(function (a, b) {
-        switch(sortby){
+        switch (sortby) {
             case "time":
                 var aDate = new Date(a.lastchanged)
                 var bDate = new Date(b.lastchanged)
@@ -190,23 +212,23 @@ function getAllUsers(){
 
     });
 
-    var filtered = accounts.filter(function(account){
-        return account.name.toLowerCase().indexOf(filter)!=-1
+    var filtered = accounts.filter(function (account) {
+        return account.name.toLowerCase().indexOf(filter) != -1
     });
 
-    filtered.forEach(function(user){
+    filtered.forEach(function (user) {
         showUser(user);
     });
     var newuser = $('<div>').addClass('account col-md-2 panel panel-default')
         .append($('<div>').addClass('newuser').text('+'));
     $('#accounts').append(newuser);
 
-    newuser.click(function(){
+    newuser.click(function () {
         newUser();
     });
 }
 
-function newUser(){
+function newUser() {
     $('#newuser').empty();
     var newUserForm = $('<form role="form" id="newUserForm">');
     var newUserFormGroup = $('<div id="newUserForm" class="form-group">');
@@ -217,25 +239,25 @@ function newUser(){
     var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
     $('#newuser').append(backButton);
 
-    newUserForm.submit(function(e){
+    newUserForm.submit(function (e) {
         lockUi()
         e.preventDefault();
         $.ajax({
             url: '/user/add',
             type: "POST",
             data: $('#newUserForm').serialize(),
-            success: function(){
+            success: function () {
                 releaseUi()
                 changeView('accounts');
             },
-            error: function(err){
+            error: function (err) {
                 releaseUi()
                 alert(err.responseText);
             }
         });
     });
 
-    backButton.click(function(){
+    backButton.click(function () {
         changeView('accounts');
     });
 
@@ -244,19 +266,19 @@ function newUser(){
     changeView('newuser');
 }
 
-function renameUser(userData, pincode){
+function renameUser(userData, pincode) {
     $('#renameuser').empty();
     var renameUserForm = $('<form role="form" id="renameUserForm">');
     var renameUserFormGroup = $('<div id="renameUserForm" class="form-group">');
     renameUserForm.append(renameUserFormGroup);
-    renameUserFormGroup.append($('<input type="hidden" name="username" value="'+userData.name+'" required class="form-control">'));
+    renameUserFormGroup.append($('<input type="hidden" name="username" value="' + userData.name + '" required class="form-control">'));
     renameUserFormGroup.append($('<input type="username" name="newname" id="newname" placeholder="new name   (15 characters maximum)" maxlength=15 required class="form-control" >'));
     renameUserFormGroup.append($('<input type="submit" value="rename user" class="form-control">'));
 
     var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
     $('#renameuser').append(backButton);
 
-    renameUserForm.submit(function(e){
+    renameUserForm.submit(function (e) {
         lockUi()
         e.preventDefault();
         $.ajax({
@@ -266,19 +288,19 @@ function renameUser(userData, pincode){
             headers: {
                 "X-User-Pincode": pincode
             },
-            success: function(){
+            success: function () {
                 userData.name = $('#newname').val();
                 getUserDetail(userData.name, pincode);
                 releaseUi();
             },
-            error: function(err){
+            error: function (err) {
                 releaseUi()
                 alert(err.responseText);
             }
         });
     });
 
-    backButton.click(function(){
+    backButton.click(function () {
         changeView('details');
     });
 
@@ -288,32 +310,32 @@ function renameUser(userData, pincode){
 }
 
 function changePin(username, pincode, newPincode) {
-        lockUi();
-        $.ajax({
-            url: '/user/change-pin',
-            type: "POST",
-            data: {
-                username: username,
-                pincode: newPincode
-            },
-            headers: {
-                "X-User-Pincode": pincode
-            },
-            success: function(){
-                releaseUi();
-                getUserDetail(username, newPincode);
-            },
-            error: function(err){
-                releaseUi()
-                alert(err.responseText);
-            }
-        });
+    lockUi();
+    $.ajax({
+        url: '/user/change-pin',
+        type: "POST",
+        data: {
+            username: username,
+            pincode: newPincode
+        },
+        headers: {
+            "X-User-Pincode": pincode
+        },
+        success: function () {
+            releaseUi();
+            getUserDetail(username, newPincode);
+        },
+        error: function (err) {
+            releaseUi()
+            alert(err.responseText);
+        }
+    });
 }
 
-function changeView(view){
-  resetTimer();
+function changeView(view) {
+    resetTimer();
     $('.view').hide();
-    switch(view){
+    switch (view) {
         case 'details':
             $('#details').show();
             break;
@@ -340,16 +362,16 @@ function changeView(view){
 }
 
 var timer = null;
-function resetTimer(){
+function resetTimer() {
     clearTimeout(timer);
-    timer = setTimeout(function() {
+    timer = setTimeout(function () {
         hidePinpad();
         changeView('accounts');
     }, 23.42 * 1000);
 }
 
 
-function changeCredit(userData, pincode, delta, description, product){
+function changeCredit(userData, pincode, delta, description, product) {
     description = description || null;
     product = product || null;
 
@@ -365,20 +387,20 @@ function changeCredit(userData, pincode, delta, description, product){
             "description": description
         },
         headers: {
-          "X-User-Pincode": pincode
+            "X-User-Pincode": pincode
         },
-        success: function(data){
+        success: function (data) {
             showDetail(data, pincode);
             releaseUi()
         },
-        error: function(err){
+        error: function (err) {
             releaseUi()
             alert(err.responseText);
         }
     });
 }
 
-function lockUi(){
+function lockUi() {
     $("#uilock").modal({
         backdrop: false,
         keyboard: false,
@@ -386,10 +408,9 @@ function lockUi(){
     })
 }
 
-function releaseUi(){
+function releaseUi() {
     $("#uilock").modal('hide')
 }
-
 
 
 function showPinpad(username, cb) {
@@ -420,14 +441,16 @@ function showPinpad(username, cb) {
     $("#pinwindow-content").empty().append(pinwindowForm);
 
     for (var i = 0; i <= 9; i++) {
-        $('#pinpad-num-'+ i).on('click', function(e) {
+        $('#pinpad-num-' + i).on('click', function (e) {
             var field = $('#pinwindow-pin');
             field.val(field.val() + e.target.textContent);
-            console.log(e);
+            resetTimer();
         });
     }
 
-    $('#pinpad-ok').click(function() {pinwindowForm.submit()});
+    $('#pinpad-ok').click(function () {
+        pinwindowForm.submit()
+    });
 
     pinwindowForm.submit(function (e) {
         e.preventDefault();
@@ -435,7 +458,7 @@ function showPinpad(username, cb) {
         return false;
     });
 
-    $('#pinpad-back').click(function() {
+    $('#pinpad-back').click(function () {
         hidePinpad();
     });
 
@@ -457,45 +480,45 @@ socket.on('accounts', function (data) {
     getAllUsers();
 });
 
-socket.on('products', function(data) {
+socket.on('products', function (data) {
     var data = JSON.parse(data);
     products = data;
 });
 
-socket.on('ka-ching', function() {
+socket.on('ka-ching', function () {
     var p = $('#ka-ching').get(0);
     p.pause();
     p.currentTime = 0;
     p.play();
 });
 
-socket.on('one-up', function() {
+socket.on('one-up', function () {
     var p = $('#one-up').get(0);
     p.pause();
     p.currentTime = 0;
     p.play();
 });
 
-function updateFilter(){
+function updateFilter() {
     filter = $("#search input").get(0).value.toLowerCase()
     changeView("accounts")
 }
 
-function setup(){
+function setup() {
     $("#search input").on("input", null, null, updateFilter)
-    $("#search button").click(function(e){
+    $("#search button").click(function (e) {
         //fix because click fires before the field is actually reseted
         e.preventDefault();
         $("#search").get(0).reset();
         updateFilter();
     })
-    $("#searchtoggle").click(function(){
-        if($("#search").is(":visible")){
+    $("#searchtoggle").click(function () {
+        if ($("#search").is(":visible")) {
             $("#search").get(0).reset();
             updateFilter();
             $("#searchtoggle").removeClass("active");
             $("#search").hide();
-        }else{
+        } else {
             $("#searchtoggle").addClass("active");
             $("#search").show();
         }
@@ -503,19 +526,83 @@ function setup(){
     $("#search").hide();
 
 
-    $("#stats").click(function(){changeView('statistics')});
-    $("#sorttime").click(function(){setSort("time")});
-    $("#sortabc").click(function(){setSort("abc")});
-    $("#sortzyx").click(function(){setSort("zyx")});
+    $("#stats").click(function () {
+        changeView('statistics')
+    });
+    $("#sorttime").click(function () {
+        setSort("time")
+    });
+    $("#sortabc").click(function () {
+        setSort("abc")
+    });
+    $("#sortzyx").click(function () {
+        setSort("zyx")
+    });
+
+
+    $(document).scannerDetection({
+        timeBeforeScanTest: 200,
+        avgTimeByChar: 20,
+        ignoreIfFocusOn: 'input',
+        onComplete: function (barcode) {
+
+            if (barcode.substr(0, 3) == "<U>") {
+                // User barcode scanned
+                if ($('#details').is(":visible")) {
+                    // Logout from user page
+                    changeView("accounts");
+                } else {
+                    // Logout from any other page
+                    getUserByToken(barcode.substr(3));
+                }
+            } else {
+                // Product barcode scanned
+
+                // When on user page, "click" the right button
+                console.log("Searching product for ean " + barcode);
+
+                var product = null;
+
+                $.each(products, function (key, value) {
+                    if (value.ean != null) {
+
+                        eans = value.ean.split("|");
+                        console.log(eans);
+                        if (eans.indexOf(barcode) >= 0) {
+                            console.log("Found product " + value.name + " in ean array");
+                            product = value;
+                            return false;
+                        }
+                    }
+                });
+
+                if (product != null) {
+                    if ($('#details').is(":visible")) {
+
+                        button = $("button[data-name='" + product.name + "']");
+
+                        if ($(button).length > 0) {
+                            button.click();
+                        } else {
+                            alert("Product not found.");
+                        }
+                    }
+                } else {
+                    alert("Product not found.");
+                }
+                product = null;
+            }
+        }
+    });
 
 
 }
 
-function setSort(by){
+function setSort(by) {
     sortby = by;
     changeView("accounts");
     $(".sortbtn").removeClass("active");
-    $("#sort"+by).addClass("active");
+    $("#sort" + by).addClass("active");
 }
 
 setup();
