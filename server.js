@@ -349,9 +349,7 @@ app.get('/token/:token', function (req, res) {
 
     getUserByTokenAsync(token, function(err, user) {
 
-        winston.error(user.constructor.name);
-
-        if (user == undefined) {
+        if (user == null) {
             res.send(404, 'User not found');
             winston.error('[userCredit] No user for token ' + token + ' found.');
             return;
