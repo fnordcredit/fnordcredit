@@ -1,3 +1,4 @@
+# No longer maintained. Please visit [https://www.strichliste.org/](https://www.strichliste.org/)
 # fnordcredit   [![Build Status](https://travis-ci.org/silsha/fnordcredit.svg?branch=master)](https://travis-ci.org/silsha/fnordcredit) [![Flattr this](https://api.flattr.com/button/flattr-badge-large.png)](http://flattr.com/thing/2873952/silshafnordcredit-on-GitHub)
 Open source credit system.
 
