@@ -231,7 +231,7 @@ app.post('/user/credit', function (req, res) {
     var description = req.body.description || null;
 
     checkUserPin(username, pincode, function() {
-        getUserAsync(username, function (err, user) {
+        getFullUserAsync(username, function (err, user) {
 
             if(err) {
                 winston.error('[userCredit] database error while retrieving user');
@@ -260,7 +260,7 @@ app.post('/user/credit', function (req, res) {
 
                 if (!user.debtAllowed) {
                     res.send(406, 'negative credit not allowed for user');
-                    winston.error('[userCredit] negative credit not allowed for user ' + user.name);
+                    winston.error('[userCredit] negative credit not allowed for user ' + user.name + " - (debtAllowed: " + user.debtAllowed + ")");
                     return;
                 }
 
@@ -399,6 +399,10 @@ function updatePin(username, newPincode, cb) {
 
 function getUserAsync(username, cb) {
     r.table('users').get(username).pluck("name", "lastchanged", "credit").run(connection, cb);
+}
+
+function getFullUserAsync(username, cb) {
+    r.table('users').get(username).run(connection, cb);
 }
 
 function getUserByTokenAsync(token, cb) {
