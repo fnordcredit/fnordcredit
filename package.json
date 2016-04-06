@@ -14,7 +14,7 @@
     "winston": "0.7.x",
     "q": "1.0.x",
     "rethinkdb": "1.12.x",
-    "socket.io": "0.9.x"
+    "socket.io": "1.4.4"
   },
   "devDependencies": {
     "mocha": "^2.3.4"
