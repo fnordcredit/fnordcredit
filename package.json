@@ -10,7 +10,7 @@
     "body-parser": "1.0.x",
     "dateformat": "1.0.12",
     "express": "4.0.x",
-    "mqtt": "^1.6.0",
+    "mqtt": "^1.10.0",
     "winston": "0.7.x",
     "q": "1.0.x",
     "rethinkdb": "1.12.x",
