@@ -7,7 +7,7 @@
     "start": "node ./server.js"
   },
   "dependencies": {
-    "body-parser": "1.0.x",
+    "body-parser": "1.15.1",
     "dateformat": "1.0.12",
     "express": "4.0.x",
     "mqtt": "^1.6.0",
