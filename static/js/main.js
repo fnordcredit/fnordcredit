@@ -595,8 +595,8 @@ function setup() {
 
 
     $(document).scannerDetection({
-        timeBeforeScanTest: 2000,
-        avgTimeByChar: 2000,
+        timeBeforeScanTest: 200,
+        avgTimeByChar: 20,
         ignoreIfFocusOn: 'input',
         onComplete: function (barcode) {
 
