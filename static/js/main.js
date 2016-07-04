@@ -145,6 +145,9 @@ function showDetail(userData, pincode) {
     var renameButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('rename')));
     detail.append(renameButton);
 
+    var changeTokenButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('change/set token')));
+    detail.append(changeTokenButton);
+
     $('#details').empty().append(detail);
     changeView('details');
 
@@ -162,6 +165,11 @@ function showDetail(userData, pincode) {
     // rename Button
     renameButton.click(function () {
         renameUser(userData, pincode);
+    });
+
+    // rename Button
+    changeTokenButton.click(function () {
+        changeToken(userData, pincode);
     });
 
     // set PIN button
@@ -185,7 +193,7 @@ function showStatistics() {
 
     $('#statistics').append(statistic);
 
-    var backButton = $('<ul">').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
+    var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
     $('#statistics').append(backButton);
 
     backButton.click(function () {
@@ -309,6 +317,49 @@ function renameUser(userData, pincode) {
     changeView('rename');
 }
 
+
+function changeToken (userData, pincode) {
+    $('#changetoken').empty();
+    var changeTokenForm = $('<form role="form" id="changeTokenForm">');
+    var changeTokenFormGroup = $('<div id="changeTokenForm" class="form-group">');
+    changeTokenForm.append(changeTokenFormGroup);
+    changeTokenFormGroup.append($('<input type="hidden" name="username" value="' + userData.name + '" required class="form-control">'));
+    changeTokenFormGroup.append($('<input type="token" readonly=readonly name="newtoken" id="newtoken" placeholder="please scan token now" maxlength=15 required class="form-control" >'));
+    changeTokenFormGroup.append($('<input type="submit" value="save token" class="form-control">'));
+
+    var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
+    $('#changetoken').append(backButton);
+
+    changeTokenForm.submit(function (e) {
+        lockUi()
+        e.preventDefault();
+        $.ajax({
+            url: '/user/change-token',
+            type: "POST",
+            data: $('#changeTokenForm').serialize(),
+            headers: {
+                "X-User-Pincode": pincode
+            },
+            success: function () {
+                getUserDetail(userData.name, pincode);
+                releaseUi();
+            },
+            error: function (err) {
+                releaseUi()
+                alert(err.responseText);
+            }
+        });
+    });
+
+    backButton.click(function () {
+        changeView('details');
+    });
+
+
+    $('#changetoken').append(changeTokenForm);
+    changeView('changetoken');
+}
+
 function changePin(username, pincode, newPincode) {
     lockUi();
     $.ajax({
@@ -349,6 +400,9 @@ function changeView(view) {
             break;
         case 'rename':
             $('#renameuser').show();
+            break;
+        case 'changetoken':
+            $('#changetoken').show();
             break;
         case 'statistics':
             socket.emit('getAccounts');
@@ -541,8 +595,8 @@ function setup() {
 
 
     $(document).scannerDetection({
-        timeBeforeScanTest: 200,
-        avgTimeByChar: 20,
+        timeBeforeScanTest: 2000,
+        avgTimeByChar: 2000,
         ignoreIfFocusOn: 'input',
         onComplete: function (barcode) {
 
@@ -551,6 +605,8 @@ function setup() {
                 if ($('#details').is(":visible")) {
                     // Logout from user page
                     changeView("accounts");
+                } else if ($('#changetoken').is(":visible")) {
+                    $('#newtoken').attr("value", barcode.substr(3));
                 } else {
                     // Logout from any other page
                     getUserByToken(barcode.substr(3));
