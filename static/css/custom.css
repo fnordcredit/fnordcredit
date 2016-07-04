@@ -78,11 +78,11 @@
     text-align: center;
 }
 
-#renameUserForm{
+#renameUserForm #changeTokenForm {
     margin-top: 20px;
 }
 
-#renameUserForm input{
+#renameUserForm input, #changeTokenForm input{
     margin-top: 20px;
     font-size: 30px;
     height: 60px;
