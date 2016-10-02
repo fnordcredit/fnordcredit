@@ -95,10 +95,10 @@ function showDetail(userData, pincode) {
     var addCreditAreaBody = $('<div>').addClass('panel-body');
     addCreditArea.append(addCreditAreaBody);
 
-    var plus50Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 0.50€").attr("data-credit", "0.5");
-    var plus100Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 1.00€").attr("data-credit", "1");
-    var plus200Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 2.00€").attr("data-credit", "2");
-    var plus500Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 5.00€").attr("data-credit", "5");
+    var plus50Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 0.50€").attr("data-credit", "0.5").attr("data-desc", "+ 0.50 €");
+    var plus100Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 1.00€").attr("data-credit", "1").attr("data-desc", "+ 1.00 €");
+    var plus200Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 2.00€").attr("data-credit", "2").attr("data-desc", "+ 2.00 €");
+    var plus500Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 5.00€").attr("data-credit", "5").attr("data-desc", "+ 5.00 €");
 
     var plusbuttons = [plus50Button, plus100Button, plus200Button, plus500Button];
     addCreditAreaBody.append(plusbuttons);
@@ -125,10 +125,10 @@ function showDetail(userData, pincode) {
         productsArray.push(button);
     });
 
-    var minus50Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 0.50€").attr("data-credit", "-0.5");
-    var minus100Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 1.00€").attr("data-credit", "-1");
-    var minus150Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 1.50€").attr("data-credit", "-1.5");
-    var minus200Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 2.00€").attr("data-credit", "-2");
+    var minus50Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 0.50€").attr("data-credit", "-0.5").attr("data-desc", "- 0.50 €");;
+    var minus100Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 1.00€").attr("data-credit", "-1").attr("data-desc", "- 1.00 €");;
+    var minus150Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 1.50€").attr("data-credit", "-1.5").attr("data-desc", "- 1.50 €");;
+    var minus200Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 2.00€").attr("data-credit", "-2").attr("data-desc", "- 2.00 €");;
 
     var minusbuttons = [minus50Button, minus100Button, minus150Button, minus200Button]
     removeCreditAreaBody.append(productsArray);
@@ -153,7 +153,7 @@ function showDetail(userData, pincode) {
 
     // Credit buttons
     $("button.btn-credit-action[data-credit!=''][data-credit]").click(function () {
-        changeCredit(userData, pincode, $(this).attr("data-credit"), $(this).attr("data-desc"), $(this).attr("data-name"));
+        changeCredit(userData, pincode, $(this).attr("data-credit"), $(this).attr("data-desc"), $(this).attr("data-name"), $(this));
         resetTimer();
     });
 
@@ -425,7 +425,7 @@ function resetTimer() {
 }
 
 
-function changeCredit(userData, pincode, delta, description, product) {
+function changeCredit(userData, pincode, delta, description, product, productObj) {
     description = description || null;
     product = product || null;
 
@@ -444,12 +444,32 @@ function changeCredit(userData, pincode, delta, description, product) {
             "X-User-Pincode": pincode
         },
         success: function (data) {
+            message = productObj.attr("data-desc");
+            if (productObj != null) {
+                imgObj = $($(productObj).find("img:first").first());
+                if (imgObj != null && imgObj.attr("src") != null) {
+                    console.log(imgObj);
+
+                    htmlMessage = $("<div>");
+
+                    img = $("<img>");
+                    img.attr("src", imgObj.attr("src"));
+
+                    htmlMessage.append(img);
+                    htmlMessage.append($("<br>"));
+                    htmlMessage.append(productObj.attr("data-desc"));
+                    message = htmlMessage.html();
+
+                    console.log(message);
+                }
+            }
+            showSuccessOverlay(message);
             showDetail(data, pincode);
-            releaseUi()
+            releaseUi();
         },
         error: function (err) {
-            releaseUi()
-            alert(err.responseText);
+            showFailureOverlay(err.responseText);
+            releaseUi();
         }
     });
 }
@@ -457,8 +477,7 @@ function changeCredit(userData, pincode, delta, description, product) {
 function lockUi() {
     $("#uilock").modal({
         backdrop: false,
-        keyboard: false,
-
+        keyboard: false
     })
 }
 
@@ -653,6 +672,30 @@ function setup() {
 
 
 }
+
+
+function showSuccessOverlay(message) {
+    delay = 250;
+    if (message != null && message.length > 0) {
+        delay = 750;
+    }
+
+    $("#uilock-success-message").html(message);
+    $("#uilock-success").fadeIn().delay(delay).fadeOut();
+}
+
+function showFailureOverlay(message) {
+
+    delay = 250;
+    if (message != null && message.length > 0) {
+        delay = 2000;
+    }
+
+    $("#uilock-failure-message").html(message);
+    $("#uilock-failure").fadeIn().delay(delay).fadeOut();
+}
+
+
 
 function setSort(by) {
     sortby = by;
