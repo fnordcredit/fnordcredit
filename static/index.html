@@ -30,7 +30,7 @@
             <li ><button id="searchtoggle" type="button" class="btn btn-default btn-lg navbar-btn">
                 <span class="glyphicon glyphicon glyphicon-search"></span>
             </button></li>
-        
+
             <li>
                 <form id="search" class="navbar-form navbar-left" role="search">
                     <div class="form-group">
@@ -40,16 +40,19 @@
                 </form>
             </li>
     </nav>
+
     <div id="uilock" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel">Waiting for server</h4>
                 </div>
-                
+
             </div>
         </div>
     </div>
+
+
     <div id="pinwindow" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -70,8 +73,25 @@
         <div id="renameuser" class="view"></div>
         <div id="newuser" class="view"></div>
         <div id="statistics" class="view"></div>
+        <div id="changetoken" class="view"></div>
     </div>
+
+
+    <div id="uilock-success" class="fullscreen">
+        <div class="uilock-status-icon">&#x2714;</div>
+        <div class="uilock-message" id="uilock-success-message"></div>
+    </div>
+
+    <div id="uilock-failure" class="fullscreen">
+        <div class="uilock-status-icon">&#x2718;</div>
+        <div class="uilock-message" id="uilock-failure-message"></div>
+    </div>
+
+
     <script type="text/javascript" src="js/main.js"></script>
+
+
+
     <audio id="ka-ching" src="audio/ka-ching.mp3" preload="auto" style="display: none;"></audio>
     <audio id="one-up" src="audio/one_up.mp3" preload="auto" style="display: none;"></audio>
 </body>

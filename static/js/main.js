@@ -42,7 +42,7 @@ function getUserDetail(username, pincode) {
                 });
                 return;
             }
-            alert(err.responseText);
+            showFailureOverlay(err.responseText);
         }
     });
 }
@@ -62,7 +62,7 @@ function getUserByToken(token) {
         },
         error: function (err) {
             releaseUi();
-            alert(err.responseText);
+            showFailureOverlay(err.responseText);
         }
     });
 }
@@ -95,10 +95,10 @@ function showDetail(userData, pincode) {
     var addCreditAreaBody = $('<div>').addClass('panel-body');
     addCreditArea.append(addCreditAreaBody);
 
-    var plus50Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 0.50€").attr("data-credit", "0.5");
-    var plus100Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 1.00€").attr("data-credit", "1");
-    var plus200Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 2.00€").attr("data-credit", "2");
-    var plus500Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 5.00€").attr("data-credit", "5");
+    var plus50Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 0.50€").attr("data-credit", "0.5").attr("data-desc", "+ 0.50 €");
+    var plus100Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 1.00€").attr("data-credit", "1").attr("data-desc", "+ 1.00 €");
+    var plus200Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 2.00€").attr("data-credit", "2").attr("data-desc", "+ 2.00 €");
+    var plus500Button = $('<button>').addClass('btn btn-success btn-lg btn-credit-action').text("+ 5.00€").attr("data-credit", "5").attr("data-desc", "+ 5.00 €");
 
     var plusbuttons = [plus50Button, plus100Button, plus200Button, plus500Button];
     addCreditAreaBody.append(plusbuttons);
@@ -125,10 +125,10 @@ function showDetail(userData, pincode) {
         productsArray.push(button);
     });
 
-    var minus50Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 0.50€").attr("data-credit", "-0.5");
-    var minus100Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 1.00€").attr("data-credit", "-1");
-    var minus150Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 1.50€").attr("data-credit", "-1.5");
-    var minus200Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 2.00€").attr("data-credit", "-2");
+    var minus50Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 0.50€").attr("data-credit", "-0.5").attr("data-desc", "- 0.50 €");;
+    var minus100Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 1.00€").attr("data-credit", "-1").attr("data-desc", "- 1.00 €");;
+    var minus150Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 1.50€").attr("data-credit", "-1.5").attr("data-desc", "- 1.50 €");;
+    var minus200Button = $('<button>').addClass('btn btn-danger btn-lg btn-credit-action').text("- 2.00€").attr("data-credit", "-2").attr("data-desc", "- 2.00 €");;
 
     var minusbuttons = [minus50Button, minus100Button, minus150Button, minus200Button]
     removeCreditAreaBody.append(productsArray);
@@ -145,12 +145,15 @@ function showDetail(userData, pincode) {
     var renameButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('rename')));
     detail.append(renameButton);
 
+    var changeTokenButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('change/set token')));
+    detail.append(changeTokenButton);
+
     $('#details').empty().append(detail);
     changeView('details');
 
     // Credit buttons
     $("button.btn-credit-action[data-credit!=''][data-credit]").click(function () {
-        changeCredit(userData, pincode, $(this).attr("data-credit"), $(this).attr("data-desc"), $(this).attr("data-name"));
+        changeCredit(userData, pincode, $(this).attr("data-credit"), $(this).attr("data-desc"), $(this).attr("data-name"), $(this));
         resetTimer();
     });
 
@@ -162,6 +165,11 @@ function showDetail(userData, pincode) {
     // rename Button
     renameButton.click(function () {
         renameUser(userData, pincode);
+    });
+
+    // rename Button
+    changeTokenButton.click(function () {
+        changeToken(userData, pincode);
     });
 
     // set PIN button
@@ -185,7 +193,7 @@ function showStatistics() {
 
     $('#statistics').append(statistic);
 
-    var backButton = $('<ul">').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
+    var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
     $('#statistics').append(backButton);
 
     backButton.click(function () {
@@ -252,7 +260,7 @@ function newUser() {
             },
             error: function (err) {
                 releaseUi()
-                alert(err.responseText);
+                showFailureOverlay(err.responseText);
             }
         });
     });
@@ -295,7 +303,7 @@ function renameUser(userData, pincode) {
             },
             error: function (err) {
                 releaseUi()
-                alert(err.responseText);
+                showFailureOverlay(err.responseText);
             }
         });
     });
@@ -307,6 +315,49 @@ function renameUser(userData, pincode) {
     $('#renameuser').append(renameUserForm);
 
     changeView('rename');
+}
+
+
+function changeToken (userData, pincode) {
+    $('#changetoken').empty();
+    var changeTokenForm = $('<form role="form" id="changeTokenForm">');
+    var changeTokenFormGroup = $('<div id="changeTokenForm" class="form-group">');
+    changeTokenForm.append(changeTokenFormGroup);
+    changeTokenFormGroup.append($('<input type="hidden" name="username" value="' + userData.name + '" required class="form-control">'));
+    changeTokenFormGroup.append($('<input type="token" readonly=readonly name="newtoken" id="newtoken" placeholder="please scan token now" maxlength=15 required class="form-control" >'));
+    changeTokenFormGroup.append($('<input type="submit" value="save token" class="form-control">'));
+
+    var backButton = $('<ul>').addClass('pager').append($('<li>').addClass('previous').append($('<a>').text('← Back')));
+    $('#changetoken').append(backButton);
+
+    changeTokenForm.submit(function (e) {
+        lockUi()
+        e.preventDefault();
+        $.ajax({
+            url: '/user/change-token',
+            type: "POST",
+            data: $('#changeTokenForm').serialize(),
+            headers: {
+                "X-User-Pincode": pincode
+            },
+            success: function () {
+                getUserDetail(userData.name, pincode);
+                releaseUi();
+            },
+            error: function (err) {
+                releaseUi()
+                showFailureOverlay(err.responseText);
+            }
+        });
+    });
+
+    backButton.click(function () {
+        changeView('details');
+    });
+
+
+    $('#changetoken').append(changeTokenForm);
+    changeView('changetoken');
 }
 
 function changePin(username, pincode, newPincode) {
@@ -327,7 +378,7 @@ function changePin(username, pincode, newPincode) {
         },
         error: function (err) {
             releaseUi()
-            alert(err.responseText);
+            showFailureOverlay(err.responseText);
         }
     });
 }
@@ -350,6 +401,9 @@ function changeView(view) {
         case 'rename':
             $('#renameuser').show();
             break;
+        case 'changetoken':
+            $('#changetoken').show();
+            break;
         case 'statistics':
             socket.emit('getAccounts');
             showStatistics();
@@ -371,7 +425,7 @@ function resetTimer() {
 }
 
 
-function changeCredit(userData, pincode, delta, description, product) {
+function changeCredit(userData, pincode, delta, description, product, productObj) {
     description = description || null;
     product = product || null;
 
@@ -390,12 +444,32 @@ function changeCredit(userData, pincode, delta, description, product) {
             "X-User-Pincode": pincode
         },
         success: function (data) {
+            message = productObj.attr("data-desc");
+            if (productObj != null) {
+                imgObj = $($(productObj).find("img:first").first());
+                if (imgObj != null && imgObj.attr("src") != null) {
+                    console.log(imgObj);
+
+                    htmlMessage = $("<div>");
+
+                    img = $("<img>");
+                    img.attr("src", imgObj.attr("src"));
+
+                    htmlMessage.append(img);
+                    htmlMessage.append($("<br>"));
+                    htmlMessage.append(productObj.attr("data-desc"));
+                    message = htmlMessage.html();
+
+                    console.log(message);
+                }
+            }
+            showSuccessOverlay(message);
             showDetail(data, pincode);
-            releaseUi()
+            releaseUi();
         },
         error: function (err) {
-            releaseUi()
-            alert(err.responseText);
+            showFailureOverlay(err.responseText);
+            releaseUi();
         }
     });
 }
@@ -403,8 +477,7 @@ function changeCredit(userData, pincode, delta, description, product) {
 function lockUi() {
     $("#uilock").modal({
         backdrop: false,
-        keyboard: false,
-
+        keyboard: false
     })
 }
 
@@ -505,6 +578,7 @@ function updateFilter() {
 }
 
 function setup() {
+
     $("#search input").on("input", null, null, updateFilter)
     $("#search button").click(function (e) {
         //fix because click fires before the field is actually reseted
@@ -551,6 +625,8 @@ function setup() {
                 if ($('#details').is(":visible")) {
                     // Logout from user page
                     changeView("accounts");
+                } else if ($('#changetoken').is(":visible")) {
+                    $('#newtoken').attr("value", barcode.substr(3));
                 } else {
                     // Logout from any other page
                     getUserByToken(barcode.substr(3));
@@ -584,11 +660,11 @@ function setup() {
                         if ($(button).length > 0) {
                             button.click();
                         } else {
-                            alert("Product not found.");
+                            showFailureOverlay("Product not found.");
                         }
                     }
                 } else {
-                    alert("Product not found.");
+                    showFailureOverlay("Product not found.");
                 }
                 product = null;
             }
@@ -597,6 +673,29 @@ function setup() {
 
 
 }
+
+
+function showSuccessOverlay(message) {
+    delay = 250;
+    if (message != null && message.length > 0) {
+        delay = 750;
+    }
+
+    $("#uilock-success-message").html(message);
+    $("#uilock-success").fadeIn().delay(delay).fadeOut();
+}
+
+function showFailureOverlay(message) {
+    delay = 250;
+    if (message != null && message.length > 0) {
+        delay = 2000;
+    }
+
+    $("#uilock-failure-message").html(message);
+    $("#uilock-failure").fadeIn().delay(delay).fadeOut();
+}
+
+
 
 function setSort(by) {
     sortby = by;

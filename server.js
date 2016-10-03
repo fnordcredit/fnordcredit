@@ -334,6 +334,44 @@ app.post('/user/change-pin', function (req, res) {
     });
 });
 
+app.post('/user/change-token', function (req, res) {
+
+    var username = req.body.username;
+    var pincode = req.header("X-User-Pincode");
+    var newToken = req.body.newtoken;
+
+    checkUserPin(username, pincode, function() {
+        getUserAsync(username, function (err, user) {
+
+            if(err) {
+                winston.error('[userCredit] database error while retrieving user');
+                return res.send(500, 'Error retrieving ' + username + ' from database ');
+            }
+
+            if (user == undefined) {
+                res.send(404, 'User not found');
+                winston.error('[userCredit] No user ' + username + ' found.')
+                return;
+            }
+
+            newToken = newToken || null;
+
+            updateToken(user.name, newToken, function(err) {
+
+                winston.error(err);
+                if (err) {
+                    return res.send(500, 'Error updating token');
+                }
+
+                res.send(200, 'Tokens updated successfully');
+            });
+
+        })
+    }, function() {
+        return res.send(401, 'Authorization required');
+    });
+});
+
 
 app.get('/products', function(req, res) {
 
@@ -393,8 +431,12 @@ function updatePin(username, newPincode, cb) {
         hashedPincode = passwordHash.generate(newPincode);
     }
 
-    winston.error("" + hashedPincode);
     r.table('users').get(username).update({pincode: hashedPincode}).run(connection, cb);
+}
+
+function updateToken(username, newToken, cb) {
+
+    r.table('users').get(username).update({token: newToken}).run(connection, cb);
 }
 
 function getUserAsync(username, cb) {
