@@ -42,7 +42,7 @@ function getUserDetail(username, pincode) {
                 });
                 return;
             }
-            alert(err.responseText);
+            showFailureOverlay(err.responseText);
         }
     });
 }
@@ -62,7 +62,7 @@ function getUserByToken(token) {
         },
         error: function (err) {
             releaseUi();
-            alert(err.responseText);
+            showFailureOverlay(err.responseText);
         }
     });
 }
@@ -260,7 +260,7 @@ function newUser() {
             },
             error: function (err) {
                 releaseUi()
-                alert(err.responseText);
+                showFailureOverlay(err.responseText);
             }
         });
     });
@@ -303,7 +303,7 @@ function renameUser(userData, pincode) {
             },
             error: function (err) {
                 releaseUi()
-                alert(err.responseText);
+                showFailureOverlay(err.responseText);
             }
         });
     });
@@ -346,7 +346,7 @@ function changeToken (userData, pincode) {
             },
             error: function (err) {
                 releaseUi()
-                alert(err.responseText);
+                showFailureOverlay(err.responseText);
             }
         });
     });
@@ -378,7 +378,7 @@ function changePin(username, pincode, newPincode) {
         },
         error: function (err) {
             releaseUi()
-            alert(err.responseText);
+            showFailureOverlay(err.responseText);
         }
     });
 }
@@ -578,6 +578,7 @@ function updateFilter() {
 }
 
 function setup() {
+
     $("#search input").on("input", null, null, updateFilter)
     $("#search button").click(function (e) {
         //fix because click fires before the field is actually reseted
@@ -659,11 +660,11 @@ function setup() {
                         if ($(button).length > 0) {
                             button.click();
                         } else {
-                            alert("Product not found.");
+                            showFailureOverlay("Product not found.");
                         }
                     }
                 } else {
-                    alert("Product not found.");
+                    showFailureOverlay("Product not found.");
                 }
                 product = null;
             }
@@ -685,7 +686,6 @@ function showSuccessOverlay(message) {
 }
 
 function showFailureOverlay(message) {
-
     delay = 250;
     if (message != null && message.length > 0) {
         delay = 2000;
