@@ -8,7 +8,12 @@ var config = require('./config');
 
 if (config.mqtt.enable) {
     var mqtt = require('mqtt');
-    var mqttclient = mqtt.createClient(config.mqtt.port, config.mqtt.host);
+    var mqttclient  = mqtt.connect({
+        host: config.mqtt.host,
+        port: config.mqtt.port,
+        username: config.mqtt.username,
+        password: config.mqtt.password
+    });
 }
 
 var app = express();
@@ -621,7 +626,8 @@ function updateCredit(user, delta, description, product) {
 }
 
 function mqttPost(service, payload) {
-    mqttclient.publish(config.mqtt.prefix + '/' + service, JSON.stringify(payload));
+    mqttclient.publish(config.mqtt.prefix + '/' + service, JSON.stringify(payload), {}, function(err) {
+    });
 }
 
 function criticalError(errormsg) {
