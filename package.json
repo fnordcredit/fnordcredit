@@ -3,25 +3,28 @@
   "version": "1.0.0",
   "author": "silsha <hallo@silsha.me>",
   "description": "SAP easy credit system",
+  "main": "lib/server.js",
   "scripts": {
-    "start": "node ./server.js"
+    "start": "node lib/server.js",
+    "test": "mocha test"
   },
   "dependencies": {
-    "body-parser": "1.0.x",
-    "dateformat": "1.0.x",
-    "express": "4.0.x",
-    "mqtt": "2.0.x",
-    "winston": "0.7.x",
-    "q": "1.0.x",
-    "rethinkdb": "1.16.x",
-    "socket.io": "1.3.x",
-    "password-hash": "1.2.2"
+    "body-parser": "^1.16.1",
+    "dateformat": "^2.0.0",
+    "express": "^4.14.1",
+    "knex": "^0.12.7",
+    "mqtt": "^2.4.0",
+    "password-hash": "1.2.2",
+    "q": "^1.4.1",
+    "rethinkdb": "^2.3.3",
+    "socket.io": "^1.7.3",
+    "winston": "^2.0.0"
   },
   "devDependencies": {
-    "mocha": "^2.3.4"
-  },
-  "script": {
-    "test": "mocha test"
+    "eslint": "^3.16.1",
+    "eslint-config-marudor": "^4.1.2",
+    "flow-bin": "^0.39.0",
+    "mocha": "^3.2.0"
   },
   "license": "MIT",
   "repository": {
