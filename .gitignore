@@ -11,3 +11,4 @@ config.js
 .bash_login
 static/img/*.png
 lib
+*.db
