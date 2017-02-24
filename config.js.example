@@ -1,21 +1,26 @@
 /* eslint header/header: 0 */
 module.exports = {
-    rethinkdb: {
-        host: 'localhost',
-        port: 28015,
-        db: 'fnordcredit',
-        authKey: ''
+  db: {
+    client: 'sqlite3',
+    useNullAsDefault: true,
+    connection: {
+      filename: './prod.db',
     },
+  },
 
-    settings: {
-        allowDebt: true,
-        maxDebt: -150
-    },
+  testDbConnection: {
+    filename: './test.db',
+  },
 
-    mqtt: {
-        enable: false,
-        host: 'localhost',
-        port: 1882,
-        prefix: 'service/fnordcredit'
-    }
+  settings: {
+    allowDebt: true,
+    maxDebt: -150,
+  },
+
+  mqtt: {
+    enable: false,
+    host: 'localhost',
+    port: 1882,
+    prefix: 'service/fnordcredit',
+  },
 };

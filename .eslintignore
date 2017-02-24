@@ -1,1 +1,3 @@
-interfaces/**
+interfaces/
+seeds/
+migrations/

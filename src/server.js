@@ -1,10 +1,14 @@
 // @flow
-require('./databaseInit');
-const express = require('express');
-const bodyParser = require('body-parser');
-const winston = require('winston');
-const passwordHash = require('password-hash');
-const config = require('../config');
+import './databaseInit';
+import { addUser, getAllUsers } from './Service/UserService';
+import bodyParser from 'body-parser';
+import config from '../config';
+import express from 'express';
+import passwordHash from 'password-hash';
+import TransactionModel from './Model/TransactionModel';
+import UserModel from './Model/UserModel';
+import uuid from 'uuid';
+import winston from 'winston';
 
 let mqttclient;
 if (config.mqtt.enable) {
@@ -20,7 +24,7 @@ if (config.mqtt.enable) {
 const app = express();
 let io;
 
-let sock = {
+let sock: any = {
   // eslint-disable-next-line
   emit() {},
 };
@@ -33,12 +37,12 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header(
     'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
+    'Origin, X-Requested-With, Content-Type, Accept',
   );
   next();
 });
 
-app.use('/', express.static(`${__dirname}/static`));
+app.use('/', express.static(`${__dirname}/../static`));
 app.use(bodyParser());
 
 function serverStart() {
@@ -48,40 +52,10 @@ function serverStart() {
   io.sockets.on('connection', socket => {
     sock = socket;
 
-    getAllUsersAsync((err, data) => {
-      if (err) {
-        return;
-      }
+    getAllUsers().then((data) => socket.emit('accounts', JSON.stringify(data)));
 
-      socket.emit('accounts', JSON.stringify(data));
-    });
-
-    getAllProductsAsync((err, data) => {
-      if (err) {
-        return;
-      }
-
-      socket.emit('products', JSON.stringify(data));
-    });
-
-    socket.on('getProducts', data => {
-      getAllProductsAsync((err, data) => {
-        if (err) {
-          return;
-        }
-
-        socket.emit('products', JSON.stringify(data));
-      });
-    });
-
-    socket.on('getAccounts', data => {
-      getAllUsersAsync((err, data) => {
-        if (err) {
-          return;
-        }
-
-        socket.emit('accounts', JSON.stringify(data));
-      });
+    socket.on('getAccounts', () => {
+      getAllUsers().then((data) => socket.emit('accounts', JSON.stringify(data)));
     });
   });
 
@@ -91,30 +65,19 @@ function serverStart() {
     setInterval(
       () => {
         if (sock.broadcast) {
-          getAllUsersAsync((err, users) => {
-            if (err) {
-              return;
-              // return res.send(500, 'Error retrieving users from database');
-            }
-            (sock: any).broadcast.emit('accounts', JSON.stringify(users));
-          });
+          getAllUsers().then(users => sock.broadcast.emit('accounts', JSON.stringify(users)));
+
 
           sock.broadcast.emit('accounts', JSON.stringify(users));
         }
       },
-      10 * 1000
+      10 * 1000,
     );
   });
 }
 
 app.get('/users/all', (req, res) => {
-  getAllUsersAsync((err, users) => {
-    if (err) {
-      return res.send(500, 'Can\'t retrieve users from database');
-    }
-
-    res.send(JSON.stringify(users));
-  });
+  getAllUsers().then(users => res.send(JSON.stringify(users)));
 });
 
 app.get('/user/:username', (req, res) => {
@@ -132,11 +95,11 @@ app.get('/user/:username', (req, res) => {
         if (err) {
           return res.send(
             500,
-            `Error retrieving user ${username} from database`
+            `Error retrieving user ${username} from database`,
           );
         }
 
-        const newname = req.body.newname;
+        // const newname = req.body.newname;
 
         if (user == null) {
           res.send(404, 'User not found');
@@ -147,7 +110,7 @@ app.get('/user/:username', (req, res) => {
         return res.send(JSON.stringify(user));
       });
     },
-    () => res.send(401, 'Authorization required')
+    () => res.send(401, 'Authorization required'),
   );
 });
 
@@ -177,12 +140,23 @@ app.get('/transactions/:username', (req, res) => {
         return res.send(JSON.stringify(data));
       });
     },
-    () => res.send(401, 'Authorization required')
+    () => res.send(401, 'Authorization required'),
   );
 });
 
-app.post('/user/add', (req, res) => {
-  addUser(req.body.username, res);
+app.post('/user/add', async (req, res) => {
+  try {
+    await addUser(req.body.username);
+  } catch (e) {
+    res.send(500, e.message);
+    return;
+  }
+  const users = await getAllUsers();
+  if (sock.broadcast) {
+    sock.broadcast.emit('accounts', JSON.stringify(users));
+  }
+  sock.emit('accounts', JSON.stringify(users));
+  res.send(200);
 });
 
 app.post('/user/rename', (req, res) => {
@@ -197,7 +171,7 @@ app.post('/user/rename', (req, res) => {
         if (err) {
           return res.send(
             500,
-            `Error retrieving user ${username} from database`
+            `Error retrieving user ${username} from database`,
           );
         }
 
@@ -211,11 +185,7 @@ app.post('/user/rename', (req, res) => {
 
         renameUser(user, newname, pincode, res);
 
-        getAllUsersAsync((err, users) => {
-          if (err) {
-            return res.send(500, 'Error retrieving users from database');
-          }
-
+        getAllUsers().then(users => {
           sock.broadcast.emit('accounts', JSON.stringify(users));
           sock.emit('accounts', JSON.stringify(users));
 
@@ -223,7 +193,7 @@ app.post('/user/rename', (req, res) => {
         });
       });
     },
-    () => res.send(401, 'Authorization required')
+    () => res.send(401, 'Authorization required'),
   );
 });
 
@@ -260,7 +230,7 @@ app.post('/user/credit', (req, res) => {
           if (!config.settings.allowDebt) {
             res.send(406, 'negative credit not allowed in configuration.');
             winston.error(
-              '[userCredit] negative credit not allowed in configuration'
+              '[userCredit] negative credit not allowed in configuration',
             );
             return;
           }
@@ -268,7 +238,7 @@ app.post('/user/credit', (req, res) => {
           if (!user.debtAllowed) {
             res.send(406, 'negative credit not allowed for user');
             winston.error(
-              `[userCredit] negative credit not allowed for user ${user.name} - (debtAllowed: ${user.debtAllowed})`
+              `[userCredit] negative credit not allowed for user ${user.name} - (debtAllowed: ${user.debtAllowed ? 'true' : 'false'})`,
             );
             return;
           }
@@ -276,40 +246,38 @@ app.post('/user/credit', (req, res) => {
           if (user.credit + delta < config.settings.maxDebt) {
             res.send(
               406,
-              `credit below ${config.settings.maxDebt} € not allowed in configuration.`
+              `credit below ${config.settings.maxDebt} € not allowed in configuration.`,
             );
             winston.error(
-              '[userCredit] credit below maxDebt not allowed in configuration'
+              '[userCredit] credit below maxDebt not allowed in configuration',
             );
             return;
           }
 
-          if (user.credit + delta < user.debtHardLimit) {
+          if (user.debtHardLimit && user.credit + delta < user.debtHardLimit) {
             res.send(
               406,
-              `credit below ${user.debtHardLimit} € not allowed for this user`
+              `credit below ${user.debtHardLimit} € not allowed for this user`,
             );
             winston.error(
-              `[userCredit] credit below ${user.debtHardLimit} for user ${user.name} not allowed`
+              `[userCredit] credit below ${user.debtHardLimit || ''} for user ${user.name} not allowed`,
             );
             return;
           }
         }
         updateCredit(user, delta, description, product);
 
-        getAllUsersAsync((err, users) => {
-          if (err) {
-            return res.send(500, 'Error retrieving users from database');
+        getAllUsers().then(users => {
+          if (sock.broadcast) {
+            sock.broadcast.emit('accounts', JSON.stringify(users));
           }
-
-          sock.broadcast.emit('accounts', JSON.stringify(users));
           sock.emit('accounts', JSON.stringify(users));
 
           res.send(200, JSON.stringify(user));
         });
       });
     },
-    () => res.send(401, 'Authorization required')
+    () => res.send(401, 'Authorization required'),
   );
 });
 
@@ -346,7 +314,7 @@ app.post('/user/change-pin', (req, res) => {
         });
       });
     },
-    () => res.send(401, 'Authorization required')
+    () => res.send(401, 'Authorization required'),
   );
 });
 
@@ -383,15 +351,15 @@ app.post('/user/change-token', (req, res) => {
         });
       });
     },
-    () => res.send(401, 'Authorization required')
+    () => res.send(401, 'Authorization required'),
   );
 });
 
-app.get('/products', (req, res) => {
-  getAllProductsAsync((err, data) => {
-    res.send(200, JSON.stringify(data));
-  });
-});
+// app.get('/products', (req, res) => {
+//   getAllProductsAsync((err, data) => {
+//     res.send(200, JSON.stringify(data));
+//   });
+// });
 
 app.get('/token/:token', (req, res) => {
   const token = req.params.token;
@@ -407,232 +375,153 @@ app.get('/token/:token', (req, res) => {
   });
 });
 
-function checkUserPin(username, pincode, cbOk, cbFail) {
-  r.table('users').get(username).run(connection, (err, user) => {
-    if (err || user == null) {
-      winston.error(`Could'nt check PIN for user ${username}`);
-      cbFail();
-      return;
-    }
+async function checkUserPin(username, pincode, cbOk, cbFail) {
+  const user = await UserModel.where({ name: username }).fetch();
+  if (!user) {
+    winston.error(`Could'nt check PIN for user ${username}`);
+    cbFail();
+    return;
+  }
 
-    const dbPin = user.pincode;
-    const dbToken = user.token;
+  const dbPin = user.get('pincode');
+  const dbToken = user.get('token');
 
-    if (
-      dbPin == null ||
-      passwordHash.verify(pincode, dbPin) ||
-      (dbToken != null && dbToken === pincode)
-    ) {
-      cbOk();
-    } else {
-      cbFail();
-    }
-  });
+  if (
+    dbPin == null ||
+    passwordHash.verify(pincode, dbPin) ||
+    (dbToken != null && dbToken === pincode)
+  ) {
+    cbOk();
+  } else {
+    cbFail();
+  }
 }
 
-function updatePin(username, newPincode, cb) {
+async function updatePin(username, newPincode, cb) {
   let hashedPincode = null;
 
   if (newPincode) {
     hashedPincode = passwordHash.generate(newPincode);
   }
 
-  r
-    .table('users')
-    .get(username)
-    .update({ pincode: hashedPincode })
-    .run(connection, cb);
+  try {
+    await UserModel.where({ name: username }).save({ pincode: hashedPincode });
+    cb();
+  } catch (e) {
+    cb(e);
+  }
 }
 
-function updateToken(username, newToken, cb) {
-  r.table('users').get(username).update({ token: newToken }).run(connection, cb);
+async function updateToken(username, newToken, cb) {
+  try {
+    await UserModel.where({ name: username }).save({ token: newToken });
+    cb();
+  } catch (e) {
+    cb(e);
+  }
 }
 
-function getUserAsync(username, cb) {
-  r
-    .table('users')
-    .get(username)
-    .pluck('name', 'lastchanged', 'credit')
-    .run(connection, cb);
+async function getUserAsync(username, cb) {
+  const user = await UserModel.where({ name: username }).fetch({ columns: ['name', 'lastchanged', 'credit'] });
+  if (user) {
+    cb(undefined, user.serialize());
+  } else {
+    cb(new Error());
+  }
 }
 
-function getFullUserAsync(username, cb) {
-  r.table('users').get(username).run(connection, cb);
+async function getFullUserAsync(username, cb) {
+  const user = await UserModel.where({ name: username }).fetch();
+  if (user) {
+    cb(undefined, user.serialize());
+  } else {
+    cb(new Error());
+  }
 }
 
-function getUserByTokenAsync(token, cb) {
-  r
-    .table('users')
-    .filter({ token })
-    .pluck('name', 'lastchanged', 'credit')
-    .run(connection, (err, cursor) => {
-      cursor.next((err, row) => {
-        if (err) {
-          return cb(err, null);
-        }
-
-        return cb(err, row);
-      });
-    });
+async function getUserByTokenAsync(token, cb) {
+  const user = await UserModel.where({ token }).fetch({ columns: ['name', 'lastchanged', 'credit'] });
+  if (user) {
+    cb(undefined, user.serialize());
+  } else {
+    cb(new Error());
+  }
 }
 
-function getAllUsersAsync(cb) {
-  r.table('users').pluck('name', 'lastchanged', 'credit').run(connection, (
-    err,
-    table
-  ) => {
-    if (err) {
-      return cb(err, null);
-    }
-
-    table.toArray(cb);
-  });
+async function getUserTransactionsAsync(username, cb) {
+  const transactions = await TransactionModel.where({
+    username,
+  }).fetchAll();
+  cb(undefined, transactions.serialize());
 }
 
-function getUserTransactionsAsync(username, cb) {
-  r
-    .table('transactions')
-    .filter(r.row('username').eq(username))
-    .run(connection, (err, cursor) => {
-      if (err) {
-        return cb(err, null);
-      }
-
-      cursor.toArray(cb);
-    });
+async function getAllTransactionsAsync(cb) {
+  const transactions = await TransactionModel.fetchAll();
+  cb(undefined, transactions.serialize());
 }
 
-function getAllTransactionsAsync(cb) {
-  r.table('transactions').run(connection, (err, table) => {
-    if (err) {
-      return cb(err, null);
-    }
+// function getAllProductsAsync(cb) {
+//   r.table('products').orderBy('order').run(connection, (err, table) => {
+//     if (err) {
+//       return cb(err, null);
+//     }
+//
+//     table.toArray(cb);
+//   });
+// }
 
-    table.toArray(cb);
-  });
-}
 
-function getAllProductsAsync(cb) {
-  r.table('products').orderBy('order').run(connection, (err, table) => {
-    if (err) {
-      return cb(err, null);
-    }
+async function renameUser(user, newname, rawPincode, res) {
+  let pincode;
+  if (rawPincode) {
+    pincode = passwordHash.generate(rawPincode);
+  }
+  const credit = user.credit;
 
-    table.toArray(cb);
-  });
-}
-
-function addUser(username, res) {
-  r
-    .table('users')
-    .insert({
-      name: username,
-      credit: 0,
-      lastchanged: r.now(),
-      pincode: null,
-    })
-    .run(connection, (err, dbres) => {
-      if (dbres.errors) {
-        winston.error(`Couldn't save user ${username}${err}`);
-        res.send(409, 'User exists already.');
-      } else {
-        getAllUsersAsync((err, users) => {
-          if (err) {
-            return res.send(500, 'Error retrieving users from database');
-          }
-
-          sock.broadcast.emit('accounts', JSON.stringify(users));
-          sock.emit('accounts', JSON.stringify(users));
-
-          res.send(200);
-          winston.info(`[addUser] New user ${username} created`);
-          return true;
-        });
-      }
-    });
-}
-
-function renameUser(user, newname, pincode, res) {
-  pincode = pincode || null;
-
-  if (pincode != null) {
-    pincode = passwordHash.generate(pincode);
+  try {
+    await new UserModel({
+      name: newname,
+      credit,
+      lastchanged: new Date(),
+      pincode,
+    }).save();
+  } catch (e) {
+    winston.error(`Couldn't save user ${newname}`);
+    res.send(409, 'That username is already taken');
   }
 
-  r
-    .table('users')
-    .insert({
-      name: newname,
-      credit: user.credit,
-      lastchanged: r.now(),
-      pincode,
-    })
-    .run(connection, (err, dbres) => {
-      if (dbres.errors) {
-        winston.error(`Couldn't save user ${newname}`);
-        res.send(409, 'That username is already taken');
-      } else {
-        r
-          .table('users')
-          .filter({ name: user.name })
-          .delete()
-          .run(connection, err => {
-            if (err) {
-              winston.error(`Couldn't delete old user ${user.name}`);
-              res.send(409, 'Can\'t delete old user');
-            }
-          });
-        r
-          .table('transactions')
-          .filter({ username: user.name })
-          .update({ username: newname })
-          .run(connection, err => {
-            if (err) {
-              winston.error(
-                `Couldn't update transactions of old user ${user.name}`
-              );
-              res.send(409, 'Can\'t update transactions!');
-            }
-          });
-      }
-    });
+  await UserModel.where({ name: user.name }).destroy();
+  const transactions = await TransactionModel.where({ username: user.name }).fetchAll();
+  await Promise.all(transactions.map(t => t.save({ name: newname })));
 }
 
-function updateCredit(user, delta, description, product) {
-  description = description || null;
-  product = product || null;
-
+async function updateCredit(user, delta, description) {
   user.credit += Number(delta);
   user.credit = Math.round(user.credit * 100) / 100;
-  user.lastchanged = Date.now();
+  user.lastchanged = new Date();
 
-  const transaction = {
+
+
+  const transaction = new TransactionModel({
+    id: uuid.v4(),
     username: user.name,
     delta,
     credit: user.credit,
-    time: r.now(),
+    time: new Date(),
     description,
-    product,
-  };
-
-  r.table('transactions').insert(transaction).run(connection, err => {
-    if (err) {
-      winston.error(`Couldn't save transaction for user ${user.name}${err}`);
-    }
-
-    if (config.mqtt.enable) {
-      mqttPost('transactions', transaction);
-    }
   });
-  r
-    .table('users')
-    .filter({ name: user.name })
-    .update({ credit: user.credit, lastchanged: r.now() })
-    .run(connection, err => {
-      if (err) {
-        winston.error(`Couldn't save transaction for user ${user.name}${err}`);
-      }
-    });
+  await transaction.save({}, { method: 'insert' });
+  if (config.mqtt.enable) {
+    mqttPost('transactions', transaction.serialize());
+  }
+
+  const dbUser = await UserModel.where({ name: user.name }).fetch();
+  if (!dbUser) {
+    winston.error(`Couldn't save transaction for user ${user.name}`);
+    return;
+  }
+  await dbUser.save({ credit: user.credit, lastchanged: new Date() });
+
 
   if (delta < 0) {
     sock.emit('ka-ching', JSON.stringify(users));
@@ -641,7 +530,7 @@ function updateCredit(user, delta, description, product) {
   }
 
   winston.info(
-    `[userCredit] Changed credit from user ${user.name} by ${delta}. New credit: ${user.credit}`
+    `[userCredit] Changed credit from user ${user.name} by ${delta}. New credit: ${user.credit}`,
   );
 }
 
@@ -650,10 +539,12 @@ function mqttPost(service, payload) {
     `${config.mqtt.prefix}/${service}`,
     JSON.stringify(payload),
     {},
-    err => {}
+    // eslint-disable-next-line
+    err => {},
   );
 }
 
+// eslint-disable-next-line
 function criticalError(errormsg) {
   winston.error(errormsg);
   process.exit(1);
@@ -664,8 +555,9 @@ process.on('SIGTERM', () => {
   process.exit();
 });
 
+serverStart();
+
 module.exports = {
   addUser,
   serverStart,
-  connection,
 };

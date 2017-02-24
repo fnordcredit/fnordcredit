@@ -1,0 +1,7 @@
+{
+  "presets": ["node6"],
+  "plugins": [
+    "transform-flow-strip-types",
+    "transform-class-properties"
+  ]
+}

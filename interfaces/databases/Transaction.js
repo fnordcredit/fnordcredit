@@ -1,9 +1,8 @@
-declare type Transactions = {
+declare type Transaction = {
   credit: number,
   delta: number,
   description: string,
   id: string,
-  product?: string,
   time: Date,
   username: string,
 }

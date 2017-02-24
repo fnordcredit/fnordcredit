@@ -10,3 +10,4 @@ config.js
 .bash_history
 .bash_login
 static/img/*.png
+lib
