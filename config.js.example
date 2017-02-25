@@ -1,15 +1,17 @@
 /* eslint header/header: 0 */
+const path = require('path');
+
 module.exports = {
   db: {
     client: 'sqlite3',
     useNullAsDefault: true,
     connection: {
-      filename: './prod.db',
+      filename: path.resolve('./prod.db'),
     },
   },
 
   testDbConnection: {
-    filename: './test.db',
+    filename: path.resolve('./test.db'),
   },
 
   settings: {
