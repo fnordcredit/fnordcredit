@@ -6,12 +6,12 @@ module.exports = {
     client: 'sqlite3',
     useNullAsDefault: true,
     connection: {
-      filename: path.resolve('./prod.db'),
+      filename: path.resolve(__dirname, './prod.db'),
     },
   },
 
   testDbConnection: {
-    filename: path.resolve('./test.db'),
+    filename: path.resolve(__dirname, './test.db'),
   },
 
   settings: {
