@@ -5,6 +5,7 @@
   "description": "SAP easy credit system",
   "main": "lib/server.js",
   "scripts": {
+    "build": "babel src --out-dir lib --copy-files",
     "watch": "babel src --out-dir lib --watch --copy-files --source-maps",
     "dev": "nodemon --watch lib --exec 'node lib/server.js'",
     "start": "node lib/server.js",
@@ -25,8 +26,6 @@
     "knex": "^0.12.7",
     "mqtt": "^2.4.0",
     "password-hash": "1.2.2",
-    "q": "^1.4.1",
-    "rethinkdb": "^2.3.3",
     "socket.io": "^1.7.3",
     "sqlite3": "^3.1.8",
     "uuid": "^3.0.1",
@@ -43,7 +42,6 @@
     "eslint-config-marudor": "^4.1.2",
     "flow-bin": "^0.40.0",
     "jest": "^19.0.2",
-    "mocha": "^3.2.0",
     "nodemon": "^1.11.0"
   },
   "license": "MIT",
