@@ -10,7 +10,7 @@
     "dev": "nodemon --watch lib --exec 'node lib/server.js'",
     "start": "node lib/server.js",
     "test": "jest",
-    "travis": "npm run newDatabase && npm test",
+    "travis": "NODE_ENV=test npm run newDatabase && npm test",
     "newDatabase": "knex migrate:rollback && knex migrate:latest"
   },
   "jest": {
