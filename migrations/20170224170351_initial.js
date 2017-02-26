@@ -18,7 +18,7 @@ exports.up = function(knex, Promise) {
       debt_allowed BOOL NOT NULL,
       debt_hard_limit INT,
       lastchanged TIMESTAMP NOT NULL,
-      name TEXT NOT NULL,
+      name TEXT NOT NULL PRIMARY KEY,
       pincode TEXT,
       token TEXT
     );

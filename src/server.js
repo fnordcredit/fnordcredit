@@ -1,10 +1,9 @@
 // @flow
 import './databaseInit';
-import { addUser, checkUserPin, getAllUsers, updatePin } from './Service/UserService';
+import { addUser, checkUserPin, getAllUsers, renameUser, updatePin } from './Service/UserService';
 import bodyParser from 'body-parser';
 import config from '../config';
 import express from 'express';
-import passwordHash from 'password-hash';
 import TransactionModel from './Model/TransactionModel';
 import UserModel from './Model/UserModel';
 import uuid from 'uuid';
@@ -184,7 +183,11 @@ function serverStart() {
           return;
         }
 
-        renameUser(user, newname, pincode, res);
+        try {
+          renameUser(user, newname, pincode);
+        } catch (e) {
+          res.status(500).send(e.message);
+        }
 
         getAllUsers().then(users => {
           sock.broadcast.emit('accounts', JSON.stringify(users));
@@ -439,30 +442,7 @@ function serverStart() {
       //   });
       // }
 
-      async function renameUser(user, newname, rawPincode, res) {
-        let pincode;
-        if (rawPincode) {
-          pincode = passwordHash.generate(rawPincode);
-        }
-        const credit = user.credit;
 
-        try {
-          await new UserModel({
-            name: newname,
-            credit,
-            lastchanged: new Date(),
-            pincode,
-          }).save();
-        } catch (e) {
-          winston.error(`Couldn't save user ${newname}`);
-          res.send(409, 'That username is already taken');
-        }
-
-        await UserModel.where({ name: user.name }).destroy();
-        const transactions = await TransactionModel.where({ username: user.name })
-        .fetchAll();
-        await Promise.all(transactions.map(t => t.save({ name: newname })));
-      }
 
       async function updateCredit(user, delta, description) {
         user.credit += Number(delta);

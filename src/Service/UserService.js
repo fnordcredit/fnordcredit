@@ -1,5 +1,6 @@
 // @flow
 import passwordHash from 'password-hash';
+import TransactionModel from '../Model/TransactionModel';
 import UserModel from '../Model/UserModel';
 import winston from 'winston';
 
@@ -53,6 +54,37 @@ export async function deleteUser(username: string) {
   await UserModel.where({
     name: username,
   }).destroy();
+}
+
+export async function renameUser(user: User, newname: string, rawPincode?: string) {
+  let pincode;
+  if (rawPincode) {
+    pincode = passwordHash.generate(rawPincode);
+  }
+  const credit = user.credit;
+
+  await bookshelf.transaction(async trx => {
+    try {
+      await new UserModel({
+        name: newname,
+        credit,
+        lastchanged: new Date(),
+        pincode,
+        debtAllowed: user.debtAllowed,
+      }).save({}, { method: 'insert', transacting: trx });
+    } catch (e) {
+      winston.error(`Couldn't save user ${newname}`);
+      throw e;
+    }
+
+    const oldUser = await UserModel.where({ name: user.name }).fetch({ transacting: trx });
+    if (oldUser) {
+      await oldUser.destroy({ transacting: trx });
+    }
+    const transactions = await TransactionModel.where({ username: user.name })
+    .fetchAll({ transacting: trx });
+    await Promise.all(transactions.map(t => t.save({ name: newname }, { transacting: trx })));
+  });
 }
 
 export async function updatePin(username: string, newPincode: string) {

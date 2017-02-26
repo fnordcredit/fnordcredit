@@ -1,5 +1,5 @@
 // @flow
-import { addUser, deleteUser, getUser, updatePin } from '../UserService';
+import { addUser, deleteUser, getUser, renameUser, updatePin } from '../UserService';
 import passwordHash from 'password-hash';
 
 describe('UserService', () => {
@@ -15,7 +15,26 @@ describe('UserService', () => {
     expect(passwordHash.verify(pin, user.get('pincode'))).toBe(true);
   });
 
+  it('renameUser', async () => {
+    let user = await getUser('test');
+    await renameUser(user.serialize(), 'testNew');
+    user = await getUser('testNew');
+    expect(user).toBeDefined();
+  });
+
+  it('renameUser doesnt work for same', async () => {
+    try {
+      const user = await getUser('testNew');
+      await renameUser(user.serialize(), 'testNew');
+      throw new Error('foo');
+    } catch (e) {
+      expect(e).toBeDefined();
+      expect(e.message).not.toBe('foo');
+    }
+  });
+
   it('delete user', async () => {
     await deleteUser('test');
+    await deleteUser('testNew');
   });
 });
