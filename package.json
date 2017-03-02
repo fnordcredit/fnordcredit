@@ -10,8 +10,16 @@
     "dev": "nodemon --watch lib --exec 'node lib/server.js'",
     "start": "node lib/server.js",
     "test": "jest",
-    "travis": "NODE_ENV=test npm run newDatabase && npm test",
-    "newDatabase": "knex migrate:rollback && knex migrate:latest"
+    "travis": "npm run newDatabase && npm test",
+    "newDatabase": "knex migrate:rollback && knex migrate:latest",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ]
   },
   "jest": {
     "testEnvironment": "node",
@@ -43,8 +51,11 @@
     "eslint": "^3.16.1",
     "eslint-config-marudor": "^4.1.2",
     "flow-bin": "^0.40.0",
+    "husky": "^0.13.1",
     "jest": "^19.0.2",
-    "nodemon": "^1.11.0"
+    "lint-staged": "^3.3.1",
+    "nodemon": "^1.11.0",
+    "prettier": "^0.20.0"
   },
   "license": "MIT",
   "repository": {
