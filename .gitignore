@@ -13,3 +13,4 @@ static/img/*.png
 lib
 *.db
 *.db-journal
+.env

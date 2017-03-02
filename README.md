@@ -1,25 +1,26 @@
-# fnordcredit-entropia
-Open source credit system with entropia flavour
+# fnordcredit-stratum0
+Open source credit system with stratum0 flavour
 
 Innovative, easy to use credit system for multiple users that comes with an intuitive design: Create an account and charge or discharge your credit.
 
 ## Development
-fnordcredit is written in Javascript/Node.js/jQuery/rethinkDB.
+fnordcredit is written in Javascript/Node.js/jQuery/knex.
 
-To start a local development server, have rethinkDB installed and running, then do the following:
+To start a local development server do the following:
 
-	git clone git@github.com:entropia/fnordcredit.git
+	git clone git@github.com:marudor/fnordcredit.git
 	cd fnordcredit
 	npm install
 	cp config.js.example config.js
-	node tools/dbInit.js
+  npm run newDatabase
 
-As last step, start the local development server using ```npm start``` and point your browser to http://127.0.0.1:8000.
+As last step, start the local development server using ```npm start```
 
 ## License
-Copyright © 2014 
+Copyright © 2017
 	silsha &lt;hallo@silsha.me&gt;
 	Twi &lt;twi@entropia.de&gt;
+  marudor &lt;marudor@marudor.de&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

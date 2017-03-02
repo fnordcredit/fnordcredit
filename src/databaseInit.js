@@ -1,10 +1,14 @@
 // @flow
-const Knex = require('knex');
-const Bookshelf = require('bookshelf');
-const config = require('../config');
+import Bookshelf from 'bookshelf';
+import Knex from 'knex';
 
-if (process.env.NODE_ENV === 'test') {
-  Object.assign(config.db.connection, config.testDbConnection);
-}
-global.knex = Knex(config.db);
+const config = {
+  client: 'sqlite3',
+  useNullAsDefault: true,
+  connection: {
+    filename: process.env.DB_CONNECTION_FILENAME || 'example.db',
+  },
+};
+
+global.knex = Knex(config);
 global.bookshelf = Bookshelf(global.knex);
