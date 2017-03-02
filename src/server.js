@@ -7,8 +7,7 @@ import {
   renameUser,
   updatePin,
 } from './Service/UserService';
-import bodyParser from 'body-parser';
-import express from 'express';
+import app from './serverInit';
 import TransactionModel from './Model/TransactionModel';
 import UserModel from './Model/UserModel';
 import uuid from 'uuid';
@@ -19,7 +18,6 @@ const config = {
   maxDebt: Number.parseInt(process.env.MAX_DEBT || '-100', 10) || -100,
 };
 
-const app = express();
 let io;
 
 let sock: any = {
@@ -30,18 +28,6 @@ let sock: any = {
 process.stdin.resume();
 winston.add(winston.transports.File, { filename: 'credit.log', json: false });
 let users;
-
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
-  );
-  next();
-});
-
-app.use('/', express.static(`${__dirname}/../static`));
-app.use(bodyParser());
 
 function serverStart() {
   let server = require('http').createServer(app);

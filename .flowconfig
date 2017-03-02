@@ -1,6 +1,7 @@
 [ignore]
-seeds/
-migrations/
+.*seeds/.*
+.*migrations/.*
+.*node_modules/jest-validate.*
 
 [include]
 
