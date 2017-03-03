@@ -5,17 +5,19 @@ import UserModel from '../Model/UserModel';
 import uuid from 'uuid';
 import winston from 'winston';
 
-export async function updateToken(username: string, newToken: string) {
+export async function updateToken(
+  username: string,
+  newToken: string
+): Promise<UserModel> {
   const user = await UserModel.where({
     name: username,
   }).fetch();
   if (user) {
-    await user.save({
+    return user.save({
       token: newToken,
     });
-  } else {
-    throw new Error('User not Found');
   }
+  throw new Error('User not Found');
 }
 
 export function getAllUsers() {
@@ -60,8 +62,8 @@ export async function addUser(username: string) {
 export async function updateCredit(
   user: User,
   delta: number,
-  description?: string
-) {
+  description: string
+): Promise<UserModel> {
   user.credit += Number(delta);
   user.credit = Math.round(user.credit * 100) / 100;
   user.lastchanged = new Date();
@@ -79,7 +81,7 @@ export async function updateCredit(
   let dbUser = await UserModel.where({ name: user.name }).fetch();
   if (!dbUser) {
     winston.error(`Couldn't save transaction for user ${user.name}`);
-    return;
+    throw new Error(`failed to update Credit for user ${user.name}`);
   }
   dbUser = await dbUser.save({ credit: user.credit, lastchanged: new Date() });
 
@@ -122,20 +124,17 @@ export async function deleteUser(username: string) {
   }).destroy();
 }
 
-export async function renameUser(
-  user: User,
-  newname: string,
-  rawPincode?: string
-) {
+export function renameUser(user: User, newname: string, rawPincode?: string) {
   let pincode;
   if (rawPincode) {
     pincode = passwordHash.generate(rawPincode);
   }
   const credit = user.credit;
 
-  await bookshelf.transaction(async trx => {
+  return bookshelf.transaction(async trx => {
+    let newUser;
     try {
-      await new UserModel({
+      newUser = await new UserModel({
         name: newname,
         credit,
         lastchanged: new Date(),
@@ -157,8 +156,9 @@ export async function renameUser(
       username: user.name,
     }).fetchAll({ transacting: trx });
     await Promise.all(
-      transactions.map(t => t.save({ name: newname }, { transacting: trx }))
+      transactions.map(t => t.save({ username: newname }, { transacting: trx }))
     );
+    return newUser;
   });
 }
 
