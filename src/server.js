@@ -175,7 +175,7 @@ app.post('/user/credit', (req, res) => {
       }
 
       if (delta < 0 && user.credit + delta < 0) {
-        if (!config.allowDebt) {
+        if (!config.debtAllowed) {
           res.send(406, 'negative credit not allowed in configuration.');
           winston.error(
             '[userCredit] negative credit not allowed in configuration'
@@ -191,10 +191,10 @@ app.post('/user/credit', (req, res) => {
           return;
         }
 
-        if (user.credit + delta < config.settings.maxDebt) {
+        if (user.credit + delta < config.maxDebt) {
           res.send(
             406,
-            `credit below ${config.settings.maxDebt} € not allowed in configuration.`
+            `credit below ${config.maxDebt} € not allowed in configuration.`
           );
           winston.error(
             '[userCredit] credit below maxDebt not allowed in configuration'

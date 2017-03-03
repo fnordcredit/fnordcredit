@@ -57,6 +57,13 @@ describe('UserService', () => {
     expect(user.get('credit')).toBe(dbUser.get('credit'));
   });
 
+  it('go into negative', async () => {
+    user = await updateCredit(user.serialize(), -2, '-2');
+    expect(user.get('credit')).toBe(-1);
+    const dbUser = await getUser(user.get('name'));
+    expect(user.get('credit')).toBe(dbUser.get('credit'));
+  });
+
   it('delete user', async () => {
     await deleteUser('test');
     await deleteUser('testNew');
