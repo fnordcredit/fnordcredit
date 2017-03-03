@@ -2,7 +2,21 @@
 import passwordHash from 'password-hash';
 import TransactionModel from '../Model/TransactionModel';
 import UserModel from '../Model/UserModel';
+import uuid from 'uuid';
 import winston from 'winston';
+
+export async function updateToken(username: string, newToken: string) {
+  const user = await UserModel.where({
+    name: username,
+  }).fetch();
+  if (user) {
+    await user.save({
+      token: newToken,
+    });
+  } else {
+    throw new Error('User not Found');
+  }
+}
 
 export function getAllUsers() {
   return UserModel.fetchAll({ columns: ['name', 'lastchanged', 'credit'] });
@@ -18,7 +32,10 @@ export async function checkUserPin(username: string, pincode: string) {
   const dbPin = user.get('pincode');
   const dbToken = user.get('token');
 
-  if ((dbPin != null && !passwordHash.verify(pincode, dbPin)) || (dbToken != null && dbToken === pincode)) {
+  if (
+    (dbPin != null && !passwordHash.verify(pincode, dbPin)) ||
+    (dbToken != null && dbToken === pincode)
+  ) {
     throw new Error('Wrong Pin');
   }
 }
@@ -40,6 +57,55 @@ export async function addUser(username: string) {
   return user;
 }
 
+export async function updateCredit(
+  user: User,
+  delta: number,
+  description?: string
+) {
+  user.credit += Number(delta);
+  user.credit = Math.round(user.credit * 100) / 100;
+  user.lastchanged = new Date();
+
+  const transaction = new TransactionModel({
+    id: uuid.v4(),
+    username: user.name,
+    delta,
+    credit: user.credit,
+    time: new Date(),
+    description,
+  });
+  await transaction.save({}, { method: 'insert' });
+
+  let dbUser = await UserModel.where({ name: user.name }).fetch();
+  if (!dbUser) {
+    winston.error(`Couldn't save transaction for user ${user.name}`);
+    return;
+  }
+  dbUser = await dbUser.save({ credit: user.credit, lastchanged: new Date() });
+
+  winston.info(
+    `[userCredit] Changed credit from user ${user.name} by ${delta}. New credit: ${user.credit}`
+  );
+
+  return dbUser;
+}
+
+export function getUserTransactions(username: string) {
+  return TransactionModel.where({
+    username,
+  }).fetchAll();
+}
+
+export async function getUserByToken(token: string) {
+  const user = await UserModel.where({
+    token,
+  }).fetch();
+  if (!user) {
+    throw new Error('User not found');
+  }
+  return user;
+}
+
 export async function getUser(username: string) {
   const user = await UserModel.where({
     name: username,
@@ -56,7 +122,11 @@ export async function deleteUser(username: string) {
   }).destroy();
 }
 
-export async function renameUser(user: User, newname: string, rawPincode?: string) {
+export async function renameUser(
+  user: User,
+  newname: string,
+  rawPincode?: string
+) {
   let pincode;
   if (rawPincode) {
     pincode = passwordHash.generate(rawPincode);
@@ -77,13 +147,18 @@ export async function renameUser(user: User, newname: string, rawPincode?: strin
       throw e;
     }
 
-    const oldUser = await UserModel.where({ name: user.name }).fetch({ transacting: trx });
+    const oldUser = await UserModel.where({ name: user.name }).fetch({
+      transacting: trx,
+    });
     if (oldUser) {
       await oldUser.destroy({ transacting: trx });
     }
-    const transactions = await TransactionModel.where({ username: user.name })
-    .fetchAll({ transacting: trx });
-    await Promise.all(transactions.map(t => t.save({ name: newname }, { transacting: trx })));
+    const transactions = await TransactionModel.where({
+      username: user.name,
+    }).fetchAll({ transacting: trx });
+    await Promise.all(
+      transactions.map(t => t.save({ name: newname }, { transacting: trx }))
+    );
   });
 }
 
@@ -93,12 +168,9 @@ export async function updatePin(username: string, newPincode: string) {
   if (newPincode) {
     hashedPincode = passwordHash.generate(newPincode);
   }
-  const user = await UserModel
-  .where({ name: username })
-  .fetch();
+  const user = await UserModel.where({ name: username }).fetch();
   if (!user) {
     throw new Error('User not found');
   }
-  await user
-  .save({ pincode: hashedPincode });
+  await user.save({ pincode: hashedPincode });
 }

@@ -1,7 +1,7 @@
 // @flow
 import BaseModel from './BaseModel';
 
-export default class UserModel extends BaseModel<Transaction> {
+export default class TransactionModel extends BaseModel<Transaction> {
   static tableName = 'Transaction';
   static idAttribute = 'id';
 }
