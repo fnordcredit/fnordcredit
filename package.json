@@ -9,7 +9,7 @@
     "watch": "babel src --out-dir lib --watch --copy-files --source-maps",
     "dev": "nodemon --watch lib --exec 'node lib/server.js'",
     "start": "node lib/server.js",
-    "test": "jest",
+    "test": "jest && npm run build && npm run start -- --test",
     "travis": "npm run newDatabase && npm test",
     "newDatabase": "knex migrate:rollback && knex migrate:latest",
     "precommit": "lint-staged"

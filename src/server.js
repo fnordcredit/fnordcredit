@@ -449,3 +449,7 @@ module.exports = {
   addUser,
   serverStart,
 };
+
+if (process.argv.includes('--test', 2)) {
+  process.exit(0);
+}
