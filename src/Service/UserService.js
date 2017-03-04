@@ -5,6 +5,14 @@ import UserModel from '../Model/UserModel';
 import uuid from 'uuid';
 import winston from 'winston';
 
+export async function deleteUser(username: string, force: bool = false) {
+  const user = await getUser(username);
+  if (!force && user.get('credit') !== 0) {
+    throw new Error('Cannot delete User unless 0 credit');
+  }
+  await user.destroy();
+}
+
 export async function updateToken(
   username: string,
   newToken: string
@@ -116,12 +124,6 @@ export async function getUser(username: string) {
     throw new Error('User not found');
   }
   return user;
-}
-
-export async function deleteUser(username: string) {
-  await UserModel.where({
-    name: username,
-  }).destroy();
 }
 
 export function renameUser(user: User, newname: string, rawPincode?: string) {

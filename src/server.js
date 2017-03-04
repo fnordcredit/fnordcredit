@@ -6,7 +6,7 @@ import winston from 'winston';
 
 let io;
 
-let sock: any = {
+global.sock = {
   // eslint-disable-next-line
   emit() {}
 };

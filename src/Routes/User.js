@@ -1,6 +1,7 @@
 // @flow
 import {
   addUser,
+  deleteUser,
   getAllUsers,
   getUser,
   renameUser,
@@ -12,6 +13,18 @@ import config from '../config';
 import pinMiddleware from './pinMiddleware';
 import Router from 'koa-router';
 
+async function emit() {
+  if (sock) {
+    const users = await getAllUsers();
+    if (sock.broadcast && sock.broadcast.emit) {
+      sock.broadcast.emit('accounts', JSON.stringify(users));
+    }
+    if (sock.emit) {
+      sock.emit('accounts', JSON.stringify(users));
+    }
+  }
+}
+
 const router = new Router();
 
 router
@@ -21,10 +34,15 @@ router
     const username = ctx.params.username;
     ctx.body = await getUser(username);
   })
+  .delete('/:username', async ctx => {
+    const username = ctx.params.username;
+    await deleteUser(username);
+    ctx.status = 200;
+  })
   .post('/add', async ctx => {
     await addUser(ctx.request.body.username);
     ctx.body = await getAllUsers();
-    // TODO: Emit all users to socket
+    emit();
   })
   .post('/rename', async ctx => {
     const { username, newname } = ctx.request.body;
@@ -32,7 +50,7 @@ router
     const user = await getUser(username);
     await renameUser(user.serialize(), newname, pincode);
     const users = await getAllUsers();
-    // TODO: Emit all users to socket
+    emit();
     ctx.body = users;
   })
   .post('/credit', async ctx => {
@@ -65,10 +83,8 @@ router
         );
       }
     }
-    await updateCredit(user, delta, description, product);
-    const users = await getAllUsers();
-    // TODO: Emit all users to socket
-    ctx.body = users;
+    ctx.body = await updateCredit(user, delta, description, product);
+    emit();
   })
   .post('/change-pin', async ctx => {
     const { username, pincode } = ctx.request.body;

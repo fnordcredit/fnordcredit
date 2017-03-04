@@ -1,3 +1,4 @@
+/* eslint-disable */
 var socket = io.connect('http://' + window.location.host);
 var accounts = [];
 var filter = ""
@@ -9,7 +10,7 @@ var products = [];
 dust.helpers.currency = function(chunk, context, bodies, params) {
     var value = parseFloat(params.value);
     var prefix = params.prefix;
-    
+
     if (prefix != null) {
         chunk.write(prefix);
     }
@@ -87,6 +88,10 @@ function showDetail(userData, pincode) {
             // rename Button
             $("#renameButton").click(function () {
                 renameUser(userData, pincode);
+            });
+
+            $('#deleteButton').click(function() {
+              deleteUser(userData, pincode);
             });
 
             // rename Button
@@ -184,6 +189,25 @@ function newUser() {
             changeView('newuser');
         });
     });
+}
+
+function deleteUser(userData, pincode) {
+  lockUi()
+  $.ajax({
+    url: '/user/' + userData.name,
+    type: 'DELETE',
+    headers: {
+      "X-User-Pincode": pincode
+    },
+    success: function () {
+      releaseUi();
+      changeView('accounts');
+    },
+    error: function (err) {
+      releaseUi()
+      showFailureOverlay(err.responseText);
+    }
+  });
 }
 
 function renameUser(userData, pincode) {

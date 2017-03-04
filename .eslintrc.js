@@ -7,6 +7,7 @@ module.exports = {
   globals: {
     knex: false,
     bookshelf: false,
-    koa: false
+    koa: false,
+    sock: false
   }
 };

@@ -65,7 +65,15 @@ describe('UserService', () => {
   });
 
   it('delete user', async () => {
-    await deleteUser('test');
-    await deleteUser('testNew');
+    try {
+      await deleteUser('test', true);
+    } catch (e) {
+      //
+    }
+    try {
+      await deleteUser('testNew', true);
+    } catch (e) {
+      //
+    }
   });
 });
