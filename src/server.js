@@ -9,8 +9,6 @@ import {
   getUserTransactions,
   renameUser,
   updateCredit,
-  updatePin,
-  updateToken,
 } from './Service/UserService';
 import app from './serverInit';
 import TransactionModel from './Model/TransactionModel';
@@ -226,53 +224,53 @@ app.post('/user/credit', (req, res) => {
     });
 });
 
-app.post('/user/change-pin', (req, res) => {
-  const username = req.body.username;
-  const pincode = req.header('X-User-Pincode');
-  let newPincode = req.body.pincode;
+// app.post('/user/change-pin', (req, res) => {
+//   const username = req.body.username;
+//   const pincode = req.header('X-User-Pincode');
+//   let newPincode = req.body.pincode;
+//
+//   checkUserPin(username, pincode)
+//     .catch(() => res.send(401, 'Authorization required'))
+//     .then(() => getUser(username))
+//     .catch(() => {
+//       winston.error('[userCredit] database error while retrieving user');
+//       return res.send(500, `Error retrieving ${username} from database `);
+//     })
+//     .then(async user => {
+//       newPincode = newPincode || null;
+//
+//       try {
+//         await updatePin(user.get('name'), newPincode);
+//       } catch (e) {
+//         res.send(500, e);
+//       }
+//       res.send(200, 'PIN updated successfully');
+//     });
+// });
 
-  checkUserPin(username, pincode)
-    .catch(() => res.send(401, 'Authorization required'))
-    .then(() => getUser(username))
-    .catch(() => {
-      winston.error('[userCredit] database error while retrieving user');
-      return res.send(500, `Error retrieving ${username} from database `);
-    })
-    .then(async user => {
-      newPincode = newPincode || null;
-
-      try {
-        await updatePin(user.get('name'), newPincode);
-      } catch (e) {
-        res.send(500, e);
-      }
-      res.send(200, 'PIN updated successfully');
-    });
-});
-
-app.post('/user/change-token', (req, res) => {
-  const username = req.body.username;
-  const pincode = req.header('X-User-Pincode');
-  let newToken = req.body.newtoken;
-
-  checkUserPin(username, pincode)
-    .catch(() => res.send(401, 'Authorization required'))
-    .then(() => getUser(username))
-    .catch(() => {
-      winston.error('[userCredit] database error while retrieving user');
-      return res.send(500, `Error retrieving ${username} from database `);
-    })
-    .then(user => {
-      newToken = newToken || null;
-
-      updateToken(user.get('name'), newToken)
-        .catch(e => {
-          winston.error(e);
-          res.send(500, 'Error updating token');
-        })
-        .then(() => res.send(200, 'Tokens updated successfully'));
-    });
-});
+// app.post('/user/change-token', (req, res) => {
+//   const username = req.body.username;
+//   const pincode = req.header('X-User-Pincode');
+//   let newToken = req.body.newtoken;
+//
+//   checkUserPin(username, pincode)
+//     .catch(() => res.send(401, 'Authorization required'))
+//     .then(() => getUser(username))
+//     .catch(() => {
+//       winston.error('[userCredit] database error while retrieving user');
+//       return res.send(500, `Error retrieving ${username} from database `);
+//     })
+//     .then(user => {
+//       newToken = newToken || null;
+//
+//       updateToken(user.get('name'), newToken)
+//         .catch(e => {
+//           winston.error(e);
+//           res.send(500, 'Error updating token');
+//         })
+//         .then(() => res.send(200, 'Tokens updated successfully'));
+//     });
+// });
 
 // app.get('/products', (req, res) => {
 //   getAllProductsAsync((err, data) => {
