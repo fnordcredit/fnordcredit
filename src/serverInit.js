@@ -1,19 +1,13 @@
 // @flow
-import bodyParser from 'body-parser';
-import express from 'express';
+import bodyParser from 'koa-bodyparser';
+import Koa from 'koa';
+import Static from 'koa-static';
 
-const app = express();
+const koa = new Koa();
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
-  );
-  next();
-});
+koa.use(Static(`${__dirname}/../static`));
+koa.use(bodyParser());
 
-app.use('/', express.static(`${__dirname}/../static`));
-app.use(bodyParser());
+global.koa = koa;
 
-export default app;
+require('./Routes');

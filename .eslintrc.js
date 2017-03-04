@@ -1,11 +1,12 @@
 module.exports = {
-  extends: 'marudor/noReact',
+  extends: "marudor/noReact",
   env: {
     node: true,
-    jest: true,
+    jest: true
   },
   globals: {
     knex: false,
     bookshelf: false,
+    koa: false
   }
 };
