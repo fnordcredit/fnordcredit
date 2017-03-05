@@ -51,6 +51,9 @@ export async function checkUserPin(username: string, pincode: string) {
 }
 
 export async function addUser(username: string) {
+  if (!username.trim()) {
+    throw new Error('Please enter a name');
+  }
   const existingUser = await UserModel.where({ name: username }).fetch();
   if (existingUser) {
     winston.error(`Couldn't save user ${username}, already exists`);

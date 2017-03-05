@@ -64,6 +64,16 @@ describe('UserService', () => {
     expect(user.get('credit')).toBe(dbUser.get('credit'));
   });
 
+  it('can not create user with only spaces', async () => {
+    try {
+      await addUser('    ');
+      throw new Error('shouldnt happen');
+    } catch (e) {
+      expect(e).toBeDefined();
+      expect(e.message).toBe('Please enter a name');
+    }
+  });
+
   it('delete user', async () => {
     try {
       await deleteUser('test', true);
