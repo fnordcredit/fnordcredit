@@ -4,6 +4,9 @@
   "author": "silsha <hallo@silsha.me>",
   "description": "SAP easy credit system",
   "main": "lib/server.js",
+  "engines": {
+    "node": ">= 7.6"
+  },
   "scripts": {
     "build": "babel src --out-dir lib --copy-files",
     "watch": "babel src --out-dir lib --watch --copy-files --source-maps",
