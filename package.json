@@ -29,19 +29,18 @@
     ]
   },
   "dependencies": {
-    "body-parser": "^1.17.1",
     "bookshelf": "^0.10.3",
+    "engine.io": "^2.1.0",
     "knex": "^0.12.7",
     "koa": "^2.1.0",
     "koa-bodyparser": "^4.1.0",
-    "koa-router": "next",
-    "koa-static": "next",
+    "koa-router": "7",
+    "koa-static": "3",
     "password-hash": "1.2.2",
     "primus": "^6.1.0",
     "primus-emit": "^1.0.0",
     "sqlite3": "^3.1.8",
     "uuid": "^3.0.1",
-    "uws": "^0.13.0",
     "winston": "^2.0.0"
   },
   "devDependencies": {
@@ -50,8 +49,8 @@
     "babel-plugin-module-require": "^1.5.0",
     "babel-plugin-transform-async-to-generator": "^6.22.0",
     "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
-    "babel-preset-node6": "^11.0.0",
     "eslint": "^3.17.1",
     "eslint-config-marudor": "^4.2.0",
     "flow-bin": "^0.41.0",

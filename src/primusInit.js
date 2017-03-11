@@ -8,7 +8,7 @@ export default function(server: Server) {
   const router = new Router();
   const primus = new Primus(server, {
     compression: true,
-    transformer: 'uws',
+    transformer: 'engine.io',
   });
   primus.plugin('emit', require('primus-emit'));
 
