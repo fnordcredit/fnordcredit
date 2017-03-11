@@ -14,15 +14,8 @@ import pinMiddleware from './pinMiddleware';
 import Router from 'koa-router';
 
 async function emit() {
-  if (sock) {
-    const users = await getAllUsers();
-    if (sock.broadcast && sock.broadcast.emit) {
-      sock.broadcast.emit('accounts', JSON.stringify(users));
-    }
-    if (sock.emit) {
-      sock.emit('accounts', JSON.stringify(users));
-    }
-  }
+  const users = await getAllUsers();
+  broadcast('accounts', users);
 }
 
 const router = new Router();

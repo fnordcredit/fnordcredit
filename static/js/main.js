@@ -1,5 +1,5 @@
 /* eslint-disable */
-var socket = io.connect('http://' + window.location.host);
+var primus = new Primus('http://' + window.location.host);
 var accounts = [];
 var filter = ""
 var sortby = "time" //valid values: time abc zyx
@@ -305,7 +305,7 @@ function changeView(view) {
             $('#details').show();
             break;
         case 'accounts':
-            socket.emit('getAccounts');
+            primus.emit('getAccounts');
             $('#accounts').show();
             $("nav").show();
             break;
@@ -319,7 +319,7 @@ function changeView(view) {
             $('#changetoken').show();
             break;
         case 'statistics':
-            socket.emit('getAccounts');
+            primus.emit('getAccounts');
             showStatistics();
             $('#view-statistics').show();
             break;
@@ -442,25 +442,23 @@ function hidePinpad() {
     $("#pinwindow-content").empty();
 }
 
-socket.on('accounts', function (data) {
-    var data = JSON.parse(data);
+primus.on('accounts', function (data) {
     accounts = data;
     getAllUsers();
 });
 
-socket.on('products', function (data) {
-    var data = JSON.parse(data);
+primus.on('products', function (data) {
     products = data;
 });
 
-socket.on('ka-ching', function () {
+primus.on('ka-ching', function () {
     var p = $('#ka-ching').get(0);
     p.pause();
     p.currentTime = 0;
     p.play();
 });
 
-socket.on('one-up', function () {
+primus.on('one-up', function () {
     var p = $('#one-up').get(0);
     p.pause();
     p.currentTime = 0;

@@ -8,6 +8,6 @@ module.exports = {
     knex: false,
     bookshelf: false,
     koa: false,
-    sock: false
+    broadcast: false,
   }
 };

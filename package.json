@@ -29,20 +29,23 @@
     ]
   },
   "dependencies": {
-    "body-parser": "^1.16.1",
+    "body-parser": "^1.17.1",
     "bookshelf": "^0.10.3",
     "dateformat": "^2.0.0",
-    "express": "^4.14.1",
+    "express": "^4.15.2",
     "knex": "^0.12.7",
-    "koa": "next",
-    "koa-bodyparser": "next",
+    "koa": "^2.1.0",
+    "koa-bodyparser": "^4.1.0",
     "koa-router": "next",
     "koa-static": "next",
     "mqtt": "^2.4.0",
     "password-hash": "1.2.2",
+    "primus": "^6.1.0",
+    "primus-emit": "^1.0.0",
     "socket.io": "^1.7.3",
     "sqlite3": "^3.1.8",
     "uuid": "^3.0.1",
+    "uws": "^0.13.0",
     "winston": "^2.0.0"
   },
   "devDependencies": {
@@ -53,14 +56,14 @@
     "babel-plugin-transform-class-properties": "^6.23.0",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-preset-node6": "^11.0.0",
-    "eslint": "^3.16.1",
-    "eslint-config-marudor": "^4.1.2",
-    "flow-bin": "^0.40.0",
-    "husky": "^0.13.1",
+    "eslint": "^3.17.1",
+    "eslint-config-marudor": "^4.2.0",
+    "flow-bin": "^0.41.0",
+    "husky": "^0.13.2",
     "jest": "^19.0.2",
     "lint-staged": "^3.3.1",
     "nodemon": "^1.11.0",
-    "prettier": "^0.20.0"
+    "prettier": "^0.22.0"
   },
   "license": "MIT",
   "repository": {
