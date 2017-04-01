@@ -5,7 +5,7 @@ import Router from 'koa-router';
 const router = new Router();
 
 router.prefix('/token').get('/:token', async ctx => {
-  const { token } = ctx.params;
+  const { token }: { token: string } = ctx.params;
   ctx.body = await getUserByToken(token);
 });
 

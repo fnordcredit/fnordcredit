@@ -10,11 +10,11 @@ router
   .get('/all', async ctx => {
     ctx.body = await TransactionModel.fetchAll();
   })
-  .get('/:username', async ctx => {
-    const { username } = ctx.params;
+  .get('/:id', async ctx => {
+    const { id }: { id: number } = ctx.params;
     const pincode = ctx.request.header['X-User-Pincode'];
-    await checkUserPin(username, pincode);
-    ctx.body = await getUserTransactions(username);
+    await checkUserPin(id, pincode);
+    ctx.body = await getUserTransactions(id);
   });
 
 koa.use(router.routes());

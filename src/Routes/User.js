@@ -23,13 +23,13 @@ const router = new Router();
 router
   .prefix('/user')
   .use(pinMiddleware)
-  .get('/:username', async ctx => {
-    const username = ctx.params.username;
-    ctx.body = await getUser(username);
+  .get('/:id', async ctx => {
+    const id: number = Number.parseInt(ctx.params.id, 10);
+    ctx.body = await getUser(id);
   })
-  .delete('/:username', async ctx => {
-    const username = ctx.params.username;
-    await deleteUser(username);
+  .delete('/:id', async ctx => {
+    const id: number = Number.parseInt(ctx.params.id, 10);
+    await deleteUser(id);
     ctx.status = 200;
   })
   .post('/add', async ctx => {
@@ -38,21 +38,21 @@ router
     emit();
   })
   .post('/rename', async ctx => {
-    const { username, newname } = ctx.request.body;
+    const { id, newname }: { id: number, newname: string } = ctx.request.body;
     const pincode = ctx.request.header['X-User-Pincode'];
-    const user = await getUser(username);
+    const user = await getUser(id);
     await renameUser(user.serialize(), newname, pincode);
     const users = await getAllUsers();
     emit();
     ctx.body = users;
   })
   .post('/credit', async ctx => {
-    const { username, product, description } = ctx.request.body;
+    const { id, product, description } = ctx.request.body;
     const delta = parseFloat(ctx.request.body.delta);
     if (isNaN(delta) || delta >= 100 || delta <= -100) {
       throw new Error('[userCredit] delta must be a anumber.');
     }
-    const dbUser = await getUser(username);
+    const dbUser = await getUser(id);
     const user = dbUser.serialize();
     if (delta < 0 && user.credit + delta < 0) {
       if (!config.debtAllowed) {
@@ -80,14 +80,14 @@ router
     emit();
   })
   .post('/change-pin', async ctx => {
-    const { username, pincode } = ctx.request.body;
-    const user = await getUser(username);
+    const { id, pincode } = ctx.request.body;
+    const user = await getUser(id);
     await updatePin(user.get('name'), pincode);
     ctx.body = 'PIN updated successfully';
   })
   .post('/change-token', async ctx => {
-    const { username, newtoken } = ctx.request.body;
-    const user = await getUser(username);
+    const { id, newtoken } = ctx.request.body;
+    const user = await getUser(id);
     await updateToken(user.get('name'), newtoken);
     ctx.body = 'Tokens updated successfully';
   });

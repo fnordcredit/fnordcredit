@@ -3,7 +3,7 @@ import BaseModel from './BaseModel';
 
 export default class UserModel extends BaseModel<User> {
   static tableName = 'user';
-  static idAttribute = 'name';
+  static idAttribute = 'id';
   format(attributes: Object) {
     // eslint-disable-next-line
     attributes.debt_allowed = attributes.debtAllowed;

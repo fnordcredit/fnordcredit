@@ -21,15 +21,15 @@ describe('UserService', () => {
 
   it('update Pin', async () => {
     const pin = '0000';
-    await updatePin('test', pin);
-    user = await getUser('test');
+    await updatePin(user.id, pin);
+    user = await getUser(user.id);
     expect(passwordHash.verify(pin, user.get('pincode'))).toBe(true);
   });
 
   it('renameUser', async () => {
-    user = await getUser('test');
+    user = await getUser(user.id);
     user = await renameUser(user.serialize(), 'testNew');
-    const dbUser = await getUser('testNew');
+    const dbUser = await getUser(user.id);
     expect(user).toBeDefined();
     expect(dbUser).toBeDefined();
     expect(user.get('name')).toBe(dbUser.get('name'));
@@ -46,21 +46,21 @@ describe('UserService', () => {
   });
 
   it('updateToken', async () => {
-    user = await updateToken(user.get('name'), 'token');
+    user = await updateToken(user.id, 'token');
     expect(user.get('token')).toBe('token');
   });
 
   it('add 1€', async () => {
     user = await updateCredit(user.serialize(), 1, '1');
     expect(user.get('credit')).toBe(1);
-    const dbUser = await getUser(user.get('name'));
+    const dbUser = await getUser(user.id);
     expect(user.get('credit')).toBe(dbUser.get('credit'));
   });
 
   it('go into negative', async () => {
     user = await updateCredit(user.serialize(), -2, '-2');
     expect(user.get('credit')).toBe(-1);
-    const dbUser = await getUser(user.get('name'));
+    const dbUser = await getUser(user.id);
     expect(user.get('credit')).toBe(dbUser.get('credit'));
   });
 
@@ -76,12 +76,7 @@ describe('UserService', () => {
 
   it('delete user', async () => {
     try {
-      await deleteUser('test', true);
-    } catch (e) {
-      //
-    }
-    try {
-      await deleteUser('testNew', true);
+      await deleteUser(user.id, true);
     } catch (e) {
       //
     }

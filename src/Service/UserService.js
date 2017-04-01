@@ -2,11 +2,10 @@
 import passwordHash from 'password-hash';
 import TransactionModel from '../Model/TransactionModel';
 import UserModel from '../Model/UserModel';
-import uuid from 'uuid';
 import winston from 'winston';
 
-export async function deleteUser(username: string, force: bool = false) {
-  const user = await getUser(username);
+export async function deleteUser(userId: number, force: boolean = false) {
+  const user = await getUser(userId);
   if (!force && user.get('credit') !== 0) {
     throw new Error('Cannot delete User unless 0 credit');
   }
@@ -14,11 +13,11 @@ export async function deleteUser(username: string, force: bool = false) {
 }
 
 export async function updateToken(
-  username: string,
+  userId: number,
   newToken: string
 ): Promise<UserModel> {
   const user = await UserModel.where({
-    name: username,
+    id: userId,
   }).fetch();
   if (user) {
     return user.save({
@@ -29,14 +28,16 @@ export async function updateToken(
 }
 
 export function getAllUsers() {
-  return UserModel.fetchAll({ columns: ['name', 'lastchanged', 'credit'] });
+  return UserModel.fetchAll({
+    columns: ['id', 'name', 'lastchanged', 'credit'],
+  });
 }
 
-export async function checkUserPin(username: string, pincode: string) {
-  const user = await UserModel.where({ name: username }).fetch();
+export async function checkUserPin(userId: number, pincode: string) {
+  const user = await UserModel.where({ id: userId }).fetch();
   if (!user) {
-    winston.error(`Couldn't check PIN for user ${username}`);
-    throw new Error(`Couldn't check PIN for user ${username}`);
+    winston.error(`Couldn't check PIN for user ${userId}`);
+    throw new Error(`Couldn't check PIN for user ${userId}`);
   }
 
   const dbPin = user.get('pincode');
@@ -80,8 +81,7 @@ export async function updateCredit(
   user.lastchanged = new Date();
 
   const transaction = new TransactionModel({
-    id: uuid.v4(),
-    username: user.name,
+    userId: user.id,
     delta,
     credit: user.credit,
     time: new Date(),
@@ -89,7 +89,7 @@ export async function updateCredit(
   });
   await transaction.save({}, { method: 'insert' });
 
-  let dbUser = await UserModel.where({ name: user.name }).fetch();
+  let dbUser = await UserModel.where({ id: user.id }).fetch();
   if (!dbUser) {
     winston.error(`Couldn't save transaction for user ${user.name}`);
     throw new Error(`failed to update Credit for user ${user.name}`);
@@ -103,9 +103,9 @@ export async function updateCredit(
   return dbUser;
 }
 
-export function getUserTransactions(username: string) {
+export function getUserTransactions(userId: number) {
   return TransactionModel.where({
-    username,
+    userId,
   }).fetchAll();
 }
 
@@ -119,9 +119,9 @@ export async function getUserByToken(token: string) {
   return user;
 }
 
-export async function getUser(username: string) {
+export async function getUser(userId: number) {
   const user = await UserModel.where({
-    name: username,
+    id: userId,
   }).fetch();
   if (!user) {
     throw new Error('User not found');
@@ -129,51 +129,38 @@ export async function getUser(username: string) {
   return user;
 }
 
-export function renameUser(user: User, newname: string, rawPincode?: string) {
-  let pincode;
-  if (rawPincode) {
-    pincode = passwordHash.generate(rawPincode);
+export async function renameUser(
+  user: User,
+  newname: string // rawPincode?: string,
+) {
+  // let pincode;
+  // if (rawPincode) {
+  //   pincode = passwordHash.generate(rawPincode);
+  // }
+
+  const dbUser = await UserModel.where({
+    id: user.id,
+  }).fetch();
+  if (!dbUser) {
+    winston.error(`Couldn't save user ${newname}`);
+    throw new Error('Couldnt rename user');
   }
-  const credit = user.credit;
-
-  return bookshelf.transaction(async trx => {
-    let newUser;
-    try {
-      newUser = await new UserModel({
-        name: newname,
-        credit,
-        lastchanged: new Date(),
-        pincode,
-        debtAllowed: user.debtAllowed,
-      }).save({}, { method: 'insert', transacting: trx });
-    } catch (e) {
-      winston.error(`Couldn't save user ${newname}`);
-      throw e;
-    }
-
-    const oldUser = await UserModel.where({ name: user.name }).fetch({
-      transacting: trx,
-    });
-    if (oldUser) {
-      await oldUser.destroy({ transacting: trx });
-    }
-    const transactions = await TransactionModel.where({
-      username: user.name,
-    }).fetchAll({ transacting: trx });
-    await Promise.all(
-      transactions.map(t => t.save({ username: newname }, { transacting: trx }))
-    );
-    return newUser;
+  if (dbUser.get('name') === newname) {
+    throw new Error('Failed to rename to same name');
+  }
+  await dbUser.save({
+    name: newname,
   });
+  return dbUser;
 }
 
-export async function updatePin(username: string, newPincode: string) {
+export async function updatePin(userId: number, newPincode: string) {
   let hashedPincode = null;
 
   if (newPincode) {
     hashedPincode = passwordHash.generate(newPincode);
   }
-  const user = await UserModel.where({ name: username }).fetch();
+  const user = await UserModel.where({ id: userId }).fetch();
   if (!user) {
     throw new Error('User not found');
   }

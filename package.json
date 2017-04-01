@@ -18,7 +18,7 @@
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "src/*.js": [
+    "src/**/*.js": [
       "prettier --write",
       "eslint --fix",
       "git add"
@@ -33,14 +33,14 @@
   },
   "dependencies": {
     "bookshelf": "^0.10.3",
-    "engine.io": "^2.1.0",
-    "knex": "^0.12.7",
-    "koa": "^2.1.0",
-    "koa-bodyparser": "^4.1.0",
-    "koa-router": "7",
+    "engine.io": "^2.1.1",
+    "knex": "^0.12.9",
+    "koa": "^2.2.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-router": "^7.1.1",
     "koa-static": "3",
     "password-hash": "1.2.2",
-    "primus": "^6.1.0",
+    "primus": "^7.0.0",
     "primus-emit": "^1.0.0",
     "sqlite3": "^3.1.8",
     "uuid": "^3.0.1",
@@ -48,18 +48,18 @@
   },
   "devDependencies": {
     "babel": "^6.23.0",
-    "babel-cli": "^6.23.0",
+    "babel-cli": "^6.24.0",
     "babel-plugin-module-require": "^1.5.0",
     "babel-plugin-transform-async-to-generator": "^6.22.0",
     "babel-plugin-transform-class-properties": "^6.23.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.0",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
-    "eslint": "^3.17.1",
+    "eslint": "^3.19.0",
     "eslint-config-marudor": "^4.2.0",
-    "flow-bin": "^0.41.0",
-    "husky": "^0.13.2",
+    "flow-bin": "^0.42.0",
+    "husky": "^0.13.3",
     "jest": "^19.0.2",
-    "lint-staged": "^3.3.1",
+    "lint-staged": "^3.4.0",
     "nodemon": "^1.11.0",
     "prettier": "^0.22.0"
   },
