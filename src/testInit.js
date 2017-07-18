@@ -2,7 +2,6 @@
 
 import './databaseInit';
 
-
 afterAll(() => {
   knex.destroy();
 });

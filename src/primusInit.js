@@ -29,12 +29,9 @@ export default function(server: Server) {
     });
   });
 
-  setInterval(
-    () => {
-      getAllUsers().then(users => broadcast('accounts', users));
-    },
-    10 * 1000
-  );
+  setInterval(() => {
+    getAllUsers().then(users => broadcast('accounts', users));
+  }, 10 * 1000);
 
   return primus;
 }

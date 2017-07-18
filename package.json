@@ -11,6 +11,7 @@
     "build": "babel src --out-dir lib --copy-files",
     "watch": "babel src --out-dir lib --watch --copy-files --source-maps",
     "dev": "nodemon --watch lib --exec 'node lib/server.js'",
+    "lint": "eslint src --ext .jsx --ext .js",
     "start": "node lib/server.js",
     "test": "jest && npm run build && npm run start -- --test",
     "travis": "flow && npm run newDatabase && npm test",
@@ -19,7 +20,10 @@
   },
   "lint-staged": {
     "src/**/*.js": [
-      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ],
+    "src/**/*.jsx": [
       "eslint --fix",
       "git add"
     ]

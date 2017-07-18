@@ -234,8 +234,8 @@ declare class BS$Model<T: Object> {
   serialize(): T,
   serialize(options: BS$SerializeOptions): Object,
   save(): Promise<this>,
-  save(attrs: Object, options: BS$SaveOptions): Promise<this>,
-  save(key: $Keys<T>, val: string, options: BS$SaveOptions): Promise<this>,
+  save(attrs: Object, options?: BS$SaveOptions): Promise<this>,
+  save(key: $Keys<T>, val: string, options?: BS$SaveOptions): Promise<this>,
   set(attributes: $Shape<T>, options?: { unset?: Object }): this,
   set(key?: string, val?: any, options?: { unset?: Object }): this,
   through(

@@ -1,13 +1,5 @@
 // @flow
-import {
-  addUser,
-  deleteUser,
-  getUser,
-  renameUser,
-  updateCredit,
-  updatePin,
-  updateToken,
-} from '../UserService';
+import { addUser, deleteUser, getUser, renameUser, updateCredit, updatePin, updateToken } from '../UserService';
 import passwordHash from 'password-hash';
 import type UserModel from '../../Model/UserModel';
 

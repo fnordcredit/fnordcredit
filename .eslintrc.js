@@ -21,5 +21,6 @@ module.exports = {
         functions: 'never',
       },
     ],
+    'space-before-function-paren': 0,
   },
 };

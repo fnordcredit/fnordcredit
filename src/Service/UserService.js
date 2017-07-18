@@ -12,10 +12,7 @@ export async function deleteUser(userId: number, force: boolean = false) {
   await user.destroy();
 }
 
-export async function updateToken(
-  userId: number,
-  newToken: string
-): Promise<UserModel> {
+export async function updateToken(userId: number, newToken: string): Promise<UserModel> {
   const user = await UserModel.where({
     id: userId,
   }).fetch();
@@ -43,10 +40,7 @@ export async function checkUserPin(userId: number, pincode: string) {
   const dbPin = user.get('pincode');
   const dbToken = user.get('token');
 
-  if (
-    (dbPin != null && !passwordHash.verify(pincode, dbPin)) ||
-    (dbToken != null && dbToken === pincode)
-  ) {
+  if ((dbPin != null && !passwordHash.verify(pincode, dbPin)) || (dbToken != null && dbToken === pincode)) {
     throw new Error('Wrong Pin');
   }
 }
@@ -71,11 +65,7 @@ export async function addUser(username: string) {
   return user;
 }
 
-export async function updateCredit(
-  user: User,
-  delta: number,
-  description: string
-): Promise<UserModel> {
+export async function updateCredit(user: User, delta: number, description: string): Promise<UserModel> {
   user.credit += Number(delta);
   user.credit = Math.round(user.credit * 100) / 100;
   user.lastchanged = new Date();
@@ -96,9 +86,7 @@ export async function updateCredit(
   }
   dbUser = await dbUser.save({ credit: user.credit, lastchanged: new Date() });
 
-  winston.info(
-    `[userCredit] Changed credit from user ${user.name} by ${delta}. New credit: ${user.credit}`
-  );
+  winston.info(`[userCredit] Changed credit from user ${user.name} by ${delta}. New credit: ${user.credit}`);
 
   return dbUser;
 }
