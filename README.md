@@ -12,9 +12,9 @@ To start a local development server do the following:
 	cd fnordcredit
 	yarn
 	cp .env.example .env
-  yarn newDatabase
-  yarn build
-  
+	yarn newDatabase
+	yarn build
+
 
 As last step, start the local development server using ```npm start```
 
