@@ -147,7 +147,8 @@ export async function renameUser(
   return dbUser;
 }
 
-export async function updatePin(user: User, newPincode: string) {
+export async function updatePin(userId: number, newPincode: string) {
+  const user = await getUser(userId);
   let hashedPincode = null;
 
   if (newPincode) {

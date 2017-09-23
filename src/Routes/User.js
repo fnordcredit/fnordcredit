@@ -76,8 +76,7 @@ router
   })
   .post('/change-pin', async ctx => {
     const { id, pincode } = ctx.request.body;
-    const user = await getUser(id);
-    await updatePin(user, pincode);
+    await updatePin(id, pincode);
     ctx.body = 'PIN updated successfully';
   })
   .post('/change-token', async ctx => {
