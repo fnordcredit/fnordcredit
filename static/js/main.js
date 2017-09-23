@@ -33,6 +33,7 @@ function getUserDetail(userid, pincode) {
     },
     error: function(err) {
       releaseUi();
+      console.log(err.status)
       if (err.status == 401) {
         hidePinpad();
         showPinpad(userid, function(userid, pincode) {
@@ -292,9 +293,10 @@ function changePin(userid, pincode, newPincode) {
     headers: {
       'X-User-Pincode': pincode,
     },
-    success: function() {
+    success: function(data) {
       releaseUi();
       getUserDetail(userid, newPincode);
+      showSuccessOverlay(data);
     },
     error: function(err) {
       releaseUi();
@@ -414,11 +416,11 @@ function releaseUi() {
   $('#uilock').modal('hide');
 }
 
-function showPinpad(username, userid, cb) {
+function showPinpad(userid, cb) {
   $.get('templates/pinpad.dust.html', function(template) {
     dust.renderSource(
       template,
-      { username: username, userid: userid },
+      { userid: userid },
       function(err, out) {
         $('#pinwindow').html(out);
 

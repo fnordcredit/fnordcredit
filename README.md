@@ -21,6 +21,7 @@ Copyright © 2017
 	silsha &lt;hallo@silsha.me&gt;
 	Twi &lt;twi@entropia.de&gt;
   marudor &lt;marudor@marudor.de&gt;
+  uwap &lt;me@uwap.name&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

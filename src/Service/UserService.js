@@ -30,6 +30,11 @@ export function getAllUsers() {
   });
 }
 
+export async function userHasPin(userId: number) {
+  const user = await getUser(userId);
+  return user.get('pincode') != null;
+}
+
 export async function checkUserPin(userId: number, pincode: string) {
   const user = await UserModel.where({ id: userId }).fetch();
   if (!user) {
@@ -142,13 +147,12 @@ export async function renameUser(
   return dbUser;
 }
 
-export async function updatePin(userId: number, newPincode: string) {
+export async function updatePin(user: User, newPincode: string) {
   let hashedPincode = null;
 
   if (newPincode) {
     hashedPincode = passwordHash.generate(newPincode);
   }
-  const user = await UserModel.where({ id: userId }).fetch();
   if (!user) {
     throw new Error('User not found');
   }

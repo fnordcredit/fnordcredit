@@ -7,7 +7,7 @@ import {
   renameUser,
   updateCredit,
   updatePin,
-  updateToken,
+  updateToken
 } from 'Service/UserService';
 import config from '../config';
 import pinMiddleware from './pinMiddleware';
@@ -77,7 +77,7 @@ router
   .post('/change-pin', async ctx => {
     const { id, pincode } = ctx.request.body;
     const user = await getUser(id);
-    await updatePin(user.get('name'), pincode);
+    await updatePin(user, pincode);
     ctx.body = 'PIN updated successfully';
   })
   .post('/change-token', async ctx => {
@@ -86,5 +86,7 @@ router
     await updateToken(user.get('name'), newtoken);
     ctx.body = 'Tokens updated successfully';
   });
+
+router.stack.forEach(routerItem => routerItem.stack.unshift(pinMiddleware))
 
 koa.use(router.routes());
