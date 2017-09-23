@@ -10,9 +10,11 @@ To start a local development server do the following:
 
 	git clone git@github.com:marudor/fnordcredit.git
 	cd fnordcredit
-	npm install
-	cp config.js.example config.js
-  npm run newDatabase
+	yarn
+	cp .env.example .env
+	yarn newDatabase
+	yarn build
+
 
 As last step, start the local development server using ```npm start```
 
