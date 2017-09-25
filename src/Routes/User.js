@@ -9,13 +9,16 @@ import {
   updatePin,
   updateToken
 } from 'Service/UserService';
+import { getAllProducts } from 'Service/ProductService';
 import config from '../config';
 import pinMiddleware from './pinMiddleware';
 import Router from 'koa-router';
 
 async function emit() {
   const users = await getAllUsers();
+  const products = await getAllProducts();
   broadcast('accounts', users);
+  broadcast('products', products);
 }
 
 const router = new Router();

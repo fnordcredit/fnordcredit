@@ -73,10 +73,20 @@ function showDetail(userData, pincode) {
     saldo += account.credit;
   });
 
+  var isCategory = function(cat) {
+    return function(x) {
+      return x.category == cat;
+    };
+  };
+
   $.get('templates/user-details.dust.html', function(template) {
     dust.renderSource(
       template,
-      { user: userData, products: products },
+      { user: userData
+      , products: products
+      , drinks: products.filter(isCategory("drinks"))
+      , snacks: products.filter(isCategory("snacks"))
+      },
       function(err, out) {
         $('#details').html(out);
 
@@ -133,6 +143,12 @@ function showStatistics() {
     dust.renderSource(template, { saldo: saldo }, function(err, out) {
       $('#view-statistics').html(out);
     });
+  });
+}
+
+function getAllProducts() {
+  $.get('/products/all', function(prods) {
+    products = prods;
   });
 }
 
@@ -379,8 +395,6 @@ function changeCredit(
       if (productObj != null) {
         imgObj = $($(productObj).find('img:first').first());
         if (imgObj != null && imgObj.attr('src') != null) {
-          console.log(imgObj);
-
           htmlMessage = $('<div>');
 
           img = $('<img>');
@@ -390,8 +404,6 @@ function changeCredit(
           htmlMessage.append($('<br>'));
           htmlMessage.append(productObj.attr('data-desc'));
           message = htmlMessage.html();
-
-          console.log(message);
         }
       }
       showSuccessOverlay(message);
@@ -521,6 +533,8 @@ function setup() {
   $('#sortzyx').click(function() {
     setSort('zyx');
   });
+
+  getAllProducts();
 
   $(document).scannerDetection({
     timeBeforeScanTest: 200,

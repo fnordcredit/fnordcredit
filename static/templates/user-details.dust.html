@@ -23,19 +23,43 @@
           <button class="btn btn-success btn-lg btn-credit-action" data-credit="10.0" data-desc="{@currency value="10.0" prefix="+" /}">{@currency value="10.0" prefix="+" /}</button>
           <button class="btn btn-success btn-lg btn-credit-action" data-credit="20.0" data-desc="{@currency value="20.0" prefix="+" /}">{@currency value="20.0" prefix="+" /}</button>
         </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Drinks</h3>
+        </div>
         <div class="panel-body">
-          {#products}
-          <button class="btn btn-danger btn-lg btn-credit-action" data-credit="{@math key=0 method="subtract" operand=price/}" data-name="{name}" data-desc="{description}" data-ean="{ean}">
-            <img src="{image}" style="height: 90px"><br />
+          {#drinks}
+          <button class="btn btn-danger btn-lg btn-credit-action" data-credit="{@math key=0 method="subtract" operand=price/}" data-name="{name}" data-desc="{name}" data-ean="{ean}">
+            <img src="{imagePath}" style="height: 90px"><br />
             {@currency value=price prefix="-" /}
           </button>
-          {/products}
-          <br />
-          <button class="btn btn-danger btn-lg btn-credit-action" data-credit="-0.1" data-desc="{@currency value="-0.1" /}">{@currency value="-0.1" /}</button>
-          <button class="btn btn-danger btn-lg btn-credit-action" data-credit="-0.2" data-desc="{@currency value="-0.2" /}">{@currency value="-0.2" /}</button>
+          {/drinks}
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Snacks</h3>
+        </div>
+        <div class="panel-body">
+          {#snacks}
+          <button class="btn btn-danger btn-lg btn-credit-action" data-credit="{@math key=0 method="subtract" operand=price/}" data-name="{name}" data-desc="{name}" data-ean="{ean}">
+            <img src="{imagePath}" style="height: 90px"><br />
+            {@currency value=price prefix="-" /}
+          </button>
+          {/snacks}
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Sub credit</h3>
+        </div>
+        <div class="panel-body">
           <button class="btn btn-danger btn-lg btn-credit-action" data-credit="-0.5" data-desc="{@currency value="-0.5" /}">{@currency value="-0.5" /}</button>
           <button class="btn btn-danger btn-lg btn-credit-action" data-credit="-1.0" data-desc="{@currency value="-1.0" /}">{@currency value="-1.0" /}</button>
+          <button class="btn btn-danger btn-lg btn-credit-action" data-credit="-1.5" data-desc="{@currency value="-1.5" /}">{@currency value="-1.5" /}</button>
           <button class="btn btn-danger btn-lg btn-credit-action" data-credit="-2.0" data-desc="{@currency value="-2.0" /}">{@currency value="-2.0" /}</button>
+          <button class="btn btn-danger btn-lg btn-credit-action" data-credit="-3.0" data-desc="{@currency value="-3.0" /}">{@currency value="-3.0" /}</button>
           <button class="btn btn-danger btn-lg btn-credit-action" data-credit="-5.0" data-desc="{@currency value="-5.0" /}">{@currency value="-5.0" /}</button>
         </div>
       </div>
@@ -53,6 +77,11 @@
       <ul class="pager">
         <li class="previous" id="changeSetPinButton">
           <a>change/set pin</a>
+        </li>
+      </ul>
+      <ul class="pager">
+        <li class="previous" id="changeTokenButton">
+          <a>change token</a>
         </li>
       </ul>
 
