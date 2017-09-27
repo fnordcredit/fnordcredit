@@ -1,100 +1,66 @@
 <!DOCTYPE html>
-<html>
 <head>
-    <title>Credit</title>
-    <meta charset="utf-8">
-    <script type="text/javascript" src="js/jquery-2.1.0.min.js"></script>
-    <script type="text/javascript" src="js/dustjs-full.min.js"></script>
-    <script type="text/javascript" src="js/dustjs-helpers.min.js"></script>
-    <script type="text/javascript" src="js/jquery.scannerdetection.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
-    <link rel="stylesheet" type="text/css" href="css/custom.css">
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script src="/sockets.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta charset="utf-8" />
+  <title>Fnordcredit</title>
+<style>
+  body {
+    margin: 0;
+    background: #2b3e50;
+  }
+  @font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(icons/MaterialIcons-Regular.eot); /* For IE6-8 */
+    src: local('Material Icons'),
+      local('MaterialIcons-Regular'),
+      url(icons/MaterialIcons-Regular.woff2) format('woff2'),
+      url(icons/MaterialIcons-Regular.woff) format('woff'),
+      url(icons/MaterialIcons-Regular.ttf) format('truetype');
+  }
+  .material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 32px;  /* Preferred icon size */
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+  
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+  
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+  
+    /* Support for IE. */
+    font-feature-settings: 'liga';
+  }
+  @keyframes hide {
+    0% {
+      opacity: 0.0;
+    }
+    20% {
+      opacity: 1.0;
+    }
+    100% {
+      opacity: 0.0;
+    }
+  }
+  #alert {
+    animation: 4.5s ease-in-out 0s 1 hide;
+  }
+</style>
 </head>
 <body>
-    <nav class="navbar navbar-default view" role="navigation" style="text-align:center;">
-        <ul class="nav navbar-nav">
-            <li><button id="stats" type="button" class="btn btn-default btn-lg navbar-btn">
-                <span class="glyphicon glyphicon glyphicon-signal"></span>
-            </button></li>
-            <li ><button id="sorttime" type="button" class="btn btn-default btn-lg navbar-btn sortbtn active">
-                <span class="glyphicon glyphicon-time"></span>
-            </button></li>
-            <li ><button id="sortabc" type="button" class="btn btn-default btn-lg navbar-btn sortbtn">
-                <span class="glyphicon glyphicon-sort-by-alphabet"></span>
-            </button></li>
-            <li ><button id="sortzyx" type="button" class="btn btn-default btn-lg navbar-btn sortbtn">
-                <span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>
-            </button></li>
-            <li ><button id="searchtoggle" type="button" class="btn btn-default btn-lg navbar-btn">
-                <span class="glyphicon glyphicon glyphicon-search"></span>
-            </button></li>
+  <div id="content">
 
-            <li>
-                <form id="search" class="navbar-form navbar-left" role="search">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search">
-                    </div>
-                    <!-- <button type="reset" class="btn btn-default">Clear</button> -->
-                </form>
-            </li>
-    </nav>
-
-    <div id="uilock" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">Waiting for server</h4>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-
-    <div id="pinwindow" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Enter PIN</h4>
-                </div>
-                <div id="pinwindow-content">
-                </div>
-
-                <div class="modal-footer" id="pinwindow-footer">
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="container" style="width:100%">
-        <div id="accounts" class="view"></div>
-        <div id="details" class="view"></div>
-        <div id="renameuser" class="view"></div>
-        <div id="view-newuser" class="view"></div>
-        <div id="view-statistics" class="view"></div>
-        <div id="changetoken" class="view"></div>
-    </div>
-
-
-    <div id="uilock-success" class="fullscreen">
-        <div class="uilock-status-icon">&#x2714;</div>
-        <div class="uilock-message" id="uilock-success-message"></div>
-    </div>
-
-    <div id="uilock-failure" class="fullscreen">
-        <div class="uilock-status-icon">&#x2718;</div>
-        <div class="uilock-message" id="uilock-failure-message"></div>
-    </div>
-
-
-    <script type="text/javascript" src="js/main.js"></script>
-
-
-
-    <audio id="ka-ching" src="audio/ka-ching.mp3" preload="auto" style="display: none;"></audio>
-    <audio id="one-up" src="audio/one_up.mp3" preload="auto" style="display: none;"></audio>
+  </div>
+  <script src="public/dist/main.js"></script>
 </body>
-</html>
