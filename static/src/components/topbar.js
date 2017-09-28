@@ -3,11 +3,13 @@ import React from "react";
 import { Toolbar, ToolbarGroup } from "material-ui/Toolbar";
 import IconButton from "material-ui/IconButton";
 import FontIcon from "material-ui/FontIcon";
+import TextField from "material-ui/TextField";
 import * as Colors from "../colors";
 
 type Props = {
   currentSorting: Sorting,
-  changeState: (sorted: Sorting) => void
+  changeState: (sorted: Sorting) => void,
+  changeSearchText: (text: string) => void
 };
 
 export default class TopBar extends React.Component<Props,void> {
@@ -21,6 +23,10 @@ export default class TopBar extends React.Component<Props,void> {
           <SortButton sorting="last" {...this.props} />
           <SortButton sorting="abc" {...this.props} />
           <SortButton sorting="zyx" {...this.props} />
+        </ToolbarGroup>
+        <ToolbarGroup>
+          <TextField floatingLabelText="Search..."
+            onChange={(e,s) => this.props.changeSearchText(s)} />
         </ToolbarGroup>
       </Toolbar>
     );

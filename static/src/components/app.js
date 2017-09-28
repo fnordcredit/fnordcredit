@@ -14,7 +14,9 @@ type State = {
   products: Array<Product>,
   view: "userList"|"userDetail",
   selectedUser: ?User,
-  alertText: string
+  alertText: string,
+  alertStyle: "success"|"error",
+  searchText: string
 };
 
 export default class App extends React.Component<Props, State> {
@@ -27,7 +29,9 @@ export default class App extends React.Component<Props, State> {
       products: [],
       view: "userList",
       selectedUser: null,
-      alertText: ""
+      alertText: "",
+      alertStyle: "error",
+      searchText: ""
     };
 
     this.getAllProducts();
@@ -36,7 +40,11 @@ export default class App extends React.Component<Props, State> {
 
   catchError = (error: any) => {
     console.log(error.request.response);
-    this.setState({alertText: error.request.response});
+    this.showAlert(error.request.response);
+  }
+
+  showAlert = (text: string, style?: "success"|"error") => {
+    this.setState({alertText: text, alertStyle: style == null ? "error" : style});
     setTimeout(() => this.setState({alertText: ""}), 4000);
   }
 
@@ -87,20 +95,25 @@ export default class App extends React.Component<Props, State> {
       });
   }
 
-  addCredit = (user: User, delta: number) => {
+  addCredit = (user: User, delta: number, product?: Product) => {
     axios.post(`http://${this.props.server}/user/credit`,
       { id: user.id
       , delta: delta
       , product: null
       , description: delta.toFixed(2)
       }).then((response) => {
+        this.showAlert(
+          `${delta.toFixed(2)}€ ${product == null ? "" : product.name}`,
+          "success");
         this.setState({selectedUser: response.data});
       }).catch(this.catchError);
   }
 
   renderCurrentView = () => {
     if (this.state.view == "userList") {
-      return (<UserList users={this.state.users}
+      return (<UserList
+                users={this.state.users.filter(
+                  u => u.name.indexOf(this.state.searchText) >= 0)}
                 sorted={this.state.sorted}
                 addUser={this.addUser}
                 selectUser={this.selectUser} />);
@@ -119,7 +132,7 @@ export default class App extends React.Component<Props, State> {
   buyProduct = (ean: string) => {
     const product = this.state.products.find(x => x.ean == ean);
     if (product == null || this.state.selectedUser == null) return;
-    this.addCredit(this.state.selectedUser, -product.price);
+    this.addCredit(this.state.selectedUser, -product.price, product);
     console.log(`You bought ${product.name}`);
   }
 
@@ -129,10 +142,11 @@ export default class App extends React.Component<Props, State> {
         <div>
           <TopBar
             currentSorting={this.state.sorted}
-            changeState={(s) => this.setState({sorted: s})} />
+            changeState={(s) => this.setState({sorted: s})}
+            changeSearchText={(s) => this.setState({searchText: s})} />
           { this.renderCurrentView() }
           { this.state.alertText != "" ? (
-            <div style={alertStyle} id="alert">
+            <div style={alertStyle(this.state.alertStyle)} id="alert">
               <span style={{height: "60%", marginTop: "40%"}}>{this.state.alertText}</span>
             </div>
           ) : null }
@@ -143,16 +157,16 @@ export default class App extends React.Component<Props, State> {
   }
 };
 
-const alertStyle = {
+const alertStyle = (s) => ({
   position: "absolute",
   top: "0",
   left: "0",
   width: "100%",
   height: "100%",
   fontSize: 100,
-  background: "#FF3333",
+  background: s == "error" ? "#FF3333" : "#33FF33",
   zIndex: 100,
   lineHeight: "100%",
   verticalAlign: "middle",
   textAlign: "center"
-};
+});
