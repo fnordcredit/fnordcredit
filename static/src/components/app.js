@@ -17,7 +17,8 @@ type State = {
   selectedUser: ?User,
   alertText: string,
   alertStyle: "success"|"error",
-  searchText: string
+  searchText: string,
+  pinCallback: ?((pin: string) => void)
 };
 
 export default class App extends React.Component<Props, State> {
@@ -32,7 +33,8 @@ export default class App extends React.Component<Props, State> {
       selectedUser: null,
       alertText: "",
       alertStyle: "error",
-      searchText: ""
+      searchText: "",
+      pinCallback: null
     };
 
     this.getAllProducts();
@@ -81,15 +83,26 @@ export default class App extends React.Component<Props, State> {
       .catch(this.catchError);
   }
 
-  selectUser = (user: User) => {
+  requirePin = (callback: (pin: ?string) => void) => {
+    this.setState({ pinCallback: (pin) => {
+      this.setState({ pinCallback: null })
+      callback(pin);
+    }});
+  }
+
+  selectUser = (user: User, pin?: string) => {
     axios.get(`http://${this.props.server}/user/${user.id}`,
-      { headers: { "x-user-pincode": null }})
+      { headers: { "x-user-pincode": pin == undefined ? "null" : pin }})
       .then((response) => {
         this.setState({view: "userDetail", selectedUser: response.data});
       })
       .catch(error => {
         if (error.request.status == 401) {
-          console.log("Pin not implemented yet");
+          this.requirePin((pin) => {
+            if (pin != null) {
+              this.selectUser(user, pin);
+            }
+          });
         } else {
           this.catchError(error);
         }
@@ -152,6 +165,7 @@ export default class App extends React.Component<Props, State> {
             </div>
           ) : null }
           <BarcodeScanner onSuccess={this.buyProduct} />
+          { this.state.pinCallback == null ? null : <PinPad callback={this.state.pinCallback} /> }
         </div>
       </MuiThemeProvider>
     );
