@@ -26,7 +26,8 @@ export default class TopBar extends React.Component<Props,void> {
         </ToolbarGroup>
         <ToolbarGroup>
           <TextField floatingLabelText="Search..."
-            onChange={(e,s) => this.props.changeSearchText(s)} />
+            onChange={(e,s) => this.props.changeSearchText(s)}
+            {...textFieldStyle} />
         </ToolbarGroup>
       </Toolbar>
     );
@@ -47,7 +48,7 @@ class SortButton extends React.Component<SortButtonProps,void> {
   render() {
     return (
       <IconButton
-        style={iconButtonStyle}
+        style={iconButtonStyle(this.props.sorting == this.props.currentSorting)}
         iconStyle={iconStyle(this.props.sorting == this.props.currentSorting)}
         onClick={() => {this.props.changeState(this.props.sorting)}}>
         <FontIcon className="material-icons" hoverColor={Colors.active}>
@@ -72,8 +73,25 @@ const iconStyle = (active) => ({
   fontSize: 52,
   color: active ? Colors.active : Colors.textColor
 });
-const iconButtonStyle = {
+const iconButtonStyle = (active) => ({
   width: 64,
   height: 64,
-  padding: 6
+  padding: 6,
+  background: active ? Colors.darkBackground : Colors.background
+});
+const textFieldStyle = {
+  inputStyle: {
+    background: Colors.background,
+    color: Colors.textColor,
+    height: 52,
+    width: 256,
+    fontSize: 26,
+    paddingTop: 8
+  },
+  floatingLabelStyle: {
+    fontSize: 26
+  },
+  floatingLabelShrinkStyle: {
+    fontSize: 16
+  }
 };
