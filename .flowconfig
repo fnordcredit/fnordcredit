@@ -2,6 +2,7 @@
 .*seeds/.*
 .*migrations/.*
 .*node_modules/jest-validate.*
+.*static/.*
 
 [include]
 

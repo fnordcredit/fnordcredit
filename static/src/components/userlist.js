@@ -120,6 +120,9 @@ class AddUser extends React.Component<AddUserProps,AddUserState> {
             actions={actions}
             modal={true}
             open={this.state.open}
+            bodyStyle={dialogStyle}
+            titleStyle={dialogStyle}
+            actionsContainerStyle={dialogStyle}
           >
             <TextField floatingLabelText="User Name" onChange={(x,name) => this.setState({userName:name})} />
           </Dialog>
@@ -127,3 +130,8 @@ class AddUser extends React.Component<AddUserProps,AddUserState> {
     );
   }
 }
+
+const dialogStyle = {
+  background: Colors.background,
+  color: Colors.textColor,
+};
