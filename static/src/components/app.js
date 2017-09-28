@@ -6,6 +6,7 @@ import axios from "axios";
 import UserList from "./userlist";
 import UserView from "./userview";
 import BarcodeScanner from "./barcodescanner";
+import PinPad from "./pinpad";
 
 type Props = { server: string };
 type State = {

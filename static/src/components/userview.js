@@ -1,6 +1,5 @@
 // @flow
 import React from "react";
-import * as MuiColors from "material-ui/styles/colors";
 import * as Colors from "../colors";
 import RaisedButton from "material-ui/RaisedButton";
 import FontIcon from "material-ui/FontIcon";
@@ -58,7 +57,7 @@ export default class UserView extends React.Component<Props,void> {
           <br/>
           {this.props.products.map(prod =>
             <ChangeCreditButton amount={-prod.price}
-                product={prod} addCredit={this.add} />)}
+                product={prod} addCredit={this.add} key={prod.name} />)}
           <br/>
           <ChangeCreditButton amount={-0.5} addCredit={this.add} />
           <ChangeCreditButton amount={-1.0} addCredit={this.add} />
@@ -122,7 +121,7 @@ class ChangeCreditButton extends React.Component<ChangeCreditProps,void> {
         labelStyle={{fontSize:26,zIndex:2}}
         labelPosition="before"
         style={changeCreditButtonStyle}
-        backgroundColor={this.props.amount < 0 ? MuiColors.red600 : MuiColors.lightGreen700}
+        backgroundColor={this.props.amount < 0 ? Colors.red : Colors.green}
         onClick={() => this.props.addCredit(this.props.amount)}
       > {this.productExtra()} </RaisedButton>
     );
