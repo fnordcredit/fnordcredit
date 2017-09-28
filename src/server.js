@@ -14,7 +14,7 @@ function serverStart() {
     winston.info('Server started!');
   });
 
-  process.on('SIGTERM', () => {
+  process.once('SIGTERM', () => {
     winston.info('Server shutting down. Good bye!');
     process.exit();
   });
