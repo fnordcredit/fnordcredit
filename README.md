@@ -1,4 +1,6 @@
 # fnordcredit
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/silsha/fnordcredit.svg)](https://greenkeeper.io/)
 Open source credit system
 
 Innovative, easy to use credit system for multiple users that comes with an intuitive design: Create an account and charge or discharge your credit.
