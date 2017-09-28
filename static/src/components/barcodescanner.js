@@ -32,6 +32,11 @@ export default class BarcodeScanner extends React.Component<Props,State> {
       this.setState({mode: "entering"});
     } else if (this.state.mode == "entering" && e.key == "k") {
       this.setState({mode: "on"});
+      // if the bar code scanner sends enter and the focus is on a button,
+      // the button is activated instead.
+      if (document.activeElement != null) {
+        document.activeElement.blur();
+      }
     } else if (this.state.mode == "on" && e.key == "Enter") {
       this.props.onSuccess(this.state.scannedString);
       this.setState({mode: "off", scannedString: ""});

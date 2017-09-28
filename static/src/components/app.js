@@ -130,7 +130,7 @@ export default class App extends React.Component<Props, State> {
   }
 
   buyProduct = (ean: string) => {
-    const product = this.state.products.find(x => x.ean == ean);
+    const product = this.state.products.find(x => x.ean.split("|").includes(ean));
     if (product == null || this.state.selectedUser == null) return;
     this.addCredit(this.state.selectedUser, -product.price, product);
     console.log(`You bought ${product.name}`);
