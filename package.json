@@ -14,7 +14,7 @@
     "lint": "eslint src --ext .jsx --ext .js",
     "start": "node lib/server.js",
     "test": "jest && npm run build && npm run start -- --test",
-    "travis": "jest && npm run newDatabase && npm test",
+    "travis": "flow && npm run newDatabase && npm test",
     "newDatabase": "knex migrate:rollback && knex migrate:latest",
     "precommit": "lint-staged"
   },
@@ -59,6 +59,7 @@
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "eslint": "^4.2.0",
     "eslint-config-marudor": "^5.0.0",
+    "eslint-plugin-prettier": "^2.3.1",
     "flow-bin": "^0.50.0",
     "husky": "^0.14.3",
     "jest": "^20.0.4",

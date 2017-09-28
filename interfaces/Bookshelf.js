@@ -20,7 +20,7 @@ declare type BS$SerializeOptions = {
 };
 
 declare type BS$TransactionOption = {
-  transacting?: Knex$Transaction,
+  transacting?: Knex$Transaction<*>,
   query?: any,
 
   session?: any,
@@ -28,11 +28,11 @@ declare type BS$TransactionOption = {
 };
 
 declare class BS$Bookshelf {
-  static $call(knex: Knex$Knex): this,
+  static $call(knex: Knex$Knex<*>): this,
   Model: typeof BS$Model,
   Collection: typeof BS$Collection,
-  transaction(trxFn: (trx: Knex$Transaction) => ?Promise<*>): Promise<*>,
-  knex: Knex$Knex,
+  transaction(trxFn: (trx: Knex$Transaction<*>) => ?Promise<*>): Promise<*>,
+  knex: Knex$Knex<*>,
 }
 declare class BS$Collection<M: Object, SpecificModel: BS$Model<M>> {
   // Technically wrong! this is a crude hack
@@ -65,7 +65,7 @@ declare class BS$Collection<M: Object, SpecificModel: BS$Model<M>> {
     options?: {
       require?: boolean,
       columns?: string | string[],
-      transacting?: Knex$Transaction,
+      transacting?: Knex$Transaction<*>,
     },
   ): Promise<SpecificModel>,
   findWhere(): SpecificModel,
@@ -82,8 +82,8 @@ declare class BS$Collection<M: Object, SpecificModel: BS$Model<M>> {
   pluck(key: $Keys<M>): any[],
   pop(): void,
   push(model: M | SpecificModel | M[] | SpecificModel[]): this,
-  query(arguments: (qb: Knex$QueryBuilder) => mixed | Object | string): this,
-  query(): Knex$QueryBuilder,
+  query(arguments: (qb: Knex$QueryBuilder<*>) => mixed | Object | string): this,
+  query(): Knex$QueryBuilder<*>,
   reduceThen(
     iterator: Function,
     initialValue: mixed,
@@ -113,7 +113,7 @@ declare class BS$Collection<M: Object, SpecificModel: BS$Model<M>> {
     options?: {
       query?: Function | Object,
       require?: boolean,
-      transacting?: Knex$Transaction,
+      transacting?: Knex$Transaction<*>,
     },
   ): Promise<number>,
   where(subset: $Shape<M>): SpecificModel[],
@@ -161,7 +161,7 @@ declare class BS$Collection<M: Object, SpecificModel: BS$Model<M>> {
 declare class BS$Model<T: Object> {
   static extend: Function,
   static collection(): BS$Collection<T, this>,
-  static query(args: (qb: Knex$QueryBuilder) => any): this,
+  static query(args: (qb: Knex$QueryBuilder<*>) => any): this,
   static where(subset: $Shape<T>): this,
   static where(column: $Keys<T>, value: mixed): this,
   static where(column: $Keys<T>, operator: string, value: mixed): this,
@@ -201,7 +201,7 @@ declare class BS$Model<T: Object> {
   isNew(): boolean,
   load(
     relations: string | string[],
-    options?: { transacting?: Knex$Transaction },
+    options?: { transacting?: Knex$Transaction<*> },
   ): Promise<this>,
   morphMany<A: BS$Model<*>>(
     target: A,
@@ -227,7 +227,7 @@ declare class BS$Model<T: Object> {
   parse(response: Object): Object,
   previous(attribute: $Keys<T>): mixed,
   previousAttributes(): $Shape<T>,
-  query(args: (qb: Knex$QueryBuilder) => any): this,
+  query(args: (qb: Knex$QueryBuilder<*>) => any): this,
   refresh(options?: BS$FetchOptions): Promise<this>,
   related(name: string): ?(BS$Model<any> | BS$Collection<any>),
   resetQuery(): this,

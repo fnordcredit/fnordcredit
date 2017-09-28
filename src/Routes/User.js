@@ -7,7 +7,7 @@ import {
   renameUser,
   updateCredit,
   updatePin,
-  updateToken
+  updateToken,
 } from 'Service/UserService';
 import { getAllProducts } from 'Service/ProductService';
 import config from '../config';
@@ -89,6 +89,7 @@ router
     ctx.body = 'Tokens updated successfully';
   });
 
-router.stack.forEach(routerItem => routerItem.stack.unshift(pinMiddleware))
+// $FlowFixMe
+router.stack.forEach(routerItem => routerItem.stack.unshift(pinMiddleware));
 
 koa.use(router.routes());
