@@ -1,7 +1,6 @@
 // @flow
 import bodyParser from 'koa-bodyparser';
 import Koa from 'koa';
-// $FlowFixMe
 import Static from 'koa-static';
 
 function errorHandler(ctx: Koa$Context, next: Function) {
