@@ -14,7 +14,7 @@
     "lint": "eslint src --ext .jsx --ext .js",
     "start": "node lib/server.js",
     "test": "jest && npm run build && npm run start -- --test",
-    "travis": "flow && npm run newDatabase && npm test",
+    "travis": "jest && npm run newDatabase && npm test",
     "newDatabase": "knex migrate:rollback && knex migrate:latest",
     "precommit": "lint-staged"
   },
