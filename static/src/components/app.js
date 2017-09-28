@@ -48,7 +48,7 @@ export default class App extends React.Component<Props, State> {
 
   showAlert = (text: string, style?: "success"|"error") => {
     this.setState({alertText: text, alertStyle: style == null ? "error" : style});
-    setTimeout(() => this.setState({alertText: ""}), 4000);
+    setTimeout(() => this.setState({alertText: ""}), 2000);
   }
 
   getAllProducts = () => {
@@ -127,7 +127,8 @@ export default class App extends React.Component<Props, State> {
     if (this.state.view == "userList") {
       return (<UserList
                 users={this.state.users.filter(
-                  u => u.name.indexOf(this.state.searchText) >= 0)}
+                  u => u.name.toLowerCase()
+                    .indexOf(this.state.searchText.toLowerCase()) >= 0)}
                 sorted={this.state.sorted}
                 addUser={this.addUser}
                 selectUser={this.selectUser} />);
@@ -183,5 +184,6 @@ const alertStyle = (s) => ({
   zIndex: 100,
   lineHeight: "100%",
   verticalAlign: "middle",
-  textAlign: "center"
+  textAlign: "center",
+  opacity: 0.0
 });
