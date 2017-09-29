@@ -37,17 +37,32 @@ export default class UserView extends React.Component<Props,void> {
           </span>
           <br/>
           <br/>
-          <RaisedButton label="Back"
-            backgroundColor={Colors.background}
-            labelColor={Colors.textColor}
-            labelStyle={{fontSize: 26}}
-            style={{width: 160, height: 80}}
-            onClick={() => this.props.backToList()}
-            icon={
-              <FontIcon className="material-icons" color={Colors.textColor} style={{fontSize: 30, marginTop: -4}}>
-                chevron_left
-              </FontIcon>}
+          <div>
+            <RaisedButton label="Back"
+              backgroundColor={Colors.background}
+              labelColor={Colors.textColor}
+              labelStyle={{fontSize:30}}
+              style={{width: 160, height: 80}}
+              onClick={() => this.props.backToList()}
+              icon={
+                <FontIcon className="material-icons" color={Colors.textColor} style={{fontSize: 42, marginTop: -12}}>
+                  chevron_left
+                </FontIcon>}
             />
+            <RaisedButton
+              backgroundColor={Colors.background}
+              style={{
+                width: 80,
+                height: 80,
+                marginLeft: 10,
+              }}
+              onClick={() => this.props.backToList()}
+              icon={
+                <FontIcon className="material-icons" color={Colors.textColor} style={{fontSize: 48, marginTop: -8, marginRight: 4}}>
+                  settings
+                </FontIcon>}
+            />
+          </div>
         </GridItem>
         <GridItem area="actions">
           <ChangeCreditButton amount={ 0.5} addCredit={this.add} />
