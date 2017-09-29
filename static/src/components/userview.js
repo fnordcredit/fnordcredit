@@ -52,8 +52,12 @@ export default class UserView extends React.Component<Props,void> {
         <GridItem area="actions">
           <ChangeCreditButton amount={ 0.5} addCredit={this.add} />
           <ChangeCreditButton amount={ 1.0} addCredit={this.add} />
+          <ChangeCreditButton amount={ 1.5} addCredit={this.add} />
           <ChangeCreditButton amount={ 2.0} addCredit={this.add} />
           <ChangeCreditButton amount={ 5.0} addCredit={this.add} />
+          <ChangeCreditButton amount={10.0} addCredit={this.add} />
+          <ChangeCreditButton amount={20.0} addCredit={this.add} />
+          <ChangeCreditButton amount={50.0} addCredit={this.add} />
           <br/>
           {this.props.products.map(prod =>
             <ChangeCreditButton amount={-prod.price}
@@ -87,24 +91,23 @@ class ChangeCreditButton extends React.Component<ChangeCreditProps,void> {
   productExtra = () => {
     if (this.props.product == null) return null;
     return (
-    <div>
-      <div style={{
-        display: "block",
-        height: "100%",
-        width: "100%",
-        position: "absolute",
-        top: "0",
-        left: "0",
-        zIndex: 1
-      }}><img src={this.props.product.imagePath}
+    <div style={{
+      display: "block",
+      height: "100%",
+      width: "100%",
+      position: "absolute",
+      top: "0",
+      left: "0",
+      zIndex: 1
+    }}>
+      <img src={this.props.product.imagePath}
           style={{height:"100%",margin: "0 auto"}} />
-      </div>
       <span style={{
           fontSize:26,
           color:Colors.textColor,
           lineHeight:"22px",
           display:"block",
-          marginTop:"-52px",
+          marginTop:"-102px",
           zIndex:2
         }}>
         {this.props.product.name}
