@@ -8,12 +8,19 @@ fnordcredit is written in Javascript/Node.js/react/knex.
 
 To start a local development server do the following:
 
-	git clone git@github.com:silsha/fnordcredit.git
-	cd fnordcredit
-	yarn
-	cp .env.example .env
-	yarn newDatabase
-	yarn build
+```sh
+git clone git@github.com:silsha/fnordcredit.git
+cd fnordcredit
+yarn
+cp .env.example .env
+yarn newDatabase
+yarn build
+  
+# Don’t forget to build the frontend
+cd static
+yarn
+yarn build
+cd ..
+```
 
-
-As last step, start the local development server using ```npm start```
+As last step, start the local development server using ```yarn start``` and visit http://localhost:8000
