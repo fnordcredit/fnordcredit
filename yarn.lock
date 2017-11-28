@@ -679,9 +679,9 @@ bluebird@^3.4.3, bluebird@^3.4.6:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.0.tgz#791420d7f551eea2897453a8a77653f96606d67c"
 
-bookshelf@0.11.1:
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/bookshelf/-/bookshelf-0.11.1.tgz#0e119022dc97c11050f2583cd477a2a8f7392566"
+bookshelf@0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/bookshelf/-/bookshelf-0.12.0.tgz#c11e83169d546b6b0caf03de2dfd5ba5e904c31b"
   dependencies:
     babel-runtime "^6.6.1"
     bluebird "^3.4.3"
