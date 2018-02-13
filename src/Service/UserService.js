@@ -98,7 +98,8 @@ export async function updateCredit(user: User, delta: number, description: strin
 
 export function getUserTransactions(userId: number) {
   return TransactionModel.where({
-    userId,
+    // eslint-disable-next-line
+    user_id: userId,
   }).fetchAll();
 }
 
