@@ -58,20 +58,16 @@ router
     const user = dbUser.serialize();
     if (delta < 0 && user.credit + delta < 0) {
       if (!config.debtAllowed) {
-        throw new Error('[userCredit] negative credit not allowed in configuration.');
+        throw new Error('Negative credit is not allowed in the configuration.');
       }
       if (!user.debtAllowed) {
-        throw new Error(
-          `[userCredit] negative credit not allowed for user ${user.name} - (debtAllowed: ${user.debtAllowed
-            ? 'true'
-            : 'false'})`
-        );
+        throw new Error(`Negative credit is not allowed for user ${user.name}`);
       }
       if (user.credit + delta < config.maxDebt) {
-        throw new Error(`[userCredit] credit below ${config.maxDebt} € not allowed in configuration.`);
+        throw new Error(`A credit below ${config.maxDebt}€ is not allowed in configuration.`);
       }
       if (user.debtHardLimit && user.credit + delta < user.debtHardLimit) {
-        throw new Error(`[userCredit] credit below ${user.debtHardLimit || ''} for user ${user.name} not allowed`);
+        throw new Error(`A credit below ${user.debtHardLimit || ''} for user ${user.name} is not allowed.`);
       }
     }
     ctx.body = await updateCredit(user, delta, description);
