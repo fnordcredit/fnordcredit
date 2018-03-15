@@ -46,7 +46,7 @@
     "password-hash": "1.2.2",
     "primus": "^7.0.2",
     "primus-emit": "^1.0.0",
-    "sqlite3": "^3.1.8",
+    "sqlite3": "^4.0.0",
     "uuid": "^3.1.0",
     "winston": "^2.0.0"
   },
