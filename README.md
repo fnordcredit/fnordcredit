@@ -17,7 +17,7 @@ yarn newDatabase
 yarn build
   
 # Don’t forget to build the frontend
-cd static
+cd fnordcredit_frontend
 yarn
 yarn build
 cd ..
