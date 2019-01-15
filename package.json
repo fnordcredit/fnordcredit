@@ -15,7 +15,7 @@
     "start": "node lib/server.js",
     "test": "jest && npm run build && npm run start -- --test",
     "travis": "flow && npm run newDatabase && npm test",
-    "newDatabase": "knex migrate:rollback && knex migrate:latest",
+    "newDatabase": "knex migrate:rollback --knexfile knexfile && knex migrate:latest --knexfile knexfile",
     "precommit": "lint-staged"
   },
   "lint-staged": {
