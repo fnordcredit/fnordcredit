@@ -1,4 +1,6 @@
 // @flow
+require("dotenv").config();
+
 const sqlite3config = {
   client: 'sqlite3',
   useNullAsDefault: true,
