@@ -28,7 +28,7 @@ declare type BS$TransactionOption = {
 };
 
 declare class BS$Bookshelf {
-  static $call(knex: Knex$Knex<*>): this,
+  static [[call]](knex: Knex$Knex<*>): this,
   Model: typeof BS$Model,
   Collection: typeof BS$Collection,
   transaction(trxFn: (trx: Knex$Transaction<*>) => ?Promise<*>): Promise<*>,
@@ -36,7 +36,7 @@ declare class BS$Bookshelf {
 }
 declare class BS$Collection<M: Object, SpecificModel: BS$Model<M>> {
   // Technically wrong! this is a crude hack
-  static $call(): this,
+  static [[call]]: this,
   constructor(
     models?: SpecificModel[],
     options?: { comparator?: boolean },
