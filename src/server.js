@@ -4,7 +4,7 @@ import './serverInit';
 import winston from 'winston';
 
 process.stdin.resume();
-winston.add(winston.transports.File, { filename: 'credit.log', json: false });
+winston.add(new winston.transports.File({ filename: 'credit.log' }));
 
 function serverStart() {
   let server = require('http').createServer(koa.callback());
