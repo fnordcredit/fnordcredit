@@ -1,8 +1,13 @@
 module.exports = {
-  extends: 'marudor/noReact',
+  //extends: 'marudor/noReact',
+  parser: 'babel-eslint',
+  parserOptions: {
+    sourceType: 'module',
+  },
   env: {
     node: true,
     jest: true,
+    es6: true,
   },
   globals: {
     knex: false,

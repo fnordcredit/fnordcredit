@@ -1,10 +1,11 @@
-// flow-typed signature: 908e6845ab082547c9d5f568ee7cb475
-// flow-typed version: 7eb358ba3a/knex_v0.13.x/flow_>=v0.38.x
+// flow-typed signature: 1ef4713553dc94ce83eddf4389d3aeb7
+// flow-typed version: 34598898c5/knex_v0.15.x/flow_>=v0.75.x
 
 declare class Knex$Transaction<R>
   mixins Knex$QueryBuilder<R>, events$EventEmitter, Promise<R> {
+  [[call]]:(tableName: string) => Knex$QueryBuilder<R>;
   commit(connection?: any, value?: any): Promise<R>;
-  rollback(): Promise<R>;
+  rollback(?Error): Promise<R>;
   savepoint(connection?: any): Promise<R>;
 }
 
@@ -27,7 +28,7 @@ declare class Knex$QueryBuilder<R> mixins Promise<R> {
   returning(columns: string[]): this;
   as(name: string): this;
   transacting(trx: ?Knex$Transaction<R>): this;
-  transaction((trx: Knex$Transaction<R>) => void): this;
+  transaction((trx: Knex$Transaction<R>) => Promise<R> | void): this;
   where(builder: Knex$QueryBuilderFn<R>): this;
   where(column: string, value: any): this;
   where(column: string, operator: string, value: any): this;
@@ -122,6 +123,7 @@ declare class Knex$QueryBuilder<R> mixins Promise<R> {
   pluck(column: string): this;
   first(key?: string[]): this;
   first(...key: string[]): this;
+  table(table: string, options?: Object): this;
   from(table: string): this;
   from(
     builder: Knex$QueryBuilderFn<R> | Knex$Knex<R> | Knex$QueryBuilder<R>
@@ -134,6 +136,8 @@ declare class Knex$QueryBuilder<R> mixins Promise<R> {
   update(column: string, value: any): this;
   update(val: Object): this;
   returning(columns: string[]): this;
+  forUpdate(): this;
+  forShare(): this;
 }
 
 type MigrateConfig = {|
@@ -148,7 +152,7 @@ declare class Knex$Knex<R>
   mixins Knex$QueryBuilder<R>, Promise<R>, events$EventEmitter {
   static (config: Knex$Config): Knex$Knex<R>;
   static QueryBuilder: typeof Knex$QueryBuilder;
-  $call: (tableName: string) => Knex$QueryBuilder<R>;
+  [[call]]:(tableName: string) => Knex$QueryBuilder<R>;
   raw(sqlString: string, bindings?: Knex$RawBindings): any;
   batchInsert: (tableName: string, rows: Array<Object>, chunkSize?: number) => Knex$QueryBuilder<R>;
   migrate: {
@@ -172,10 +176,23 @@ declare type Knex$PostgresConfig = {
         database?: string,
         charset?: string
       },
-  searchPath?: string
+  searchPath?: string,
 };
 
 declare type Knex$RawBindings = Array<mixed> | { [key: string]: mixed };
+
+declare type Knex$Mysql2Config = {
+  client?: "mysql2",
+  connection?:
+    | string
+    | {
+        host?: string,
+        user?: string,
+        password?: string,
+        database?: string,
+        charset?: string
+      }
+};
 
 declare type Knex$MysqlConfig = {
   client?: "mysql",
@@ -186,6 +203,7 @@ declare type Knex$MysqlConfig = {
     database?: string
   }
 };
+
 declare type Knex$SqliteConfig = {
   client?: "sqlite3",
   connection?: {
@@ -195,6 +213,7 @@ declare type Knex$SqliteConfig = {
 declare type Knex$Config =
   | Knex$PostgresConfig
   | Knex$MysqlConfig
+  | Knex$Mysql2Config
   | Knex$SqliteConfig;
 
 declare module "knex" {
@@ -206,7 +225,7 @@ declare module "knex" {
     detail: string,
     hint?: string,
     position?: any,
-    intenralPosition?: any,
+    internalPosition?: any,
     internalQuery?: any,
     where?: any,
     schema: string,
@@ -218,6 +237,7 @@ declare module "knex" {
     line: string,
     routine: string
   };
+  declare type Knex = Knex$Knex<any>;
   declare type $QueryBuilder<R> = Knex$QueryBuilder<R>;
   declare module.exports: typeof Knex$Knex;
 }
