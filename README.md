@@ -3,6 +3,8 @@ Open source credit system
 
 Innovative, easy to use credit system for multiple users that comes with an intuitive design: Create an account and charge or discharge your credit.
 
+This is the backend repository, for the frontend look at https://github.com/fnordcredit/frontend.
+
 ## Development
 fnordcredit is written in Javascript/Node.js/react/knex.
 
