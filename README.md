@@ -5,9 +5,9 @@ Innovative, easy to use credit system for multiple users that comes with an intu
 
 This is the backend repository, for the frontend look at https://github.com/fnordcredit/frontend.
 
-## Development
 fnordcredit is written in Javascript/Node.js/react/knex.
 
+# Set up
 To start a local development server do the following:
 
 ```sh
@@ -17,12 +17,16 @@ yarn
 cp .env.example .env
 yarn newDatabase
 yarn build
-  
-# Don’t forget to build the frontend
-cd fnordcredit-frontend
-yarn
-yarn build
-cd ..
 ```
 
 As last step, start the local development server using ```yarn start``` and visit http://localhost:8000
+
+# Updating Fnordcredit
+
+```sh
+git pull
+yarn
+yarn knex migrate:latest
+yarn build
+yarn start
+```
