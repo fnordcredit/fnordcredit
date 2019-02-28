@@ -13,7 +13,7 @@ function errorHandler(ctx: Koa$Context, next: Function) {
 const koa = new Koa();
 
 koa.use(errorHandler);
-koa.use(Static(`${__dirname}/../fnordcredit-frontend/dist`));
+koa.use(Static(`${__dirname}/../node_modules/fnordcredit-frontend`));
 koa.use(bodyParser());
 
 global.koa = koa;
