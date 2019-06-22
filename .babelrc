@@ -5,5 +5,8 @@
   "plugins": [
     "@babel/plugin-transform-modules-commonjs",
     "@babel/plugin-proposal-class-properties",
+    ["module-resolver", {
+      "root": ["./src"]
+    }]
   ]
 }

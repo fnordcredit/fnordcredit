@@ -1,9 +1,12 @@
 // @flow
-import BaseModel from './BaseModel';
 
-export default class TransactionModel extends BaseModel<Transaction> {
-  static tableName = 'transaction';
-  static idAttribute = 'id';
+export default class TransactionModel extends bookshelf.Model<Transaction> {
+  get tableName() {
+    return 'transaction';
+  }
+  get idAttribute() {
+    return 'id';
+  }
   format(attributes: Object) {
     if (attributes.userId) {
       // eslint-disable-next-line

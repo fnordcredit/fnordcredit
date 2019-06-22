@@ -30,13 +30,15 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "setupTestFrameworkScriptFile": "<rootDir>/src/testInit.js",
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/testInit.js"
+    ],
     "roots": [
       "src"
     ]
   },
   "dependencies": {
-    "bookshelf": "^0.14.2",
+    "bookshelf": "^0.15.1",
     "engine.io": "^3.1.0",
     "fnordcredit-frontend": "2.1.4",
     "knex": "^0.16.3",
@@ -58,6 +60,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.4.4",
     "@babel/preset-flow": "^7.0.0",
     "babel-eslint": "^10.0.2",
+    "babel-plugin-module-resolver": "^3.2.0",
     "dotenv": "^8.0.0",
     "eslint": "^6.0.0",
     "eslint-plugin-flowtype": "^3.10.5",

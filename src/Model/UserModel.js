@@ -1,9 +1,12 @@
 // @flow
-import BaseModel from './BaseModel';
 
-export default class UserModel extends BaseModel<User> {
-  static tableName = 'user';
-  static idAttribute = 'id';
+export default class UserModel extends bookshelf.Model<User> {
+  get tableName() {
+    return 'user';
+  }
+  get idAttribute() {
+    return 'id';
+  }
   format(attributes: Object) {
     if (attributes.debtAllowed) {
       // eslint-disable-next-line

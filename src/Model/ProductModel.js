@@ -1,9 +1,12 @@
 // @flow
-import BaseModel from './BaseModel';
 
-export default class ProductModel extends BaseModel<Product> {
-  static tableName = 'products';
-  static idAttribute = 'id';
+export default class ProductModel extends bookshelf.Model<Product> {
+  get tableName() {
+    return 'products';
+  }
+  get idAttribute() {
+    return 'id';
+  }
   format(attributes: Object) {
     if (attributes.imagePath) {
       attributes.image_path = attributes.imagePath;

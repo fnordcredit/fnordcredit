@@ -65,7 +65,7 @@ export async function addUser(username: string) {
     lastchanged: new Date(),
     name: username,
   }).save({}, { method: 'insert' });
-  winston.info(`[addUser] New user ${username} created`);
+  //winston.info(`[addUser] New user ${username} created`);
 
   return user;
 }
