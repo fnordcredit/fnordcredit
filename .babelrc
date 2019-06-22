@@ -3,13 +3,7 @@
     "@babel/preset-flow"
   ],
   "plugins": [
-    "transform-es2015-modules-commonjs",
-    "transform-class-properties",
-    ["module-require",
-      {
-        "baseDir": "src",
-        "ignore": []
-      }
-    ]
+    "@babel/plugin-transform-modules-commonjs",
+    "@babel/plugin-proposal-class-properties",
   ]
 }
