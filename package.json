@@ -41,7 +41,7 @@
     "bookshelf": "^0.15.1",
     "engine.io": "^3.1.0",
     "fnordcredit-frontend": "2.1.4",
-    "knex": "^0.16.3",
+    "knex": "^0.17.6",
     "koa": "^2.3.0",
     "koa-bodyparser": "^4.2.0",
     "koa-router": "^7.2.1",
@@ -66,7 +66,7 @@
     "eslint-plugin-flowtype": "^3.10.5",
     "eslint-plugin-header": "^2.0.0",
     "eslint-plugin-prettier": "^3.0.1",
-    "flow-bin": "^0.92.1",
+    "flow-bin": "^0.101.1",
     "flow-typed": "^2.1.5",
     "husky": "^2.0.0",
     "jest": "^24.0.0",
@@ -77,9 +77,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/entropia/fnordcredit.git"
+    "url": "https://github.com/fnordcredit/fnordcredit.git"
   },
   "bugs": {
-    "url": "https://github.com/entropia/fnordcredit/issues"
+    "url": "https://github.com/fnordcredit/fnordcredit/issues"
   }
 }
