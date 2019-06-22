@@ -49,7 +49,7 @@ router
     ctx.body = users;
   })
   .post('/credit', async ctx => {
-    const { id, product, description } = ctx.request.body;
+    const { id, _product, description } = ctx.request.body;
     const delta = parseFloat(ctx.request.body.delta);
     if (isNaN(delta) || delta >= 100 || delta <= -100) {
       throw new Error('[userCredit] delta must be a anumber.');

@@ -1,9 +1,15 @@
 module.exports = {
-  //extends: 'marudor/noReact',
   parser: 'babel-eslint',
   parserOptions: {
     sourceType: 'module',
   },
+  "extends": [
+    "eslint:recommended",
+    "plugin:flowtype/recommended"
+  ],
+  plugins: [
+    "flowtype"
+  ],
   env: {
     node: true,
     jest: true,
@@ -27,5 +33,7 @@ module.exports = {
       },
     ],
     'space-before-function-paren': 0,
+    'require-atomic-updates': 0,
+    "no-unused-vars": ["error", { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }],
   },
 };
