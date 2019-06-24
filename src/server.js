@@ -1,21 +1,20 @@
 // @flow
 import './databaseInit';
 import './serverInit';
-import winston from 'winston';
+import Logger from 'Logger';
 
 process.stdin.resume();
-winston.add(new winston.transports.File({ filename: 'credit.log' }));
 
 function serverStart() {
   let server = require('http').createServer(koa.callback());
   require('./primusInit').default(server);
 
   server = server.listen(8000, undefined, undefined, () => {
-    winston.info('Server started!');
+    Logger.info('Server started!');
   });
 
   process.once('SIGTERM', () => {
-    winston.info('Server shutting down. Good bye!');
+    Logger.info('Server shutting down. Good bye!');
     process.exit();
   });
 }

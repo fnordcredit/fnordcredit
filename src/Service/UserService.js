@@ -2,7 +2,7 @@
 import passwordHash from 'password-hash';
 import TransactionModel from '../Model/TransactionModel';
 import UserModel from '../Model/UserModel';
-import winston from 'winston';
+import Logger from 'Logger';
 
 export async function deleteUser(userId: number, force: boolean = false) {
   const user = await getUser(userId);
@@ -38,7 +38,7 @@ export async function userHasPin(userId: number) {
 export async function checkUserPin(userId: number, pincode: string) {
   const user = await UserModel.where({ id: userId }).fetch();
   if (!user) {
-    winston.error(`Couldn't check PIN for user ${userId}`);
+    Logger.error(`Couldn't check PIN for user ${userId}`);
     throw new Error(`Couldn't check PIN for user ${userId}`);
   }
 
@@ -56,7 +56,7 @@ export async function addUser(username: string) {
   }
   const existingUser = await UserModel.where({ name: username }).fetch();
   if (existingUser) {
-    winston.error(`Couldn't save user ${username}, already exists`);
+    Logger.error(`Couldn't save user ${username}, already exists`);
     throw new Error('User exists already.');
   }
   const user = await new UserModel({
@@ -65,7 +65,7 @@ export async function addUser(username: string) {
     lastchanged: new Date(),
     name: username,
   }).save({}, { method: 'insert' });
-  //winston.info(`[addUser] New user ${username} created`);
+  //Logger.info(`[addUser] New user ${username} created`);
 
   return user;
 }
@@ -86,12 +86,12 @@ export async function updateCredit(user: User, delta: number, description: strin
 
   let dbUser = await UserModel.where({ id: user.id }).fetch();
   if (!dbUser) {
-    winston.error(`Couldn't save transaction for user ${user.name}`);
+    Logger.error(`Couldn't save transaction for user ${user.name}`);
     throw new Error(`failed to update Credit for user ${user.name}`);
   }
   dbUser = await dbUser.save({ credit: user.credit, lastchanged: new Date() });
 
-  winston.info(`[userCredit] Changed credit from user ${user.name} by ${delta}. New credit: ${user.credit}`);
+  Logger.info(`[userCredit] Changed credit from user ${user.name} by ${delta}. New credit: ${user.credit}`);
 
   return dbUser;
 }
@@ -136,7 +136,7 @@ export async function renameUser(
     id: user.id,
   }).fetch();
   if (!dbUser) {
-    winston.error(`Couldn't save user ${newname}`);
+    Logger.error(`Couldn't save user ${newname}`);
     throw new Error('Couldnt rename user');
   }
   if (dbUser.get('name') === newname) {
