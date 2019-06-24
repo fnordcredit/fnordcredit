@@ -2,7 +2,7 @@
 import passwordHash from 'password-hash';
 import TransactionModel from '../Model/TransactionModel';
 import UserModel from '../Model/UserModel';
-import Logger from 'Logger';
+import Logger from '../Logger';
 
 export async function deleteUser(userId: number, force: boolean = false) {
   const user = await getUser(userId);
