@@ -1,6 +1,6 @@
 {
   "name": "fnordcredit",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "author": "silsha <hallo@silsha.me>",
   "description": "SAP easy credit system",
   "main": "lib/server.js",
