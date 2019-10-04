@@ -103,6 +103,22 @@ export function getUserTransactions(userId: number) {
   }).fetchAll();
 }
 
+export async function getUserTransactionsAsQIF(userId: number) {
+  const transactions = await getUserTransactions(userId);
+  let qif = "!Type:Bank\n";
+  for (let i in transactions.models) {
+    const t = transactions.models[i].serialize();
+    qif = qif.concat(
+      `D${new Date(t.time).toLocaleDateString()}\n`,
+      `T${t.delta}\n`,
+      `M${t.description}\n`,
+      `PFnordcredit\n`,
+      "^\n"
+    );
+  }
+  return qif;
+}
+
 export async function getUserByToken(token: string) {
   const user = await UserModel.where({
     token,

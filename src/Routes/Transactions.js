@@ -1,5 +1,5 @@
 // @flow
-import { checkUserPin, getUserTransactions } from 'Service/UserService';
+import { checkUserPin, getUserTransactions, getUserTransactionsAsQIF } from 'Service/UserService';
 import Router from 'koa-router';
 import TransactionModel from 'Model/TransactionModel';
 
@@ -15,6 +15,13 @@ router
     const pincode = ctx.request.header['X-User-Pincode'];
     await checkUserPin(id, pincode);
     ctx.body = await getUserTransactions(id);
+  })
+  .get('/export/:id', async ctx => {
+    const { id }: { id: number } = ctx.params;
+    const pincode = ctx.request.header['X-User-Pincode'];
+    await checkUserPin(id, pincode);
+    ctx.type = "text/qif";
+    ctx.body = await getUserTransactionsAsQIF(id);
   });
 
 koa.use(router.routes());
