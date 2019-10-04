@@ -1,4 +1,4 @@
-exports.up = async function(knex, Promise) {
+exports.up = async function(knex) {
   await knex.raw(
     `
       CREATE TABLE IF NOT EXISTS "products"
@@ -14,4 +14,4 @@ exports.up = async function(knex, Promise) {
   );
 };
 
-exports.down = function(knex, Promise) {};
+exports.down = function(knex) {};

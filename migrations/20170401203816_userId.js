@@ -1,4 +1,4 @@
-exports.up = async function(knex, Promise) {
+exports.up = async function(knex) {
   await knex.raw('alter table user rename to user_tmp;');
   await knex.raw(
     `
@@ -37,4 +37,4 @@ exports.up = async function(knex, Promise) {
   await knex.raw('drop table transaction_tmp;');
 };
 
-exports.down = function(knex, Promise) {};
+exports.down = function(knex) {};

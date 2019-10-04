@@ -1,5 +1,5 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return Promise.all([knex.raw(`
     CREATE TABLE IF NOT EXISTS "transaction"
     (
@@ -26,7 +26,7 @@ exports.up = function(knex, Promise) {
   )]);
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return Promise.all([
     knex.raw('DROP TABLE IF EXISTS "transaction"'),
     knex.raw('DROP TABLE IF EXISTS "user"'),
