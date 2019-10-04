@@ -8,11 +8,13 @@ import {
   updateCredit,
   updatePin,
   updateToken,
+  updateAvatar,
 } from 'Service/UserService';
 import { getAllProducts } from 'Service/ProductService';
 import config from '../config';
 import pinMiddleware from './pinMiddleware';
 import Router from 'koa-router';
+import gravatar from 'gravatar';
 
 async function emit() {
   const users = await getAllUsers();
@@ -83,6 +85,10 @@ router
     const user = await getUser(id);
     await updateToken(user.get('name'), newtoken);
     ctx.body = 'Tokens updated successfully';
+  })
+  .post('/change-gravatar', async ctx => {
+    const { id, email } = ctx.request.body;
+    ctx.body = await updateAvatar(id, gravatar.url(email, { protocol: 'https', d: 'identicon' }));
   });
 
 // $FlowFixMe

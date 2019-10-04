@@ -5,7 +5,7 @@
   "description": "SAP easy credit system",
   "main": "lib/server.js",
   "engines": {
-    "node": ">= 7.6"
+    "node": ">= 10.0"
   },
   "scripts": {
     "build": "babel src --out-dir lib --copy-files",
@@ -41,6 +41,7 @@
     "bookshelf": "^0.15.1",
     "engine.io": "^3.1.0",
     "fnordcredit-frontend": "2.1.4",
+    "gravatar": "^1.8.0",
     "knex": "^0.17.6",
     "koa": "^2.3.0",
     "koa-bodyparser": "^4.2.0",

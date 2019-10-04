@@ -155,8 +155,11 @@ export async function updatePin(userId: number, newPincode: string) {
   if (newPincode) {
     hashedPincode = passwordHash.generate(newPincode);
   }
-  if (!user) {
-    throw new Error('User not found');
-  }
   await user.save({ pincode: hashedPincode });
+}
+
+export async function updateAvatar(userId: number, url: string) {
+  const user = await getUser(userId);
+  await user.save({ avatar: url });
+  return user;
 }
