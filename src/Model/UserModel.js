@@ -8,6 +8,9 @@ export default class UserModel extends bookshelf.Model<User> {
     return 'id';
   }
   format(attributes: Object) {
+    if (attributes == null) {
+      return attributes;
+    }
     if (attributes.debtAllowed) {
       // eslint-disable-next-line
       attributes.debt_allowed = attributes.debtAllowed;
@@ -21,6 +24,9 @@ export default class UserModel extends bookshelf.Model<User> {
     return attributes;
   }
   parse(attributes: Object) {
+    if (attributes == null) {
+      return attributes;
+    }
     if (attributes.debt_allowed) {
       attributes.debtAllowed = attributes.debt_allowed;
       delete attributes.debt_allowed;

@@ -64,7 +64,7 @@ export async function addUser(username: string) {
     debtAllowed: true,
     lastchanged: new Date(),
     name: username,
-  }).save({}, { method: 'insert' });
+  }).save(null, { method: 'insert' });
   //Logger.info(`[addUser] New user ${username} created`);
 
   return user;
@@ -82,7 +82,7 @@ export async function updateCredit(user: User, delta: number, description: strin
     time: new Date(),
     description,
   });
-  await transaction.save({}, { method: 'insert' });
+  await transaction.save(null, { method: 'insert' });
 
   let dbUser = await UserModel.where({ id: user.id }).fetch();
   if (!dbUser) {
