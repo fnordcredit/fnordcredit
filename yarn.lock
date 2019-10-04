@@ -2434,10 +2434,10 @@ flowgen@^1.9.0:
     typescript "^3.4"
     typescript-compiler "^1.4.1-2"
 
-fnordcredit-frontend@2.1.4:
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/fnordcredit-frontend/-/fnordcredit-frontend-2.1.4.tgz#3e6af7e949e10b9f10e4c109ac6170583211637c"
-  integrity sha512-1QOgburYobYqEouzOqCrM4XkVxYfACml14Mbd6vc9jXNWyKl4H1jEr471zk6U3mfkzFGMob1aZNogk3r0mz2jg==
+fnordcredit-frontend@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/fnordcredit-frontend/-/fnordcredit-frontend-2.2.0.tgz#51c0eb57cfd066943b938a2db31e3c9e5a105c93"
+  integrity sha512-NRagIeV6bk8kR9ex3QLaMfpnC+K3zPA/CtUqi0o1xUyqohkl6NDRfGMF3Leh97x5QhqRHtcvjK0CXwnmDQQKsw==
 
 for-in@^1.0.1, for-in@^1.0.2:
   version "1.0.2"

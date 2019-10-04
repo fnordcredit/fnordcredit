@@ -1,13 +1,30 @@
 # Changelog
 
-## v2.2
+## v2.2.0
 
 ### Backend
 
 * Updated the database scheme! Make sure to run `yarn knex migrate:latest`.
 * Added gravatar support ([#49](https://github.com/fnordcredit/fnordcredit/issues/49))
 
-## v2.1
+### Frontend
+
+#### Features
+
+* Added an about view, that shows the current version and links to github
+* Added avatars using Gravatar
+* Added a user settings screen with two settings for now with more comming later:
+  * Change your Avatar
+  * Renaming
+* Added a ka-ching sounds when a transaction is made
+
+#### Minor Changes
+
+* Made the last transactions panel collabsible for better responsibility
+* Scanning an unknown barcode now displays an error message
+* Updated all dependencies
+
+## v2.1.0
 
 ### Backend
 
@@ -36,6 +53,6 @@
 * Fixed the error dialog when going below the debt limit ([#3](https://github.com/fnordcredit/frontend/issues/3))
 * Fixed the margins of the user details view, especially on mobile devices ([#25](https://github.com/fnordcredit/frontend/issues/25))
 
-## v2.0
+## v2.0.0
 
 * First release of the new Fnordcredit rewrite
