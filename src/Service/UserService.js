@@ -54,7 +54,7 @@ export async function addUser(username: string) {
   if (!username.trim()) {
     throw new Error('Please enter a name');
   }
-  const existingUser = await UserModel.where({ name: username }).fetch();
+  const existingUser = await UserModel.where({ name: username }).fetch({ require: false });
   if (existingUser) {
     Logger.error(`Couldn't save user ${username}, already exists`);
     throw new Error('User exists already.');
