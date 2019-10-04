@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.2
+
+### Backend
+
+* Updated the database scheme! Make sure to run `yarn knex migrate:latest`.
+* Added gravatar support ([#49](https://github.com/fnordcredit/fnordcredit/issues/49))
+
 ## v2.1
 
 ### Backend
