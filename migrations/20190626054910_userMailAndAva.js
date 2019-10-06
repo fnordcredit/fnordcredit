@@ -1,6 +1,9 @@
 exports.up = async function(knex) {
-  await knex.raw('ALTER TABLE user ADD COLUMN avatar TEXT;');
-  await knex.raw('ALTER TABLE user ADD COLUMN email TEXT;');
+ return knex.schema
+   .alterTable('user', function(table) {
+       table.string('avatar');
+       table.string('email');
+   });
 };
 
 exports.down = function(knex) {};
