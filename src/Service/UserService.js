@@ -158,6 +158,13 @@ export async function renameUser(
   if (dbUser.get('name') === newname) {
     throw new Error('Failed to rename to same name');
   }
+  const existingUserByName = await UserModel.where({
+    name: newname,
+  }).fetch({ require: false });
+  if (existingUserByName) {
+    Logger.error(`Couldn't save user ${newname}, username already exists`);
+    throw new Error('Username exists already.');
+  }
   await dbUser.save({
     name: newname,
   });
