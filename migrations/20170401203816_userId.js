@@ -1,8 +1,9 @@
 exports.up = async function(knex) {
-  await knex.raw('alter table user rename to user_tmp;');
+  // we need to add a column at the front
+  // -> do the copy&delete-dance
   await knex.raw(
     `
-    CREATE TABLE IF NOT EXISTS "user"
+    CREATE TABLE IF NOT EXISTS "user_new"
     (
       id integer primary key AUTOINCREMENT,
       credit INT NOT NULL,
@@ -15,12 +16,14 @@ exports.up = async function(knex) {
     );
     `
   );
-  await knex.raw('insert into user select ROWID as id, * from user_tmp;');
-  await knex.raw('drop table user_tmp;');
-  await knex.raw('alter table "transaction" rename to transaction_tmp;');
+  await knex.raw('insert into user_new select ROWID as id, credit, debt_allowed, debt_hard_limit, lastchanged, name, pincode, token from user;');
+  await knex.raw('drop table user;');
+  await knex.raw('alter table user_new rename to user;');
+
+
   await knex.raw(
     `
-    CREATE TABLE IF NOT EXISTS "transaction"
+    CREATE TABLE IF NOT EXISTS "transaction_new"
     (
       id integer PRIMARY KEY AUTOINCREMENT,
       credit INT NOT NULL,
@@ -32,9 +35,15 @@ exports.up = async function(knex) {
     `
   );
   await knex.raw(
-    'insert into "transaction" select transaction_tmp.ROWID as id, transaction_tmp.credit, delta, description, time, user.id as user_id from transaction_tmp join user on user.name = transaction_tmp.username;'
+    `
+    INSERT INTO "transaction_new"
+    SELECT "transaction".ROWID as id, "transaction".credit, delta, description, time, user.id as user_id
+    FROM "transaction"
+    JOIN user on user.name = "transaction".username;
+    `
   );
-  await knex.raw('drop table transaction_tmp;');
+  await knex.raw('drop table "transaction";');
+  await knex.raw('alter table "transaction_new" rename to "transaction";');
 };
 
 exports.down = function(knex) {};
