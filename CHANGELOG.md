@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.2.1
+
+### Backend
+
+* Correctly show an error message when trying to rename a user and the new name already exists
+
+### Frontend
+
+* Hotfix that makes the products correctly do a line break
+
 ## v2.2.0
 
 ### Backend

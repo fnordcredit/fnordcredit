@@ -1,6 +1,6 @@
 {
   "name": "fnordcredit",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "author": "silsha <hallo@silsha.me>",
   "description": "SAP easy credit system",
   "main": "lib/server.js",
@@ -40,7 +40,7 @@
   "dependencies": {
     "bookshelf": "^1.0.0",
     "engine.io": "^3.1.0",
-    "fnordcredit-frontend": "2.2.0",
+    "fnordcredit-frontend": "2.2.1",
     "gravatar": "^1.8.0",
     "knex": "^0.19.4",
     "koa": "^2.3.0",
