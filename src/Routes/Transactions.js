@@ -16,7 +16,7 @@ router
     await checkUserPin(id, pincode);
     ctx.body = await getUserTransactions(id);
   })
-  .get('/export/:id', async ctx => {
+  .get('/export/:id/transactions.qif', async ctx => {
     const { id }: { id: number } = ctx.params;
     const pincode = ctx.request.header['X-User-Pincode'];
     await checkUserPin(id, pincode);
