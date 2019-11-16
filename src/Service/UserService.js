@@ -26,7 +26,7 @@ export async function updateToken(userId: number, newToken: string): Promise<Use
 
 export function getAllUsers() {
   return UserModel.fetchAll({
-    columns: ['id', 'name', 'lastchanged', 'credit', 'avatar'],
+    columns: ['id', 'name', 'lastchanged', 'credit', 'avatar', knex.raw('pincode NOT NULL as isPinProtected')],
   });
 }
 
