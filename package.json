@@ -45,7 +45,7 @@
     "knex": "^0.20.0",
     "koa": "^2.3.0",
     "koa-bodyparser": "^4.2.0",
-    "koa-router": "^7.2.1",
+    "koa-router": "^8.0.6",
     "koa-static": "^5.0.0",
     "password-hash": "1.2.2",
     "primus": "^7.0.2",
