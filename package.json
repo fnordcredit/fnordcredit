@@ -51,7 +51,7 @@
     "primus": "^7.0.2",
     "primus-emit": "^1.0.0",
     "sqlite3": "^4.0.0",
-    "uuid": "^3.1.0",
+    "uuid": "^7.0.0",
     "winston": "^3.2.0"
   },
   "devDependencies": {
