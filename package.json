@@ -42,7 +42,7 @@
     "engine.io": "^3.1.0",
     "fnordcredit-frontend": "2.2.1",
     "gravatar": "^1.8.0",
-    "knex": "^0.20.0",
+    "knex": "^0.21.0",
     "koa": "^2.3.0",
     "koa-bodyparser": "^4.2.0",
     "koa-router": "^7.2.1",
