@@ -1,4 +1,4 @@
-# fnordcredit [![Greenkeeper badge](https://badges.greenkeeper.io/fnordcredit/fnordcredit.svg)](https://greenkeeper.io/) [![Travis badge](https://travis-ci.org/fnordcredit/fnordcredit.svg?branch=master)](https://travis-ci.org/fnordcredit/fnordcredit)
+# fnordcredit [![Travis badge](https://travis-ci.org/fnordcredit/fnordcredit.svg?branch=master)](https://travis-ci.org/fnordcredit/fnordcredit)
 Open source credit system
 
 Innovative, easy to use credit system for multiple users that comes with an intuitive design: Create an account and charge or discharge your credit.

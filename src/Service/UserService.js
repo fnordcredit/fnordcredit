@@ -136,7 +136,7 @@ export async function getUser(userId: number) {
   if (!user) {
     throw new Error('User not found');
   }
-  return user;
+  return user.attributes;
 }
 
 export async function renameUser(

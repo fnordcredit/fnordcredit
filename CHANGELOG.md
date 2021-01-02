@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.0.0
+
+### Backend
+
+* New API
+
+### Frontend
+
 ## v2.2.1
 
 ### Backend
