@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int          @id @default(autoincrement())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  name        String       @unique
+  debtLimit   Int          @default(0)
+  authMethods AuthMethod[]
+  authorId    Int
+  email       String?
+}
+
+enum AuthType {
+  Pincode
+  Password
+  RFID
+  Barcode
+}
+
+model AuthMethod {
+  id             Int         @id @default(autoincrement())
+  authType       AuthType
+  secret         String
+  // user omitted if second factor only
+  user           User?       @relation(fields: [userId], references: [id])
+  userId         Int?
+  secondFactor   AuthMethod? @relation(fields: [secondFactorId], references: [id])
+  secondFactorId Int?
+}

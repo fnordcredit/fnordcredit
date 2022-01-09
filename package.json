@@ -22,6 +22,7 @@
     "@types/react": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",
+    "prisma": "^3.7.0",
     "typescript": "latest"
   }
 }
