@@ -1,87 +1,27 @@
 {
-  "name": "fnordcredit",
-  "version": "2.2.1",
-  "author": "silsha <hallo@silsha.me>",
-  "description": "SAP easy credit system",
-  "main": "lib/server.js",
-  "engines": {
-    "node": ">= 10.0"
-  },
+  "private": true,
   "scripts": {
-    "build": "babel src --out-dir lib --copy-files",
-    "watch": "babel src --out-dir lib --watch --copy-files --source-maps",
-    "dev": "nodemon --watch lib --exec 'node lib/server.js'",
-    "lint": "eslint src --ext .jsx --ext .js",
-    "start": "node lib/server.js",
-    "test": "jest && npm run build && npm run start -- --test",
-    "travis": "flow && npm run newDatabase && npm test",
-    "newDatabase": "knex migrate:rollback && knex migrate:latest",
-    "precommit": "lint-staged"
-  },
-  "lint-staged": {
-    "src/**/*.js": [
-      "eslint --fix",
-      "git add"
-    ],
-    "src/**/*.jsx": [
-      "eslint --fix",
-      "git add"
-    ]
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "setupFilesAfterEnv": [
-      "<rootDir>/src/testInit.js"
-    ],
-    "roots": [
-      "src"
-    ]
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "bookshelf": "^1.2.0",
-    "engine.io": "^4.1.2",
-    "fnordcredit-frontend": "2.2.1",
-    "gravatar": "^1.8.1",
-    "knex": "^0.21.15",
-    "koa": "^2.13.0",
-    "koa-bodyparser": "^4.3.0",
-    "koa-joi-router": "^7.0.0",
-    "koa-router": "^10.0.0",
-    "koa-static": "^5.0.0",
-    "password-hash": "1.2.2",
-    "primus": "^8.0.1",
-    "primus-emit": "^1.0.0",
-    "sqlite3": "^5.0.0",
-    "uuid": "^8.3.2",
-    "winston": "^3.3.3"
+    "@emotion/cache": "latest",
+    "@emotion/react": "latest",
+    "@emotion/server": "latest",
+    "@emotion/styled": "latest",
+    "@mui/icons-material": "latest",
+    "@mui/material": "latest",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "typeface-roboto": "latest"
   },
   "devDependencies": {
-    "@babel/cli": "^7.12.10",
-    "@babel/core": "^7.12.10",
-    "@babel/plugin-proposal-class-properties": "^7.12.1",
-    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
-    "@babel/preset-flow": "^7.12.1",
-    "babel-eslint": "^10.1.0",
-    "babel-plugin-module-resolver": "^4.1.0",
-    "dotenv": "^8.2.0",
-    "eslint": "^7.16.0",
-    "eslint-plugin-flowtype": "^5.2.0",
-    "eslint-plugin-header": "^3.1.0",
-    "eslint-plugin-prettier": "^3.3.0",
-    "flow-bin": "^0.141.0",
-    "flow-typed": "^3.2.1",
-    "husky": "^4.3.6",
-    "jest": "^26.6.3",
-    "lint-staged": "^10.5.3",
-    "nodemon": "^2.0.6",
-    "prettier": "^2.2.1"
-  },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/fnordcredit/fnordcredit.git"
-  },
-  "bugs": {
-    "url": "https://github.com/fnordcredit/fnordcredit/issues"
+    "@types/react": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "latest",
+    "typescript": "latest"
   }
 }
