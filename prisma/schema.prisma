@@ -11,14 +11,17 @@ datasource db {
 }
 
 model User {
-  id          Int          @id @default(autoincrement())
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  name        String       @unique
-  debtLimit   Int          @default(0)
-  authMethods AuthMethod[]
-  authorId    Int
-  email       String?
+  id           Int           @id @default(autoincrement())
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  name         String        @unique
+  debtLimit    Int           @default(0)
+  authMethods  AuthMethod[]
+  email        String?
+  credit       Int           @default(0)
+  avatar       String?
+  transactions Transaction[] @relation("TransactionUser")
+  transfers    Transaction[] @relation("TransactionTransferUser")
 }
 
 enum AuthType {
@@ -35,6 +38,45 @@ model AuthMethod {
   // user omitted if second factor only
   user           User?       @relation(fields: [userId], references: [id])
   userId         Int?
-  secondFactor   AuthMethod? @relation(fields: [secondFactorId], references: [id])
-  secondFactorId Int?
+  secondFactor   AuthMethod? @relation("SecondFactor", fields: [secondFactorId], references: [id])
+  secondFactorId Int?        @unique
+  firstFactor    AuthMethod? @relation("SecondFactor")
+}
+
+model ProductCategory {
+  id       Int       @id @default(autoincrement())
+  name     String
+  products Product[]
+}
+
+model Product {
+  id           Int             @id @default(autoincrement())
+  name         String
+  price        Int
+  category     ProductCategory @relation(fields: [categoryId], references: [id])
+  categoryId   Int
+  ean          String          @default("")
+  transactions Transaction[]
+}
+
+enum TransactionType {
+  ProductBought
+  AccountCharged
+  AccountTransfer
+}
+
+model Transaction {
+  id              Int             @id @default(autoincrement())
+  user            User?           @relation("TransactionUser", fields: [userId], references: [id])
+  userId          Int?
+  creditDelta     Int
+  createdAt       DateTime        @default(now())
+  image           String?
+  transactionType TransactionType
+  // If ProductBought:
+  product         Product?        @relation(fields: [productId], references: [id])
+  productId       Int?
+  // If AccountTransfer:
+  transferUser    User?           @relation("TransactionTransferUser", fields: [transferUserId], references: [id])
+  transferUserId  Int?
 }

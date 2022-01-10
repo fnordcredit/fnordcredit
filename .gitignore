@@ -25,4 +25,4 @@ lib
 .env.test.local
 .env.production.local
 .direnv
-.flake.lock
+flake.lock
