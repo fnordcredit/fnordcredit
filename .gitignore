@@ -9,7 +9,6 @@ rethinkdb_data/
 .bash_history
 .bash_login
 static/img/*.png
-lib
 *.db
 *.db-journal
 .env
