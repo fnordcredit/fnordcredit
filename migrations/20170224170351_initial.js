@@ -1,34 +1,26 @@
-
 exports.up = function(knex) {
-  return Promise.all([knex.raw(`
-    CREATE TABLE IF NOT EXISTS "transaction"
-    (
-      credit INT NOT NULL,
-      delta INT NOT NULL,
-      description TEXT NOT NULL,
-      id UUID PRIMARY KEY NOT NULL,
-      time TIMESTAMP NOT NULL,
-      username TEXT NOT NULL
-    );
-    `
-  ), knex.raw(`
-    CREATE TABLE IF NOT EXISTS "user"
-    (
-      credit INT NOT NULL,
-      debt_allowed BOOL NOT NULL,
-      debt_hard_limit INT,
-      lastchanged TIMESTAMP NOT NULL,
-      name TEXT NOT NULL PRIMARY KEY,
-      pincode TEXT,
-      token TEXT
-    );
-    `
-  )]);
+  return knex.schema
+   .createTable('transaction', function (table) {
+       table.integer('credit').notNullable();
+       table.integer('delta').notNullable();
+       table.string('description').notNullable();
+       table.uuid('id').primary().notNullable();
+       table.timestamp('time').notNullable();
+       table.string('username').notNullable();
+    })
+    .createTable('user', function (table) {
+       table.integer('credit').notNullable();
+       table.boolean('debt_allowed').notNullable();
+       table.integer('debt_hard_limit');
+       table.timestamp('lastchanged').notNullable();
+       table.string('name').primary().notNullable();
+       table.string('pincode');
+       table.string('token');
+    });
 };
 
 exports.down = function(knex) {
-  return Promise.all([
-    knex.raw('DROP TABLE IF EXISTS "transaction"'),
-    knex.raw('DROP TABLE IF EXISTS "user"'),
-  ]);
+  return knex.schema
+   .dropTable('transaction')
+   .dropTable('user');
 };

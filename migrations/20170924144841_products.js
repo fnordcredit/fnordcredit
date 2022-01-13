@@ -1,17 +1,13 @@
 exports.up = async function(knex) {
-  await knex.raw(
-    `
-      CREATE TABLE IF NOT EXISTS "products"
-      (
-        id integer primary key AUTOINCREMENT,
-        name TEXT NOT NULL UNIQUE,
-        price INT NOT NULL,
-        category TEXT NOT NULL,
-        ean TEXT NOT NULL,
-        image_path TEXT
-      );
-    `
-  );
+  return knex.schema
+   .createTable('products', function (table) {
+       table.increments('id').primary();
+       table.string('name').unique().notNullable();
+       table.integer('price').notNullable();
+       table.string('category').notNullable();
+       table.string('ean').notNullable();
+       table.string('image_path');
+    });
 };
 
 exports.down = function(knex) {};
