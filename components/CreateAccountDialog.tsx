@@ -17,10 +17,9 @@ export default function FormDialog() {
   const router = useRouter();
 
   const runApiRequest = async (dryRun: boolean, newName: string | null) => {
-    const res = await fetch("/api/v1/user", {
+    const res = await fetch(`/api/v1/user?dryRun=${dryRun}`, {
       body: JSON.stringify({
-        name: newName ?? name,
-        dryRun: dryRun
+        name: newName ?? name
       }),
       headers: {
         'Content-Type': 'application/json'
@@ -34,13 +33,8 @@ export default function FormDialog() {
         router.push(`/user/${user.id}`);
       }
     } else {
-      if (res.status === 400 || res.status === 409) {
-        const errMsg = (await res.json()).error;
-        setError(errMsg || "An unknown error occured");
-      }
-      else {
-        setError("An unknown error occured");
-      }
+      const errMsg = (await res.json()).message;
+      setError(errMsg || "An unknown error occured");
     }
   };
 
