@@ -57,6 +57,8 @@ model Product {
   categoryId   Int
   ean          String          @default("")
   transactions Transaction[]
+  order        Int
+  hidden       Boolean
 }
 
 enum TransactionType {

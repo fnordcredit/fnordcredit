@@ -34,15 +34,19 @@ import prisma from '../../../../lib/prisma.ts';
  *                 $ref: '#/components/schemas/UserPublic'
  */
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
-  const users = await prisma.user.findMany({
-    select: {
-      id: true,
-      name: true,
-      updatedAt: true,
-      avatar: true
-    }
-  });
-  res.status(200).json(users);
+  if (req.method === 'GET') {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        updatedAt: true,
+        avatar: true
+      }
+    });
+    res.status(200).json(users);
+  } else {
+    res.status(405);
+  }
 };
 
 export default handler;
