@@ -10,6 +10,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Link from '../components/Link';
 import IconButton from '@mui/material/IconButton';
 import MainMenu from '../components/MainMenu';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const ApiDoc = ({ spec }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [mainMenuOpen, setMainMenuOpen] = React.useState(false);
@@ -42,13 +43,15 @@ const ApiDoc = ({ spec }: InferGetStaticPropsType<typeof getStaticProps>) => {
   </>;
 };
 
-export const getStaticProps: GetStaticProps = async ctx => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  const translations = await serverSideTranslations(locale, ["common"]);
   const spec: Record<string, any> = createSwaggerSpec({
     title: 'Fnordcredit API',
     version: 'v1',
   });
   return {
     props: {
+      ...translations,
       spec,
     },
   };

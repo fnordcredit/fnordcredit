@@ -1,0 +1,11 @@
+{
+  "create-dialog": {
+    "new-account": "Konto Anlegen",
+    "create-account": "Konto Erstellen",
+    "customize": "Anpassen",
+    "cancel": "Abbrechen",
+    "name": "Dein Name",
+    "dialog-text": "Um ein Konto zu erstellen, musst du nur deinen Namen angeben. Danach kannst du wählen, ob du direkt loslegen möchstest oder dein Konto erst Anpassen möchstest.",
+    "dialog-title": "Benutzerkonto Erstellen"
+  }
+}

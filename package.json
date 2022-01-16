@@ -20,6 +20,7 @@
     "class-validator": "^0.13.2",
     "cors": "^2.8.5",
     "next": "latest",
+    "next-i18next": "^10.2.0",
     "next-swagger-doc": "^0.1.11",
     "path-to-regexp": "^6.2.0",
     "react": "latest",

@@ -9,12 +9,15 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 
 export default function FormDialog() {
   const [open, setOpen] = React.useState(false);
   const [name, setName] = React.useState("");
   const [error, setError] = React.useState("");
   const router = useRouter();
+  const { e } = useTranslation("error");
+  const { t } = useTranslation("user", { keyPrefix: "create-dialog" });
 
   const runApiRequest = async (dryRun: boolean, newName: string | null) => {
     const res = await fetch(`/api/v1/user?dryRun=${dryRun}`, {
@@ -34,7 +37,7 @@ export default function FormDialog() {
       }
     } else {
       const errMsg = (await res.json()).message;
-      setError(errMsg || "An unknown error occured");
+      setError(e(errMsg || "An unknown error occured"));
     }
   };
 
@@ -66,27 +69,27 @@ export default function FormDialog() {
     if (res.ok) {
       const user = res.json();
     } else {
-      console.log("An error occured");
+      const errMsg = (await res.json()).message;
+      setError(e(errMsg || "An unknown error occured"));
     }
   };
 
   return (
     <div>
       <Button variant="contained" endIcon={<PersonAddAlt1Icon />} onClick={handleClickOpen}>
-        New Account
+        {t("new-account")}
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Create an Account</DialogTitle>
+        <DialogTitle>{t("dialog-title")}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To create an account, just fill in your username. You can choose to
-            get started immediately or to customize your account first.
+            {t("dialog-text")}
           </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
             id="name"
-            label="Your name"
+            label={t("name")}
             fullWidth
             variant="standard"
             onChange={handleChange}
@@ -96,10 +99,10 @@ export default function FormDialog() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose}>{t("cancel")}</Button>
           <Box sx={{ flexGrow: 1 }} />
-          <Button onClick={handleClose} disabled>Customize</Button>
-          <Button onClick={handleSubmit}>Create Account</Button>
+          <Button onClick={handleClose} disabled>{t("customize")}</Button>
+          <Button onClick={handleSubmit}>{t("create-account")}</Button>
         </DialogActions>
       </Dialog>
     </div>

@@ -15,6 +15,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import MainMenu from '../components/MainMenu';
 import SearchBar from '../components/SearchBar';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 type UserListProps = {
   users: User[]
@@ -60,13 +61,21 @@ const UserList: NextPage = (props: UserListProps) => {
 };
 
 // TODO: Replace user fetching with SWR and regular revalidation
-export const getServerSideProps = async () => {
-  const users = await prisma.user.findMany()
-  return { props: { users: users.map((user) => ({
-    ...user,
-    createdAt: user.createdAt.toISOString(),
-    updatedAt: user.updatedAt.toISOString(),
-  })) } };
+export const getServerSideProps = async ({ locale }) => {
+  const users = await prisma.user.findMany();
+  const translations = await serverSideTranslations(locale, [
+    "common", "error", "user"
+  ]);
+  return {
+    props: {
+      ...translations,
+      users: users.map((user) => ({
+        ...user,
+        createdAt: user.createdAt.toISOString(),
+        updatedAt: user.updatedAt.toISOString(),
+      }))
+    }
+  };
 }
 
 export default UserList;

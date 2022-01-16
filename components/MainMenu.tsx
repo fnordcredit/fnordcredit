@@ -6,6 +6,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import Link from '../components/Link';
+import { useTranslation } from 'next-i18next';
 
 import CodeIcon from '@mui/icons-material/Code';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -17,6 +18,7 @@ type MainMenuProps = {
 };
 
 const MainMenu = (props: MainMenuProps) => {
+  const { t } = useTranslation("common");
   return (
     <Drawer anchor="left" open={props.open} onClose={props.onClose}>
       <List>
@@ -25,7 +27,7 @@ const MainMenu = (props: MainMenuProps) => {
             <HomeIcon />
           </ListItemIcon>
           <ListItemText>
-            Home
+            {t("menu.home")}
           </ListItemText>
         </ListItemButton>
         <Divider />
@@ -34,7 +36,7 @@ const MainMenu = (props: MainMenuProps) => {
             <GitHubIcon />
           </ListItemIcon>
           <ListItemText>
-            Contribute on GitHub
+            {t("menu.github")}
           </ListItemText>
         </ListItemButton>
         <ListItemButton component={Link} href="/docs" onClick={props.onClose}>
@@ -42,7 +44,7 @@ const MainMenu = (props: MainMenuProps) => {
             <CodeIcon />
           </ListItemIcon>
           <ListItemText>
-            API Docs
+            {t("menu.api-docs")}
           </ListItemText>
         </ListItemButton>
       </List>

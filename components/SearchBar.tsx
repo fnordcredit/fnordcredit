@@ -3,6 +3,7 @@ import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import Autocomplete from '@mui/material/Autocomplete';
+import { useTranslation } from 'next-i18next';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -49,6 +50,7 @@ type SearchBarProps = {
 };
 
 const SearchBar = (props: SearchBarProps) => {
+  const { t } = useTranslation("common");
   return (
     <Autocomplete
       id="autocomplete-search"
@@ -59,8 +61,8 @@ const SearchBar = (props: SearchBarProps) => {
           <SearchIconWrapper>
             <SearchIcon />
           </SearchIconWrapper>
-          <StyledInputBase {...params}
-            placeholder="Search..."
+          <StyledInputBase
+            placeholder={t("search")}
             inputProps={{ 
               ...params.inputProps,
               'aria-label': 'search',
