@@ -16,8 +16,8 @@ export default function FormDialog() {
   const [name, setName] = React.useState("");
   const [error, setError] = React.useState("");
   const router = useRouter();
-  const { e } = useTranslation("error");
-  const { t } = useTranslation("user", { keyPrefix: "create-dialog" });
+  const [e] = useTranslation("error");
+  const [t] = useTranslation("user", { keyPrefix: "create-dialog" });
 
   const runApiRequest = async (dryRun: boolean, newName: string | null) => {
     const res = await fetch(`/api/v1/user?dryRun=${dryRun}`, {
