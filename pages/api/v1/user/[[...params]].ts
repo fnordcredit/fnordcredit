@@ -1,5 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { createHandler, ValidationPipe, Body, Get, HttpCode, NotFoundException, Post, Query, ParseBooleanPipe } from '@storyofams/next-api-decorators';
+import {
+  createHandler,
+  ValidationPipe,
+  Body, Post,
+  Get,
+  HttpCode,
+  NotFoundException,
+  Query,
+  ParseBooleanPipe,
+  UseMiddleware,
+  createMiddlewareDecorator
+} from '@storyofams/next-api-decorators';
 import prisma from '../../../../lib/prisma.ts';
 import {
   IsNotEmpty, IsInt, IsString, IsOptional, IsDateString,
@@ -9,8 +20,16 @@ import {
   ValidatorConstraintInterface,
   ValidationArguments,
 } from 'class-validator';
+import cors from 'cors';
 
 const validationOpts = { whitelist: true, forbidNonWhitelisted: true };
+
+const Cors = createMiddlewareDecorator(
+  (req: NextApiRequest, res: NextApiResponse, next: NextFunction) => {
+    cors();
+    next();
+  }
+);
 
 @ValidatorConstraint({ async: true })
 export class IsUniqueUserConstraint implements ValidatorConstraintInterface {
@@ -120,6 +139,7 @@ class UserHandler {
  *                 $ref: '#/components/schemas/PublicUser'
  */
   @Get()
+  @Cors()
   async listUsers() {
     return await prisma.user.findMany({
       select: {
@@ -181,6 +201,7 @@ class UserHandler {
  *                   example: "User already exists"
  */
   @Post()
+  @Cors()
   async createUser(@Body(ValidationPipe(validationOpts)) body: CreateUserDTO,
     @Query('dryRun', ParseBooleanPipe) dryRun: boolean) {
     if (!dryRun) {
