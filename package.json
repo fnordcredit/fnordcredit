@@ -19,6 +19,8 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "cors": "^2.8.5",
+    "jose": "^4.3.8",
+    "nanoid": "^3.2.0",
     "next": "latest",
     "next-i18next": "^10.2.0",
     "next-swagger-doc": "^0.1.11",

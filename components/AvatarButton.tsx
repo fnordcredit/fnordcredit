@@ -12,14 +12,14 @@ type Props = {
   href: string
 };
 
-const AvatarButton: FunctionComponent<Props> = (props) => {
+const AvatarButton: React.FunctionComponent<Props> = (props: Props) => {
   const theme = useTheme();
   return (
     <ButtonBase component={Link} href={props.href} sx={{
       m: 1
     }}>
       <Stack>
-        <Avatar src={props.image} variant="rounded" sx={{
+        <Avatar src={props.image ?? ""} variant="rounded" sx={{
             width: 96,
             height: 96,
             bgcolor: '#2e4763',

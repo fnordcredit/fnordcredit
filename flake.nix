@@ -10,7 +10,10 @@
       devShell = pkgs.mkShell {
         nativeBuildInputs = [ pkgs.bashInteractive ];
         buildInputs = with pkgs; [
-          nodePackages.prisma (yarn.override { nodejs = nodejs-16_x; }) nodejs-16_x
+          nodePackages.prisma
+          (yarn.override { nodejs = nodejs-16_x; }) nodejs-16_x
+          nodePackages.typescript
+          nodePackages.typescript-language-server
         ];
         shellHook = with pkgs; ''
           export PRISMA_MIGRATION_ENGINE_BINARY="${prisma-engines}/bin/migration-engine"

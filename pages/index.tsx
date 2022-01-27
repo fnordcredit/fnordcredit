@@ -10,7 +10,7 @@ import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 import CreateAccountDialog from '../components/CreateAccountDialog';
 import AvatarButton from '../components/AvatarButton';
-import prisma from '../lib/prisma.ts';
+import prisma from '../lib/prisma';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import MainMenu from '../components/MainMenu';

@@ -2819,6 +2819,11 @@ jest-worker@27.0.0-next.5:
     merge-stream "^2.0.0"
     supports-color "^8.0.0"
 
+jose@^4.3.8:
+  version "4.3.8"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-4.3.8.tgz#149cb6a318689d5dbf469b40ac48c3f82276f4e6"
+  integrity sha512-dFiqN5FPLNWa/v+J3ShFjV/9sRGickxMbGUbqBrYr+BkrqLOieACaavSi9XmLJXe0Uzd7Cgs1oYtDvDrOyWLgw==
+
 js-file-download@^0.4.12:
   version "0.4.12"
   resolved "https://registry.yarnpkg.com/js-file-download/-/js-file-download-0.4.12.tgz#10c70ef362559a5b23cdbdc3bd6f399c3d91d821"
@@ -3171,6 +3176,11 @@ nanoid@^3.1.23:
   version "3.1.30"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.30.tgz#63f93cc548d2a113dc5dfbc63bfa09e2b9b64362"
   integrity sha512-zJpuPDwOv8D2zq2WRoMe1HsfZthVewpel9CAvTfc/2mBD1uUT/agc5f7GHGWXlYkFvi1mVxe4IjvP2HNrop7nQ==
+
+nanoid@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.2.0.tgz#62667522da6673971cca916a6d3eff3f415ff80c"
+  integrity sha512-fmsZYa9lpn69Ad5eDn7FMcnnSR+8R34W9qJEijxYhTbfOWzr22n1QxCMzXLK+ODyW2973V3Fux959iQoUxzUIA==
 
 natural-compare@^1.4.0:
   version "1.4.0"
