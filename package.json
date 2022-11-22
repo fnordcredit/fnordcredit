@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "bookshelf": "^1.2.0",
-    "engine.io": "^4.1.2",
+    "engine.io": "^6.2.1",
     "fnordcredit-frontend": "2.2.1",
     "gravatar": "^1.8.1",
     "knex": "^0.21.15",
