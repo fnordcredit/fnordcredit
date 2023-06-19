@@ -2,6 +2,7 @@ module.exports = {
   "extends": [
     "eslint:recommended",
     "next/core-web-vitals",
+    "prettier",
   ],
   plugins: [
   ],
@@ -32,11 +33,11 @@ module.exports = {
             "contexts": [{
               "comment": "JsdocBlock:has(JsdocTag[tag=swagger])",
               "context": "any",
-              "message": "@swagger documentation is required on each API. Check this out for syntax info: https://github.com/jellydn/next-swagger-doc"
-            }]
-          }
-        ]
-      }
-    }
-  ]
+              "message": "@swagger documentation is required on each API. Check this out for syntax info: https://github.com/jellydn/next-swagger-doc",
+            }],
+          },
+        ],
+      },
+    },
+  ],
 };
