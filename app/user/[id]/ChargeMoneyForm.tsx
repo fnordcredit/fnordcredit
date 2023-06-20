@@ -35,18 +35,16 @@ export default function HideChargeMoneyForm({
 }) {
   return (
     <div className="flex flex-wrap">
-      <ChargeMoneyButton action={action} userId={userId} amount={1} />
-      <ChargeMoneyButton action={action} userId={userId} amount={2} />
-      <ChargeMoneyButton action={action} userId={userId} amount={5} />
-      <ChargeMoneyButton action={action} userId={userId} amount={10} />
-      <ChargeMoneyButton action={action} userId={userId} amount={20} />
-      <ChargeMoneyButton action={action} userId={userId} amount={50} />
-      <ChargeMoneyButton action={action} userId={userId} amount={100} />
-      <ChargeMoneyButton action={action} userId={userId} amount={200} />
-      <ChargeMoneyButton action={action} userId={userId} amount={500} />
-      <ChargeMoneyButton action={action} userId={userId} amount={1000} />
-      <ChargeMoneyButton action={action} userId={userId} amount={2000} />
-      <ChargeMoneyButton action={action} userId={userId} amount={5000} />
+      {[1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000].map(
+        (amount, key) => (
+          <ChargeMoneyButton
+            action={action}
+            userId={userId}
+            amount={amount}
+            key={key}
+          />
+        )
+      )}
     </div>
   );
 }

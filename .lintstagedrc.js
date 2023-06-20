@@ -10,4 +10,5 @@ module.exports = {
     buildEslintCommand,
     "prettier --write --ignore-unknown",
   ],
+  "*.{json,md}": ["prettier --write --ignore-unknown"],
 };

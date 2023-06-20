@@ -4,18 +4,16 @@ const prisma = new PrismaClient();
 
 async function main() {
   const alice = await prisma.user.upsert({
-    where: { id: 1 },
+    where: { name: "Alice" },
     update: {},
     create: {
-      id: 1,
       name: "Alice",
     },
   });
   const bob = await prisma.user.upsert({
-    where: { id: 2 },
+    where: { name: "Bob" },
     update: {},
     create: {
-      id: 2,
       name: "Bob",
     },
   });

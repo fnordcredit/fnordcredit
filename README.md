@@ -1,7 +1,5 @@
 # Fnordcredit
 
-Open source credit system
-
 ## The Project
 
 Fnordcredit aims to be a feature-rich solution for trust-based credit solutions.
@@ -12,5 +10,5 @@ Fnordcredit is written in Typescript/Next.js/tailwindcss/prisma.
 
 ## Resources
 
-[Code of Conduct](./CODE_OF_CONDUCT.md)
-[Changelog](./CHANGELOG.md)
+- [Code of Conduct](./CODE_OF_CONDUCT.md)
+- [Changelog](./CHANGELOG.md)

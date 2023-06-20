@@ -1,7 +1,7 @@
 {
   "private": true,
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.js"
+    "seed": "npx ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.js"
   },
   "scripts": {
     "dev": "next dev",

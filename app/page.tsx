@@ -3,6 +3,22 @@ import Link from "next/link";
 import Avatar from "@components/Avatar";
 import AppBar from "@components/AppBar";
 import NewAccountDialog from "./newaccount";
+import { redirect } from "next/navigation";
+
+async function createAccount(data: FormData) {
+  "use server";
+  const userName = data.get("name")?.toString();
+  if (userName == null) return;
+  const user = await prisma.user.create({
+    data: {
+      name: userName,
+    },
+    select: {
+      id: true,
+    },
+  });
+  redirect(`/user/${user.id}`);
+}
 
 export default async function Index() {
   const users = await prisma.user.findMany({
@@ -18,7 +34,7 @@ export default async function Index() {
     <>
       <AppBar>
         <div className="flex-grow" />
-        <NewAccountDialog />
+        <NewAccountDialog action={createAccount} />
       </AppBar>
       <div className="mx-auto my-2 flex flex-wrap content-around">
         {users.map((x) => (

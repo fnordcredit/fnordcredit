@@ -1,7 +1,15 @@
 import Avatar from "@components/Avatar";
 import prisma from "@lib/prisma";
-import { mdiAccountCog, mdiCashFast, mdiLogout } from "@mdi/js";
+import {
+  mdiAccountCog,
+  mdiBottleSoda,
+  mdiCashFast,
+  mdiCashPlus,
+  mdiHelp,
+  mdiLogout,
+} from "@mdi/js";
 import Icon from "@mdi/react";
+import { TransactionType } from "@prisma/client";
 import Link from "next/link";
 import { ReactNode } from "react";
 
@@ -25,11 +33,13 @@ function MenuItem({
   );
 }
 
-function ListTransactions({
-  transactions,
-}: {
-  transactions: { createdAt: Date; creditDelta: number }[];
-}) {
+type Transaction = {
+  createdAt: Date;
+  creditDelta: number;
+  transactionType: TransactionType;
+};
+
+function ListTransactions({ transactions }: { transactions: Transaction[] }) {
   if (transactions.length == 0) {
     return (
       <p className="mb-2 px-4 text-gray-500 dark:text-gray-300">
@@ -37,17 +47,37 @@ function ListTransactions({
       </p>
     );
   }
+  const icon = (t: TransactionType) => {
+    if (t === TransactionType.AccountCharged) return mdiCashPlus;
+    if (t === TransactionType.ProductBought) return mdiBottleSoda;
+    if (t === TransactionType.AccountTransfer) return mdiCashFast;
+    return mdiHelp;
+  };
+  const description = (t: TransactionType) => {
+    if (t === TransactionType.AccountCharged) return "Account Charged";
+    if (t === TransactionType.ProductBought) return "Product Bought";
+    if (t === TransactionType.AccountTransfer) return "Transfer";
+    return "Unknown";
+  };
   return (
     <div className="mb-2">
       <h6 className="px-6">Recent Transactions</h6>
-      {transactions.map(({ createdAt, creditDelta }) => (
-        <p
-          className="px-8 text-gray-500 dark:text-gray-300"
+      {transactions.map(({ createdAt, creditDelta, transactionType }) => (
+        <div
+          className="flex w-full px-8 text-gray-500 dark:text-gray-300"
           key={createdAt.toString()}
         >
-          {(creditDelta / 100).toFixed(2).toString()}€ at{" "}
-          {createdAt.toLocaleString()}
-        </p>
+          <Icon path={icon(transactionType)} size={1} />
+          <span className="w-12 px-1">
+            {(creditDelta / 100).toFixed(2).toString()}€
+          </span>
+          <span className="flex-grow px-6 text-center">
+            {description(transactionType)}
+          </span>
+          <span className="cursor-help underline decoration-dotted">
+            {/*createdAt.toLocaleString()*/}1 Day Ago
+          </span>
+        </div>
       ))}
     </div>
   );
