@@ -1,7 +1,7 @@
 "use client";
+import createAccount from "@actions/createAccount";
 import SimpleDialog from "@components/SimpleDialog";
 import { useState } from "react";
-import createAccount from "@actions/createAccount";
 
 export default function NewAccountDialog() {
   const [open, setOpen] = useState(false);
