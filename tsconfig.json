@@ -18,7 +18,8 @@
     "emitDecoratorMetadata": true,
     "paths": {
       "@lib/*": ["./lib/*"],
-      "@components/*": ["./app/components/*"]
+      "@components/*": ["./app/components/*"],
+      "@actions/*": ["./app/actions/*"]
     },
     "plugins": [
       {

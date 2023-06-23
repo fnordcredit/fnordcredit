@@ -1,12 +1,9 @@
 "use client";
 import SimpleDialog from "@components/SimpleDialog";
 import { useState } from "react";
+import createAccount from "@actions/createAccount";
 
-export default function NewAccountDialog({
-  action,
-}: {
-  action: (_f: FormData) => Promise<void>;
-}) {
+export default function NewAccountDialog() {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -18,7 +15,7 @@ export default function NewAccountDialog({
         open={open}
         onClose={() => setOpen(false)}
       >
-        <form action={action}>
+        <form action={createAccount}>
           <div className="w-48">
             <div className="m-1 flex">
               <label htmlFor="name" className="mx-2 flex-grow text-lg">
