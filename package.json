@@ -4,8 +4,8 @@
     "seed": "npx ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.js"
   },
   "scripts": {
-    "dev": "prisma generate && prisma db push && prisma db seed && next dev",
-    "build": "prisma generate && prisma db push && prisma db seed && next build",
+    "dev": "prisma generate && prisma migrate reset && next dev",
+    "build": "prisma generate && prisma mirgrate deploy && next build",
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky install"
