@@ -1,4 +1,25 @@
+"use client";
 import Image from "next/image";
+import { experimental_useFormStatus as useFormStatus } from "react-dom";
+
+function SubmitButton({ amount }: { amount: number }) {
+  const width = amount < 500 ? 64 : 128;
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      className={`m-2 ${pending ? "grayscale" : "grayscale-0"}`}
+      disabled={pending}
+    >
+      <Image
+        src={`/images/euro/${amount.toString()}.png`}
+        alt={`${(amount / 100).toFixed(2).toString()}€`}
+        width={width}
+        height={64}
+      />
+    </button>
+  );
+}
 
 function ChargeMoneyButton({
   action,
@@ -9,19 +30,11 @@ function ChargeMoneyButton({
   userId: number;
   amount: number;
 }) {
-  const width = amount < 500 ? 64 : 128;
   return (
     <form action={action}>
       <input type="hidden" name="id" value={userId} />
       <input type="hidden" name="amount" value={amount} />
-      <button type="submit" className="m-2">
-        <Image
-          src={`/images/euro/${amount.toString()}.png`}
-          alt={`${(amount / 100).toFixed(2).toString()}€`}
-          width={width}
-          height={64}
-        />
-      </button>
+      <SubmitButton amount={amount} />
     </form>
   );
 }
