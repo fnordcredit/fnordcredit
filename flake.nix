@@ -22,7 +22,8 @@
           export PRISMA_QUERY_ENGINE_LIBRARY="${prisma-engines}/lib/libquery_engine.node"
           export PRISMA_INTROSPECTION_ENGINE_BINARY="${prisma-engines}/bin/introspection-engine"
           export PRISMA_FMT_BINARY="${prisma-engines}/bin/prisma-fmt"
-          export DATABASE_URL=postgres://fnordcredit:fnordcredit@localhost/fnordcredit
+          export POSTGRES_PRISMA_URL=postgres://fnordcredit:fnordcredit@localhost/fnordcredit
+          export POSTGRES_URL_NON_POOLING=postgres://fnordcredit:fnordcredit@localhost/fnordcredit
         '';
       };
     });
