@@ -5,7 +5,7 @@
   },
   "scripts": {
     "dev": "prisma generate && prisma migrate reset && next dev",
-    "build": "prisma generate && prisma mirgrate deploy && next build",
+    "build": "prisma generate && prisma migrate deploy && next build",
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky install"
