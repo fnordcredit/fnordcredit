@@ -39,6 +39,40 @@ type Transaction = {
   transactionType: TransactionType;
 };
 
+function timeAgo(date: Date) {
+  var seconds = Math.floor((Date.now() - Number(date)) / 1000);
+  const year = seconds / 31536000;
+  const month = seconds / 2592000;
+  const day = seconds / 86400;
+  const hour = seconds / 3600;
+  const minute = seconds / 60;
+  if (year > 2) {
+    return Math.floor(year) + " years ago";
+  }
+  if (year > 1) {
+    return Math.floor(year) + " year ago";
+  }
+  if (month > 2) {
+    return Math.floor(month) + " months ago";
+  }
+  if (day > 2) {
+    return Math.floor(day) + " days ago";
+  }
+  if (day > 1) {
+    return Math.floor(day) + " day ago";
+  }
+  if (hour > 2) {
+    return Math.floor(hour) + " hours ago";
+  }
+  if (minute > 2) {
+    return Math.floor(minute) + " minutes ago";
+  }
+  if (seconds > 30) {
+    return "About a minute ago";
+  }
+  return "Just now";
+}
+
 function ListTransactions({ transactions }: { transactions: Transaction[] }) {
   if (transactions.length == 0) {
     return (
@@ -71,11 +105,12 @@ function ListTransactions({ transactions }: { transactions: Transaction[] }) {
           <span className="w-12 px-1">
             {(creditDelta / 100).toFixed(2).toString()}€
           </span>
-          <span className="flex-grow px-6 text-center">
-            {description(transactionType)}
-          </span>
-          <span className="cursor-help underline decoration-dotted">
-            {/*createdAt.toLocaleString()*/}1 Day Ago
+          <span className="flex-grow px-6">{description(transactionType)}</span>
+          <span
+            className="cursor-help underline decoration-dotted"
+            title={createdAt.toLocaleString()}
+          >
+            {timeAgo(createdAt)}
           </span>
         </div>
       ))}

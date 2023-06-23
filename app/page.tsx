@@ -6,7 +6,7 @@ import NewAccountDialog from "./newaccount";
 import { redirect } from "next/navigation";
 import { IsString, IsNotEmpty, MaxLength, validate } from "class-validator";
 
-class CreateUserDTO {
+export class CreateUserDTO {
   @IsString()
   @IsNotEmpty()
   @MaxLength(20)

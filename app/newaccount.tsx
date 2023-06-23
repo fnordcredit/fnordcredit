@@ -19,11 +19,21 @@ export default function NewAccountDialog({
         onClose={() => setOpen(false)}
       >
         <form action={action}>
-          <div className="flex">
-            <label htmlFor="name" className="mx-2">
-              Name
-            </label>
-            <input type="text" name="name" maxLength={20} required></input>
+          <div className="w-48">
+            <div className="m-1 flex">
+              <label htmlFor="name" className="mx-2 flex-grow text-lg">
+                Name
+              </label>
+              <span className="rounded bg-error p-1 text-white">Error</span>
+            </div>
+            <input
+              type="text"
+              name="name"
+              className="w-full"
+              maxLength={20}
+              placeholder="Your username"
+              required
+            ></input>
           </div>
           <button type="submit">Create</button>
         </form>
