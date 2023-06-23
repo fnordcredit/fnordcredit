@@ -4,20 +4,37 @@ import Avatar from "@components/Avatar";
 import AppBar from "@components/AppBar";
 import NewAccountDialog from "./newaccount";
 import { redirect } from "next/navigation";
+import { IsString, IsNotEmpty, MaxLength, validate } from "class-validator";
+
+class CreateUserDTO {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(20)
+  name: string;
+
+  constructor(data: FormData) {
+    this.name = data.get("name")?.toString() ?? "";
+  }
+}
 
 async function createAccount(data: FormData) {
   "use server";
-  const userName = data.get("name")?.toString();
-  if (userName == null) return;
-  const user = await prisma.user.create({
-    data: {
-      name: userName,
-    },
-    select: {
-      id: true,
-    },
-  });
-  redirect(`/user/${user.id}`);
+  const user = new CreateUserDTO(data);
+  const errors = await validate(user);
+  if (errors.length > 0) {
+    return;
+  }
+  const id = (
+    await prisma.user.create({
+      data: {
+        name: user.name,
+      },
+      select: {
+        id: true,
+      },
+    })
+  ).id;
+  redirect(`/user/${id}`);
 }
 
 export default async function Index() {
@@ -44,7 +61,7 @@ export default async function Index() {
             key={x.id}
           >
             <Avatar image={x.avatar} alt={x.name} />
-            <span className="mx-3 my-auto block w-24 text-right font-bold text-primary-500 dark:text-slate-200">
+            <span className="mx-3 my-auto block w-24 break-all text-right font-bold text-primary-500 dark:text-slate-200">
               {x.name}
               <br />
               <span className="text-sm font-normal">

@@ -14,8 +14,13 @@ export default function NewAccountDialog({ action }) {
         open={open}
         onClose={() => setOpen(false)}
       >
-        <form action={action} className="flex">
-          <input type="text" name="name"></input>
+        <form action={action}>
+          <div className="flex">
+            <label htmlFor="name" className="mx-2">
+              Name
+            </label>
+            <input type="text" name="name" maxLength={20} required></input>
+          </div>
           <button type="submit">Create</button>
         </form>
       </SimpleDialog>
