@@ -5,7 +5,7 @@ export type SimpleDialogProps = {
   title: string;
   children: ReactNode;
   open: boolean;
-  onClose: (_b: boolean) => void;
+  onClose: () => void;
 };
 
 export default function SimpleDialog({

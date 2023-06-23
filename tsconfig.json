@@ -17,8 +17,8 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "paths": {
-      "@lib/*": ["lib/*"],
-      "@components/*": ["app/components/*"]
+      "@lib/*": ["./lib/*"],
+      "@components/*": ["./app/components/*"]
     },
     "plugins": [
       {

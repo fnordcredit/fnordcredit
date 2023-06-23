@@ -2,7 +2,11 @@
 import SimpleDialog from "@components/SimpleDialog";
 import { useState } from "react";
 
-export default function NewAccountDialog({ action }) {
+export default function NewAccountDialog({
+  action,
+}: {
+  action: (_f: FormData) => Promise<void>;
+}) {
   const [open, setOpen] = useState(false);
   return (
     <>
