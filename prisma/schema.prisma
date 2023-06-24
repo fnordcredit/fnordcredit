@@ -1,15 +1,12 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider          = "postgresql"
-  url               = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl         = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
-  shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
+  url               = env("POSTGRES_PRISMA_URL")
+  directUrl         = env("POSTGRES_URL_NON_POOLING")
+  //shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model User {
@@ -18,12 +15,56 @@ model User {
   updatedAt    DateTime      @updatedAt
   name         String        @unique
   debtLimit    Int           @default(0)
-  authMethods  AuthMethod[]
   email        String?
   credit       Int           @default(0)
   avatar       String?
-  transactions Transaction[] @relation("TransactionUser")
+  authMethods  AuthMethod[]
   transfers    Transaction[] @relation("TransactionTransferUser")
+  transactions Transaction[] @relation("TransactionUser")
+}
+
+model AuthMethod {
+  id             Int         @id @default(autoincrement())
+  authType       AuthType
+  secret         String
+  userId         Int?
+  secondFactorId Int?        @unique
+  secondFactor   AuthMethod? @relation("SecondFactor", fields: [secondFactorId], references: [id])
+  firstFactor    AuthMethod? @relation("SecondFactor")
+  user           User?       @relation(fields: [userId], references: [id])
+}
+
+model ProductCategory {
+  id       Int       @id @default(autoincrement())
+  name     String
+  order    Int
+  products Product[]
+}
+
+model Product {
+  id           Int             @id @default(autoincrement())
+  name         String
+  price        Int
+  categoryId   Int
+  ean          String          @default("")
+  order        Int
+  hidden       Boolean
+  image        String?
+  category     ProductCategory @relation(fields: [categoryId], references: [id])
+  transactions Transaction[]
+}
+
+model Transaction {
+  id              Int             @id @default(autoincrement())
+  userId          Int?
+  creditDelta     Int
+  createdAt       DateTime        @default(now())
+  transactionType TransactionType
+  productId       Int?
+  transferUserId  Int?
+  product         Product?        @relation(fields: [productId], references: [id])
+  transferUser    User?           @relation("TransactionTransferUser", fields: [transferUserId], references: [id])
+  user            User?           @relation("TransactionUser", fields: [userId], references: [id])
 }
 
 enum AuthType {
@@ -33,54 +74,8 @@ enum AuthType {
   Barcode
 }
 
-model AuthMethod {
-  id             Int         @id @default(autoincrement())
-  authType       AuthType
-  secret         String
-  // user omitted if second factor only
-  user           User?       @relation(fields: [userId], references: [id])
-  userId         Int?
-  secondFactor   AuthMethod? @relation("SecondFactor", fields: [secondFactorId], references: [id])
-  secondFactorId Int?        @unique
-  firstFactor    AuthMethod? @relation("SecondFactor")
-}
-
-model ProductCategory {
-  id       Int       @id @default(autoincrement())
-  name     String
-  products Product[]
-}
-
-model Product {
-  id           Int             @id @default(autoincrement())
-  name         String
-  price        Int
-  category     ProductCategory @relation(fields: [categoryId], references: [id])
-  categoryId   Int
-  ean          String          @default("")
-  transactions Transaction[]
-  order        Int
-  hidden       Boolean
-}
-
 enum TransactionType {
   ProductBought
   AccountCharged
   AccountTransfer
-}
-
-model Transaction {
-  id              Int             @id @default(autoincrement())
-  user            User?           @relation("TransactionUser", fields: [userId], references: [id])
-  userId          Int?
-  creditDelta     Int
-  createdAt       DateTime        @default(now())
-  image           String?
-  transactionType TransactionType
-  // If ProductBought:
-  product         Product?        @relation(fields: [productId], references: [id])
-  productId       Int?
-  // If AccountTransfer:
-  transferUser    User?           @relation("TransactionTransferUser", fields: [transferUserId], references: [id])
-  transferUserId  Int?
 }

@@ -56,7 +56,6 @@ CREATE TABLE "Transaction" (
     "userId" INTEGER,
     "creditDelta" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "image" TEXT,
     "transactionType" "TransactionType" NOT NULL,
     "productId" INTEGER,
     "transferUserId" INTEGER,
