@@ -27,6 +27,7 @@ export default async function ProductView({
   const productCategories = await prisma.productCategory.findMany({
     select: {
       name: true,
+      id: true,
       products: {
         select: {
           id: true,
