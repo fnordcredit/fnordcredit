@@ -54,14 +54,16 @@ export default async function ProductView({
                 className="m-2 flex w-48 rounded-xl bg-gray-100 drop-shadow-lg dark:bg-primary-500"
                 key={product.id}
               >
-                <Image
-                  width={96}
-                  height={96}
-                  src={product.image}
-                  alt={product.name}
-                  className="rounded-l-xl"
-                />
-                <div className="mt-4 flex-wrap p-1 text-center">
+                {product.image != null ? (
+                  <Image
+                    width={96}
+                    height={96}
+                    src={product.image}
+                    alt={product.name}
+                    className="rounded-l-xl"
+                  />
+                ) : null}
+                <div className="mt-4 w-full flex-wrap p-1 text-center">
                   <span>{product.name}</span>
                   <br />
                   <span>{(product.price / 100).toFixed(2).toString()}€</span>

@@ -60,7 +60,7 @@ async function main() {
         categoryId: food.id,
         order: Number(i),
         hidden: false,
-        image: "/images/products/test.png",
+        image: i == 2 ? null : "/images/products/test.png",
       },
     });
   }
