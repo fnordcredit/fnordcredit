@@ -37,6 +37,9 @@ type Transaction = {
   createdAt: Date;
   creditDelta: number;
   transactionType: TransactionType;
+  product: {
+    name: string;
+  } | null;
 };
 
 function timeAgo(date: Date) {
@@ -81,36 +84,42 @@ function ListTransactions({ transactions }: { transactions: Transaction[] }) {
       </p>
     );
   }
-  const icon = (t: TransactionType) => {
-    if (t === TransactionType.AccountCharged) return mdiCashPlus;
-    if (t === TransactionType.ProductBought) return mdiBottleSoda;
-    if (t === TransactionType.AccountTransfer) return mdiCashFast;
+  const icon = (t: Transaction) => {
+    if (t.transactionType === TransactionType.AccountCharged)
+      return mdiCashPlus;
+    if (t.transactionType === TransactionType.ProductBought)
+      return mdiBottleSoda;
+    if (t.transactionType === TransactionType.AccountTransfer)
+      return mdiCashFast;
     return mdiHelp;
   };
-  const description = (t: TransactionType) => {
-    if (t === TransactionType.AccountCharged) return "Account Charged";
-    if (t === TransactionType.ProductBought) return "Product Bought";
-    if (t === TransactionType.AccountTransfer) return "Transfer";
+  const description = (t: Transaction) => {
+    if (t.transactionType === TransactionType.AccountCharged)
+      return "Account Charged";
+    if (t.transactionType === TransactionType.ProductBought)
+      return t?.product?.name ?? "Product Bought";
+    if (t.transactionType === TransactionType.AccountTransfer)
+      return "Transfer";
     return "Unknown";
   };
   return (
     <div className="mb-2">
       <h6 className="px-6">Recent Transactions</h6>
-      {transactions.map(({ createdAt, creditDelta, transactionType }) => (
+      {transactions.map((t) => (
         <div
           className="flex w-full px-8 text-gray-500 dark:text-gray-300"
-          key={createdAt.toString()}
+          key={t.createdAt.toString()}
         >
-          <Icon path={icon(transactionType)} size={1} />
+          <Icon path={icon(t)} size={1} />
           <span className="w-12 px-1">
-            {(creditDelta / 100).toFixed(2).toString()}€
+            {(t.creditDelta / 100).toFixed(2).toString()}€
           </span>
-          <span className="flex-grow px-6">{description(transactionType)}</span>
+          <span className="flex-grow px-6">{description(t)}</span>
           <span
             className="cursor-help underline decoration-dotted"
-            title={createdAt.toLocaleString()}
+            title={t.createdAt.toLocaleString()}
           >
-            {timeAgo(createdAt)}
+            {timeAgo(t.createdAt)}
           </span>
         </div>
       ))}
@@ -128,7 +137,11 @@ export default async function InfoCard({ params }: { params: { id: string } }) {
       credit: true,
       transactions: {
         select: {
-          productId: true,
+          product: {
+            select: {
+              name: true,
+            },
+          },
           transactionType: true,
           transferUser: true,
           createdAt: true,
