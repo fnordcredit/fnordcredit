@@ -1,5 +1,22 @@
 import prisma from "@lib/prisma";
 import Image from "next/image";
+import AddProductDialog from "./AddProductDialog";
+import { revalidatePath } from "next/cache";
+
+async function addProductAction(data: FormData) {
+  "use server";
+  await prisma.product.create({
+    data: {
+      name: data.get("name")?.toString() ?? "Unknown",
+      price: parseInt(data.get("price")?.toString() ?? "0", 10),
+      categoryId: parseInt(data.get("categoryId")?.toString() ?? "0", 10),
+      order: 0,
+      hidden: false,
+    },
+  });
+  revalidatePath("/admin/products");
+  revalidatePath("/user/[id]");
+}
 
 export default async function ProductPage() {
   const cats = await prisma.productCategory.findMany({
@@ -8,9 +25,12 @@ export default async function ProductPage() {
     },
   });
   return cats.map((c) => (
-    <div key={c.id}>
-      <h3 className="text-xl font-bold">{c.name}</h3>
-      <div>
+    <div key={c.id} className="m-8 w-96">
+      <div className="flex">
+        <h3 className="flex-grow text-xl font-bold">{c.name}</h3>
+        <AddProductDialog categoryId={c.id} action={addProductAction} />
+      </div>
+      <div className="table w-full">
         <div className="card table-row font-bold">
           <div className="table-cell border-b-2 border-black px-3 py-1 text-center dark:border-white">
             Image
