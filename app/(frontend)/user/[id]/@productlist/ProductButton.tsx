@@ -8,7 +8,7 @@ function SubmitButton({ product }: { product: Partial<Product> }) {
   return (
     <button
       type="submit"
-      className={`m-2 flex h-24 w-48 rounded-xl bg-gray-100 drop-shadow-lg hover:brightness-125 dark:bg-primary-500 ${
+      className={`card m-2 flex h-24 w-48 rounded-xl hover:brightness-125 ${
         pending ? "grayscale" : "grayscale-0"
       }`}
       disabled={pending}

@@ -1,0 +1,3 @@
+.card {
+  @apply bg-white dark:bg-primary-700 drop-shadow-lg
+}

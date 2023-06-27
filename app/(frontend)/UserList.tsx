@@ -4,10 +4,9 @@ import AppBar from "@components/AppBar";
 import Avatar from "@components/Avatar";
 import Link from "next/link";
 import NewAccountDialog from "./newaccount";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Icon from "@mdi/react";
 import { mdiAccountSearch } from "@mdi/js";
-import { useRouter } from "next/navigation";
 
 type User = {
   id: number;
@@ -23,10 +22,6 @@ export default function UserList({ users }: { users: User[] }) {
   const focusSearch = () => {
     searchRef?.current?.focus();
   };
-  const router = useRouter();
-  useEffect(() => {
-    setInterval(() => router.refresh(), 60000);
-  }, [router]);
   return (
     <>
       <AppBar>
@@ -58,7 +53,7 @@ export default function UserList({ users }: { users: User[] }) {
           .map((x) => (
             <Link
               href={`/user/${x.id.toString()}`}
-              className="m-6 flex h-28 w-56 cursor-pointer rounded-md bg-slate-50 px-2 py-2 drop-shadow-lg transition-colors duration-200 hover:bg-primary-100 dark:bg-primary-700 dark:text-slate-200 dark:hover:bg-primary-500"
+              className="card m-6 flex h-28 w-56 cursor-pointer rounded-md px-2 py-2 transition-colors duration-200 hover:bg-gray-200 dark:hover:bg-primary-500"
               key={x.id}
             >
               <Avatar image={x.avatar} alt={x.name} />
