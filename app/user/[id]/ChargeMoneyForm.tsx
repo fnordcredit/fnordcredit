@@ -1,20 +1,38 @@
-import Image from 'next/image';
+import Image from "next/image";
 
-function ChargeMoneyButton({ action, userId, amount }: { action: (f: FormData) => Promise<void>, userId: number, amount: number }) {
+function ChargeMoneyButton({
+  action,
+  userId,
+  amount,
+}: {
+  action: (_f: FormData) => Promise<void>;
+  userId: number;
+  amount: number;
+}) {
   const width = amount < 500 ? 64 : 128;
   return (
     <form action={action}>
       <input type="hidden" name="id" value={userId} />
       <input type="hidden" name="amount" value={amount} />
       <button type="submit" className="m-2">
-        <Image src={`/images/euro/${amount.toString()}.png`} alt={`${(amount / 100).toFixed(2).toString()}€`} 
-        width={width} height={64} />
+        <Image
+          src={`/images/euro/${amount.toString()}.png`}
+          alt={`${(amount / 100).toFixed(2).toString()}€`}
+          width={width}
+          height={64}
+        />
       </button>
     </form>
   );
-};
+}
 
-export default function HideChargeMoneyForm({ action, userId }: { action: (f: FormData) => Promise<void>, userId: number }) {
+export default function HideChargeMoneyForm({
+  action,
+  userId,
+}: {
+  action: (_f: FormData) => Promise<void>;
+  userId: number;
+}) {
   return (
     <div className="flex flex-wrap">
       <ChargeMoneyButton action={action} userId={userId} amount={1} />
@@ -31,4 +49,4 @@ export default function HideChargeMoneyForm({ action, userId }: { action: (f: Fo
       <ChargeMoneyButton action={action} userId={userId} amount={5000} />
     </div>
   );
-};
+}

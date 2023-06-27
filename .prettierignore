@@ -7,3 +7,4 @@ yarn.lock
 flake.nix
 nix
 .envrc
+.direnv
