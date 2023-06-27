@@ -4,9 +4,10 @@ import AppBar from "@components/AppBar";
 import Avatar from "@components/Avatar";
 import Link from "next/link";
 import NewAccountDialog from "./newaccount";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Icon from "@mdi/react";
 import { mdiAccountSearch } from "@mdi/js";
+import { useRouter } from "next/navigation";
 
 type User = {
   id: number;
@@ -22,6 +23,10 @@ export default function UserList({ users }: { users: User[] }) {
   const focusSearch = () => {
     searchRef?.current?.focus();
   };
+  const router = useRouter();
+  useEffect(() => {
+    setInterval(() => router.refresh(), 60000);
+  }, [router]);
   return (
     <>
       <AppBar>

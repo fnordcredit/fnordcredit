@@ -1,10 +1,11 @@
 import SlideInMenu from "@components/Menu";
 import { mdiApi, mdiCellphoneCog, mdiGithub, mdiHome } from "@mdi/js";
+import Link from "next/link";
 import { ReactNode } from "react";
 
 export default function AppBar({ children }: { children: ReactNode }) {
   return (
-    <div className="mx-auto flex bg-primary-500 px-8 py-2 text-slate-200 drop-shadow-lg">
+    <div className="mx-auto flex h-16 bg-primary-500 px-8 py-3 text-slate-200 drop-shadow-lg">
       <SlideInMenu
         title="Navigation"
         navigation={[
@@ -23,7 +24,9 @@ export default function AppBar({ children }: { children: ReactNode }) {
           },
         ]}
       />
-      <span className="my-auto font-semibold">Fnordcredit</span>
+      <Link href="/" className="my-auto font-semibold">
+        Fnordcredit
+      </Link>
       {children}
     </div>
   );
