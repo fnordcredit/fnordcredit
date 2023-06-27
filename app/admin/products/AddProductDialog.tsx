@@ -25,6 +25,11 @@ export default function AddProductDialog({ action, categoryId }: Props) {
           <input type="hidden" name="categoryId" value={categoryId} />
           <input type="text" name="name" placeholder="Product Name" />
           <input type="text" name="price" placeholder="Price in cents" />
+          <input
+            type="file"
+            name="image"
+            accept="image/png, image/jpeg, image/gif"
+          />
           <button type="submit">Add Product</button>
         </form>
       </SimpleDialog>

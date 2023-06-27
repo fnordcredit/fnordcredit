@@ -24,3 +24,4 @@ static/img/*.png
 .env.test.local
 .env.production.local
 .direnv
+tsconfig.tsbuildinfo
