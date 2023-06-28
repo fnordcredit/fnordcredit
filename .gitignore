@@ -25,3 +25,4 @@ static/img/*.png
 .env.production.local
 .direnv
 tsconfig.tsbuildinfo
+/data/

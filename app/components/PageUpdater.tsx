@@ -10,7 +10,8 @@ type Props = {
 export default function PageUpdater({ interval }: Props) {
   const router = useRouter();
   useEffect(() => {
-    setInterval(() => router.refresh(), interval);
+    const i = setInterval(() => router.refresh(), interval);
+    return () => clearInterval(i);
   }, [router, interval]);
   return null;
 }

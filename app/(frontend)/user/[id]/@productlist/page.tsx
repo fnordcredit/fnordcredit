@@ -51,6 +51,9 @@ export default async function ProductView({
           price: true,
           image: true,
         },
+        where: {
+          hidden: false,
+        },
       },
     },
   });

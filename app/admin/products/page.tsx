@@ -1,41 +1,20 @@
 import prisma from "@lib/prisma";
 import Image from "next/image";
 import AddProductDialog from "./AddProductDialog";
-import { revalidatePath } from "next/cache";
-
-async function addProductAction(data: FormData) {
-  "use server";
-  const getImage = async () => {
-    const file = data.get("image") as File | null;
-    if (file == null) return null;
-    const buffer = await (data.get("image") as File).arrayBuffer();
-    const bytes = new Uint8Array(buffer);
-    let out = "";
-    const len = bytes.byteLength;
-    for (let i = 0; i < len; i++) {
-      out += String.fromCharCode(bytes[i]);
-    }
-    return out.length == 0 ? null : `data:${file.type};base64,${btoa(out)}`;
-  };
-  const image = await getImage();
-  await prisma.product.create({
-    data: {
-      name: data.get("name")?.toString() ?? "Unknown",
-      price: parseInt(data.get("price")?.toString() ?? "0", 10),
-      categoryId: parseInt(data.get("categoryId")?.toString() ?? "0", 10),
-      order: 0,
-      hidden: false,
-      image: image,
-    },
-  });
-  revalidatePath("/admin/products");
-  revalidatePath("/user/[id]");
-}
+import { addProductAction } from "@actions/admin/products";
+import VisibilityToggle from "./VisibilityToggle";
 
 export default async function ProductPage() {
   const cats = await prisma.productCategory.findMany({
     include: {
-      products: true,
+      products: {
+        orderBy: {
+          id: "asc",
+        },
+      },
+    },
+    orderBy: {
+      id: "asc",
     },
   });
   return cats.map((c) => (
@@ -80,7 +59,7 @@ export default async function ProductPage() {
               {p.ean}
             </div>
             <div className="table-cell border-l border-black px-3 py-1 align-middle dark:border-white">
-              <input type="checkbox" disabled={true} checked={!p.hidden} />
+              <VisibilityToggle productId={p.id} hidden={p.hidden} />
             </div>
           </div>
         ))}
