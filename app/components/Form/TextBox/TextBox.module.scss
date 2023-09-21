@@ -1,0 +1,40 @@
+.textbox {
+  @apply my-2;
+  display: flex;
+  flex-direction: column;
+  input {
+    @apply w-full p-2 border-slate-400 bg-white text-black;
+    order: 2;
+
+    &:not(:placeholder-shown):not(:focus),
+    &.showErrorOnFocus:not(:placeholder-shown) {
+      &:invalid, &.error {
+        @apply border-error;
+        & ~ span.active, &:invalid ~ span.regex {
+          @apply block mb-0 scale-100 mt-1;
+        }
+        &:focus {
+          @apply ring-error;
+        }
+      }
+    }
+    & ~ span {
+      order: 3;
+      @apply scale-0 -mb-6 mt-0 motion-reduce:mb-0;
+      @apply text-sm text-error;
+      @apply motion-reduce:transition-none transition-all;
+      @apply duration-500 ease-in-out;
+      & > svg {
+        @apply inline;
+      }
+    }
+    & ~ label {
+      order: 1;
+      @apply text-sm;
+    }
+    &:required ~ label::after {
+      @apply text-sm text-error;
+      content: '*';
+    }
+  }
+}

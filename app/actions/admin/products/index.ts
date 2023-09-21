@@ -32,9 +32,8 @@ export async function addProductAction(data: FormData) {
 
 export async function changeProductVisibility(
   productId: number,
-  hidden: boolean
+  hidden: boolean,
 ) {
-  console.log(`Toggling... ${productId} to ${hidden ? "hidden" : "visible"}`);
   await prisma.product.update({
     where: {
       id: productId,

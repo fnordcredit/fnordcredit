@@ -3,7 +3,7 @@ import { mdiApi, mdiCellphoneCog, mdiGithub, mdiHome } from "@mdi/js";
 import Link from "next/link";
 import { ReactNode } from "react";
 
-export default function AppBar({ children }: { children: ReactNode }) {
+export default function AppBar({ children }: { children?: ReactNode }) {
   return (
     <div className="mx-auto flex h-16 bg-primary-500 px-8 py-3 text-slate-200 drop-shadow-lg">
       <SlideInMenu

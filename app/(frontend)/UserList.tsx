@@ -3,7 +3,7 @@
 import AppBar from "@components/AppBar";
 import Avatar from "@components/Avatar";
 import Link from "next/link";
-import NewAccountDialog from "./newaccount";
+import NewAccountDialog from "./new-account/NewAccountButton";
 import { useRef, useState } from "react";
 import Icon from "@mdi/react";
 import { mdiAccountSearch } from "@mdi/js";

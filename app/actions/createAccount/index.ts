@@ -14,6 +14,22 @@ class CreateUserDTO {
   }
 }
 
+export async function userExists(name: string) {
+  return (
+    await prisma.user.findFirst({
+      where: {
+        name: {
+          equals: name,
+          mode: "insensitive",
+        },
+      },
+      select: {
+        id: true,
+      },
+    })
+  )?.id;
+}
+
 export default async function createAccount(data: FormData) {
   const user = new CreateUserDTO(data);
   const errors = await validate(user);
