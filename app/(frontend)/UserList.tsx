@@ -7,6 +7,7 @@ import NewAccountDialog from "./new-account/NewAccountButton";
 import { useRef, useState } from "react";
 import Icon from "@mdi/react";
 import { mdiAccountSearch } from "@mdi/js";
+import formatCurrency from "@lib/formatCurrency";
 
 type User = {
   id: number;
@@ -65,7 +66,7 @@ export default function UserList({ users }: { users: User[] }) {
                     x.credit < 0 ? "text-error" : ""
                   }`}
                 >
-                  {(x.credit / 100).toFixed(2).toString() + "€"}
+                  {formatCurrency(x.credit)}
                 </span>
               </span>
             </Link>

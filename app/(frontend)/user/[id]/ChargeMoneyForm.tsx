@@ -56,7 +56,7 @@ export default function HideChargeMoneyForm({
             amount={amount}
             key={key}
           />
-        )
+        ),
       )}
     </div>
   );

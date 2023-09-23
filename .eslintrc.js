@@ -2,16 +2,6 @@ module.exports = {
   extends: ["eslint:recommended", "next/core-web-vitals", "prettier"],
   plugins: [],
   rules: {
-    "comma-dangle": [
-      2,
-      {
-        arrays: "always-multiline",
-        objects: "always-multiline",
-        imports: "always-multiline",
-        exports: "always-multiline",
-        functions: "never",
-      },
-    ],
     "space-before-function-paren": 0,
     "require-atomic-updates": 0,
     "no-unused-vars": [

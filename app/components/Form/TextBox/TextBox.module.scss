@@ -8,9 +8,11 @@
 
     &:not(:placeholder-shown):not(:focus),
     &.showErrorOnFocus:not(:placeholder-shown) {
-      &:invalid, &.error {
+      &:invalid,
+      &.error {
         @apply border-error;
-        & ~ span.active, &:invalid ~ span.regex {
+        & ~ span.active,
+        &:invalid ~ span.regex {
           @apply block mb-0 scale-100 mt-1;
         }
         &:focus {
@@ -34,7 +36,7 @@
     }
     &:required ~ label::after {
       @apply text-sm text-error;
-      content: '*';
+      content: "*";
     }
   }
 }

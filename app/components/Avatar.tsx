@@ -32,8 +32,8 @@ export default function Avatar({ image, alt }: AvatarProps) {
       .split("")
       .reduce(
         (acc, x) => acc + (isNaN(parseInt(x, 36)) ? 0 : parseInt(x, 36)),
-        0
-      )
+        0,
+      ),
   );
   return image != null ? (
     <Image

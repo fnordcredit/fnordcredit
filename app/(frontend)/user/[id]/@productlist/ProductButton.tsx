@@ -1,4 +1,5 @@
 "use client";
+import formatCurrency from "@lib/formatCurrency";
 import { Product } from "@prisma/client";
 import Image from "next/image";
 import { experimental_useFormStatus as useFormStatus } from "react-dom";
@@ -25,7 +26,7 @@ function SubmitButton({ product }: { product: Partial<Product> }) {
       <div className="mt-4 w-full flex-wrap p-1 text-center">
         <span>{product.name ?? "Unknown Product"}</span>
         <br />
-        <span>{((product.price ?? 0) / 100).toFixed(2).toString()}€</span>
+        <span>{formatCurrency(product.price ?? 0)}</span>
       </div>
     </button>
   );

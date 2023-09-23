@@ -1,4 +1,5 @@
 import Avatar from "@components/Avatar";
+import formatCurrency from "@lib/formatCurrency";
 import prisma from "@lib/prisma";
 import {
   mdiAccountCog,
@@ -111,9 +112,7 @@ function ListTransactions({ transactions }: { transactions: Transaction[] }) {
           key={t.createdAt.toString()}
         >
           <Icon path={icon(t)} size={1} />
-          <span className="w-12 px-1">
-            {(t.creditDelta / 100).toFixed(2).toString()}€
-          </span>
+          <span className="w-12 px-1">{formatCurrency(t.creditDelta)}</span>
           <span className="flex-grow px-6">{description(t)}</span>
           <span
             className="cursor-help underline decoration-dotted"
@@ -169,7 +168,7 @@ export default async function InfoCard({ params }: { params: { id: string } }) {
             user.credit < 0 ? "bg-red-600" : "bg-green-600"
           } rounded-lg text-primary-50`}
         >
-          {(user.credit / 100).toFixed(2).toString()}€
+          {formatCurrency(user.credit)}
         </span>
       </div>
       <div className="rounded-b-3xl bg-white drop-shadow-md dark:bg-primary-500">

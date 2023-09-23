@@ -102,7 +102,7 @@ export default function SlideInMenu(props: SlideInMenuProps) {
                               />
                               <span className="my-auto text-xl">{text}</span>
                             </Link>
-                          )
+                          ),
                         )}
                       </div>
                     </div>
