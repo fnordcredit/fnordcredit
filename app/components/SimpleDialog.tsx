@@ -1,6 +1,7 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, ReactNode } from "react";
-import Button from "./Form/Button";
+import Icon from "@mdi/react";
+import { mdiClose } from "@mdi/js";
 
 export type SimpleDialogProps = {
   title: string;
@@ -42,6 +43,11 @@ export default function SimpleDialog({
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <div className="float-right text-gray-900">
+                  <button className="flex-grow" type="button" onClick={onClose}>
+                    <Icon path={mdiClose} size={1} />
+                  </button>
+                </div>
                 <Dialog.Title
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900"
@@ -49,10 +55,6 @@ export default function SimpleDialog({
                   {title}
                 </Dialog.Title>
                 <div className="mt-2 text-sm text-gray-500">{children}</div>
-
-                <div className="mt-4">
-                  <Button onClick={onClose}>Got it, thanks!</Button>
-                </div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
