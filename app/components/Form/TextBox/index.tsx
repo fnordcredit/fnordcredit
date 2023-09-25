@@ -46,8 +46,8 @@ export default function TextBox<T extends TextBoxProps>({
       ></input>
       {label != null ? <label htmlFor={name}>{label}</label> : null}
       {regexErrorMessage != null ? (
-        <span>
-          <Icon path={mdiShieldAlert} className={style.regex} size={1} />
+        <span className={style.regex}>
+          <Icon path={mdiShieldAlert} size={1} />
           {regexErrorMessage}
         </span>
       ) : null}

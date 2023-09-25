@@ -6,7 +6,7 @@ import { mdiLoading } from "@mdi/js";
 
 interface SubmitProps {
   children: ReactNode;
-  disabled: boolean;
+  disabled?: boolean;
   icon?: string;
 }
 

@@ -26,8 +26,8 @@ export async function addProductAction(data: FormData) {
       image: image,
     },
   });
-  revalidatePath("/admin/products");
-  revalidatePath("/user/[id]");
+  revalidatePath("/admin/products", "page");
+  revalidatePath("/user/[id]", "page");
 }
 
 export async function changeProductVisibility(
@@ -42,6 +42,6 @@ export async function changeProductVisibility(
       hidden: hidden,
     },
   });
-  revalidatePath("/admin/products");
-  revalidatePath("/user/[id]");
+  revalidatePath("/admin/products", "page");
+  revalidatePath("/user/[id]", "page");
 }

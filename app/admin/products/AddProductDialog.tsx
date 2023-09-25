@@ -1,4 +1,5 @@
 "use client";
+import Form, { Submit, TextBox } from "@components/Form";
 import SimpleDialog from "@components/SimpleDialog";
 import { mdiPlusCircle } from "@mdi/js";
 import Icon from "@mdi/react";
@@ -21,17 +22,35 @@ export default function AddProductDialog({ action, categoryId }: Props) {
         open={open}
         onClose={() => setOpen(false)}
       >
-        <form action={action}>
+        <Form
+          action={async (fd) => {
+            await action(fd);
+            setOpen(false);
+          }}
+        >
           <input type="hidden" name="categoryId" value={categoryId} />
-          <input type="text" name="name" placeholder="Product Name" />
-          <input type="text" name="price" placeholder="Price in cents" />
+          <TextBox
+            name="name"
+            placeholder="Product Name"
+            required
+            label="Product Name"
+          />
+          <TextBox
+            name="price"
+            placeholder="Price in cents"
+            required
+            label="Price"
+            showErrorOnFocus
+            regexErrorMessage="Price has to be a number"
+            pattern="[0-9]+"
+          />
           <input
             type="file"
             name="image"
             accept="image/png, image/jpeg, image/gif"
           />
-          <button type="submit">Add Product</button>
-        </form>
+          <Submit>Add Product</Submit>
+        </Form>
       </SimpleDialog>
     </>
   );
