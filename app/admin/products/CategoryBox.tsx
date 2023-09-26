@@ -1,13 +1,14 @@
 "use client";
 import { ProductCategory, Product } from "@prisma/client";
 import AddProductDialog from "./AddProductDialog";
-import { addProductAction } from "@actions/admin/products";
+import { addProductAction, deleteCategory } from "@actions/admin/products";
 import Image from "next/image";
 import formatCurrency from "@lib/formatCurrency";
 import VisibilityToggle from "./VisibilityToggle";
 import { ReactNode, useMemo, useState } from "react";
 import Icon from "@mdi/react";
 import {
+  mdiPlusCircle,
   mdiSortAlphabeticalAscending,
   mdiSortAlphabeticalDescending,
   mdiSortAscending,
@@ -17,6 +18,8 @@ import {
   mdiSortNumericAscending,
   mdiSortNumericDescending,
 } from "@mdi/js";
+import Button from "@components/Form/Button";
+import SimpleDialog from "@components/SimpleDialog";
 
 interface CategoryBoxProps {
   category: ProductCategory & { products: Product[] };
@@ -92,6 +95,25 @@ const tableColumns: Column[] = [
 ];
 
 export default function CategoryBox({ category: c }: CategoryBoxProps) {
+  return (
+    <div
+      key={c.id}
+      className="m-4 p-4 bg-white/50 dark:bg-gray-700/50 rounded-xl border-black backdrop-blur"
+    >
+      <div className="flex">
+        <h3 className="flex-grow text-xl font-bold">{c.name}</h3>
+        <AddProductDialog categoryId={c.id} action={addProductAction} />
+      </div>
+      {c.products.length > 0 ? (
+        <CategoryTable category={c} />
+      ) : (
+        <EmptyCategory category={c} />
+      )}
+    </div>
+  );
+}
+
+function CategoryTable({ category: c }: CategoryBoxProps) {
   const [sort, setSort] = useState({ id: 0, asc: true });
   const products = useMemo(() => {
     const sortFunc = tableColumns[sort.id].sort;
@@ -100,54 +122,93 @@ export default function CategoryBox({ category: c }: CategoryBoxProps) {
       : [...c.products].sort(sortFunc).reverse();
   }, [c, sort]);
   return (
-    <div
-      key={c.id}
-      className="m-4 p-4 bg-white/50 dark:bg-gray-700/50 rounded-xl border-black"
-    >
-      <div className="flex">
-        <h3 className="flex-grow text-xl font-bold">{c.name}</h3>
-        <AddProductDialog categoryId={c.id} action={addProductAction} />
-      </div>
-      <div className="table w-full m-1">
-        <div className="card table-row font-bold">
-          {tableColumns.map((c, i) => (
-            <div
-              key={i}
-              className="table-cell border-b-2 border-black px-3 py-1 text-center dark:border-white"
+    <div className="table w-full m-1">
+      <div className="card table-row font-bold">
+        {tableColumns.map((c, i) => (
+          <div
+            key={i}
+            className="table-cell border-b-2 border-black px-3 py-1 text-center dark:border-white"
+          >
+            <a
+              onClick={() =>
+                setSort({ id: i, asc: sort.id === i ? !sort.asc : true })
+              }
+              className="cursor-pointer select-none"
             >
-              <a
-                onClick={() =>
-                  setSort({ id: i, asc: sort.id === i ? !sort.asc : true })
-                }
-                className="cursor-pointer select-none"
-              >
-                {c.name}
-                <Icon
-                  path={sort.asc ? c.iconAsc : c.iconDesc}
-                  size={1}
-                  className={`inline mx-1 text-gray-500${
-                    sort.id === i ? "" : " opacity-0"
-                  }`}
-                />
-              </a>
-            </div>
-          ))}
-        </div>
-        {products.map((p: Product) => (
-          <div className="card table-row" key={p.id}>
-            {tableColumns.map((c, i) => (
-              <div
-                key={i}
-                className={`table-cell${
-                  i == 0 ? "" : " border-l"
-                } border-black px-3 py-1 align-middle dark:border-white`}
-              >
-                {c.render(p)}
-              </div>
-            ))}
+              {c.name}
+              <Icon
+                path={sort.asc ? c.iconAsc : c.iconDesc}
+                size={1}
+                className={`inline mx-1 text-gray-500${
+                  sort.id === i ? "" : " opacity-0"
+                }`}
+              />
+            </a>
           </div>
         ))}
       </div>
+      {products.map((p: Product) => (
+        <div className="card table-row" key={p.id}>
+          {tableColumns.map((c, i) => (
+            <div
+              key={i}
+              className={`table-cell${
+                i == 0 ? "" : " border-l"
+              } border-black px-3 py-1 align-middle dark:border-white`}
+            >
+              {c.render(p)}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function EmptyCategory({ category: c }: CategoryBoxProps) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="m-2 w-96">
+      This category is empty.
+      <br />
+      <br />
+      Use the{" "}
+      <Icon
+        path={mdiPlusCircle}
+        size={1}
+        className="inline text-gray-500"
+      />{" "}
+      Icon in the top right
+      <br /> to add a product to this category.
+      <br />
+      <br />
+      Alternatively you may delete this category.
+      <br />
+      <br />
+      <Button onClick={() => setOpen(true)}>Delete Category</Button>
+      <SimpleDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        title={`Delete ${c.name}`}
+      >
+        <div className="m-2">
+          Are you sure you want to delete the category
+          <span className="font-bold"> {c.name}</span>?
+        </div>
+        <Button
+          color="error"
+          className="m-2"
+          onClick={async () => {
+            await deleteCategory(c.id);
+            setOpen(false);
+          }}
+        >
+          Yes, delete {c.name}!
+        </Button>
+        <Button className="m-2" onClick={() => setOpen(false)}>
+          No, close the dialog
+        </Button>
+      </SimpleDialog>
     </div>
   );
 }

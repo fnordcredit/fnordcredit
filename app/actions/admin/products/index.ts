@@ -45,3 +45,13 @@ export async function changeProductVisibility(
   revalidatePath("/admin/products", "page");
   revalidatePath("/user/[id]", "page");
 }
+
+export async function deleteCategory(categoryId: number) {
+  await prisma.productCategory.delete({
+    where: {
+      id: categoryId,
+    },
+  });
+  revalidatePath("/admin/products", "page");
+  revalidatePath("/user/[id]", "page");
+}
