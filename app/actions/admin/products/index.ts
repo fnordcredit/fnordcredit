@@ -46,6 +46,17 @@ export async function changeProductVisibility(
   revalidatePath("/user/[id]", "page");
 }
 
+export async function addCategory(data: FormData) {
+  await prisma.productCategory.create({
+    data: {
+      name: data.get("name")?.toString() || "",
+      order: 0,
+    },
+  });
+  revalidatePath("/admin/products", "page");
+  revalidatePath("/user/[id]", "page");
+}
+
 export async function deleteCategory(categoryId: number) {
   await prisma.productCategory.delete({
     where: {

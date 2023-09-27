@@ -1,6 +1,7 @@
 import prisma from "@lib/prisma";
 import AppBar from "@components/AppBar";
 import CategoryBox from "./CategoryBox";
+import AddCategory from "./AddCategory";
 
 export default async function ProductPage() {
   const cats = await prisma.productCategory.findMany({
@@ -19,7 +20,7 @@ export default async function ProductPage() {
     <>
       <AppBar>
         <div className="flex-grow" />
-        <a className="my-auto">Add Category</a>
+        <AddCategory />
       </AppBar>
       <div className="flex flex-wrap m-4">
         {cats.map((c, i) => (
