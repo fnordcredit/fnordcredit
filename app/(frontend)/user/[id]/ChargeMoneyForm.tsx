@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { experimental_useFormStatus as useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
 
 function SubmitButton({ amount }: { amount: number }) {
   const width = amount < 500 ? 64 : 128;

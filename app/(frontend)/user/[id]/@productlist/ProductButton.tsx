@@ -2,7 +2,7 @@
 import formatCurrency from "@lib/formatCurrency";
 import { Product } from "@prisma/client";
 import Image from "next/image";
-import { experimental_useFormStatus as useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
 
 function SubmitButton({ product }: { product: Partial<Product> }) {
   const { pending } = useFormStatus();

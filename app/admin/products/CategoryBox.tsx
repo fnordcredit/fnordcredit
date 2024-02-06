@@ -92,6 +92,13 @@ const tableColumns: Column[] = [
     iconAsc: mdiSortBoolAscending,
     iconDesc: mdiSortBoolDescending,
   },
+  {
+    name: "Actions",
+    sort: (_a, _b) => 0,
+    render: (p) => <ProductActions product={p} />,
+    iconAsc: "",
+    iconDesc: "",
+  },
 ];
 
 export default function CategoryBox({ category: c }: CategoryBoxProps) {
@@ -211,4 +218,8 @@ function EmptyCategory({ category: c }: CategoryBoxProps) {
       </SimpleDialog>
     </div>
   );
+}
+
+function ProductActions({ product: _p }: { product: Product }) {
+  return "Actions";
 }

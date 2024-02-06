@@ -4,7 +4,7 @@ export { default as Submit } from "./Submit";
 
 interface FormProps {
   children: ReactNode;
-  action?: (_f: FormData) => Promise<void>;
+  action?: (_f: FormData) => Promise<void> | void;
 }
 
 export function Form({ children, action }: FormProps) {

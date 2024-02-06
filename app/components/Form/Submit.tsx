@@ -1,6 +1,6 @@
 "use client";
 import { ReactNode } from "react";
-import { experimental_useFormStatus as useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
 import Icon from "@mdi/react";
 import { mdiLoading } from "@mdi/js";
 

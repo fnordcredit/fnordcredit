@@ -1,10 +1,10 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
+import { useFormState } from "react-dom";
 import createAccount, {
   userExists as userExistsAction,
 } from "@actions/createAccount";
 import Form, { Submit, TextBox } from "@components/Form";
-import { useState } from "react";
 
 export default function NewAccountDialog() {
   const [userExists, setUserExists] = useState(false);
@@ -16,8 +16,12 @@ export default function NewAccountDialog() {
   const nameErrors = [
     { message: "User name already exists.", active: userExists },
   ];
+  const [formError, action] = useFormState(createAccount, null);
   return (
-    <Form action={createAccount}>
+    <Form action={action}>
+      {formError != null ? (
+        <div className="bg-error text-white p-2 m-4">{formError}</div>
+      ) : null}
       <TextBox
         label="New Name"
         name="name"
