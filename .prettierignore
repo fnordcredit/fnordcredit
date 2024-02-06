@@ -1,0 +1,10 @@
+# Ignore artifacts:
+build
+coverage
+.husky
+.prettierignore
+yarn.lock
+flake.nix
+nix
+.envrc
+.direnv
