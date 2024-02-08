@@ -95,7 +95,7 @@ CREATE OR REPLACE FUNCTION updateBalanceOnNewTransation()
 $$
 BEGIN
   UPDATE "User"
-  SET credit = "User".credit + NEW."creditDelta"
+  SET credit = "User".credit + NEW."creditDelta", "updatedAt" = NOW()
   WHERE "User".id = NEW."userId";
   RETURN NEW;
 END;
