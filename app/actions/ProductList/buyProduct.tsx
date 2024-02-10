@@ -16,5 +16,5 @@ export async function buyProduct(formData: FormData) {
     },
   });
   revalidatePath(`/user/${id}`, "layout");
-  revalidatePath("/", "page");
+  revalidatePath("/", "layout");
 }

@@ -15,5 +15,5 @@ export async function updateCash(formData: FormData) {
     },
   });
   revalidatePath(`/user/${id}`, "layout");
-  revalidatePath("/", "page");
+  revalidatePath("/", "layout");
 }
