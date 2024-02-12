@@ -1,7 +1,7 @@
 "use server";
+import { revalidateUsers } from "@cache/users";
 import prisma from "@lib/prisma";
 import { IsNotEmpty, IsString, MaxLength, validate } from "class-validator";
-import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { redirect } from "next/navigation";
 
@@ -49,7 +49,7 @@ export default async function createAccount(_state: any, data: FormData) {
         },
       })
     ).id;
-    revalidatePath("/", "layout");
+    revalidateUsers();
     redirect(`/user/${id}`);
   } catch (e) {
     if (isRedirectError(e)) {

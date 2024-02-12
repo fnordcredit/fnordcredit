@@ -2,6 +2,7 @@
 import prisma from "@lib/prisma";
 import { revalidatePath } from "next/cache";
 import { TransactionType } from "@prisma/client";
+import { revalidateUsers } from "@cache/users";
 
 export async function updateCash(formData: FormData) {
   if (formData.get("id") == null) return;
@@ -15,5 +16,5 @@ export async function updateCash(formData: FormData) {
     },
   });
   revalidatePath(`/user/${id}`, "layout");
-  revalidatePath("/", "layout");
+  revalidateUsers();
 }
