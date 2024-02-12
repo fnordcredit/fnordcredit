@@ -39,10 +39,10 @@ export default function UserList({ users }: { users: User[] }) {
     }
   };
   const sortABC = (x: User, y: User) => {
-    if (x.name < y.name) {
+    if (x.name.toLowerCase() < y.name.toLowerCase()) {
       return -1;
     }
-    if (x.name > y.name) {
+    if (x.name.toLowerCase() > y.name.toLowerCase()) {
       return 1;
     }
     return 0;
