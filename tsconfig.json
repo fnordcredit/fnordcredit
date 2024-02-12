@@ -19,7 +19,8 @@
     "paths": {
       "@lib/*": ["./app/lib/*"],
       "@components/*": ["./app/components/*"],
-      "@actions/*": ["./app/actions/*"]
+      "@actions/*": ["./app/actions/*"],
+      "@cache/*": ["./app/cache/*"]
     },
     "plugins": [
       {

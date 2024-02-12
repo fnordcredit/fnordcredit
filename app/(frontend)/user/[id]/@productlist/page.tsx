@@ -1,39 +1,8 @@
-import { revalidatePath } from "next/cache";
 import prisma from "@lib/prisma";
-import { TransactionType } from "@prisma/client";
 import HideChargeMoneyForm from "../ChargeMoneyForm";
 import ProductButton from "./ProductButton";
-
-async function updateCash(formData: FormData) {
-  "use server";
-  if (formData.get("id") == null) return;
-  const id = parseInt(formData.get("id")?.toString() ?? "", 10);
-
-  await prisma.transaction.create({
-    data: {
-      userId: id,
-      creditDelta: parseInt(formData.get("amount")?.toString() ?? "0", 10),
-      transactionType: TransactionType.AccountCharged,
-    },
-  });
-  revalidatePath("/user/[id]");
-}
-
-async function buyProduct(formData: FormData) {
-  "use server";
-  if (formData.get("id") == null) return;
-  const id = parseInt(formData.get("id")?.toString() ?? "", 10);
-
-  await prisma.transaction.create({
-    data: {
-      userId: id,
-      creditDelta: parseInt(formData.get("amount")?.toString() ?? "0", 10),
-      transactionType: TransactionType.ProductBought,
-      productId: parseInt(formData.get("product")?.toString() ?? "0", 10),
-    },
-  });
-  revalidatePath("/user/[id]");
-}
+import { updateCash } from "@actions/ProductList/updateCash";
+import { buyProduct } from "@actions/ProductList/buyProduct";
 
 export default async function ProductView({
   params,
