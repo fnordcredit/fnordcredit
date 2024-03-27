@@ -1,8 +1,10 @@
 "use client";
+import { buyProduct } from "@actions/ProductList/buyProduct";
+import Snackbar, { SnackbarContainer } from "@components/Snackbar";
 import formatCurrency from "@lib/formatCurrency";
 import { Product } from "@prisma/client";
 import Image from "next/image";
-import { useFormStatus } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 
 function SubmitButton({ product }: { product: Partial<Product> }) {
   const { pending } = useFormStatus();
@@ -34,19 +36,31 @@ function SubmitButton({ product }: { product: Partial<Product> }) {
 
 export default function ProductButton({
   product,
-  action,
   userId,
 }: {
   product: Partial<Product>;
-  action: (_f: FormData) => Promise<void>;
   userId: number;
 }) {
+  const [formReturn, formAction] = useFormState(buyProduct, null);
   return (
-    <form action={action}>
+    <form action={formAction}>
       <input type="hidden" name="id" value={userId} />
       <input type="hidden" name="product" value={product.id ?? 0} />
       <input type="hidden" name="amount" value={-(product.price ?? 0)} />
       <SubmitButton product={product} />
+      <SnackbarContainer>
+        {formReturn?.message != null ? (
+          <Snackbar
+            key={formReturn?.id}
+            theme={formReturn.error ? "error" : "success"}
+          >
+            {formReturn?.message}
+          </Snackbar>
+        ) : null}
+      </SnackbarContainer>
+      {formReturn?.error === false ? (
+        <audio key={formReturn?.id} autoPlay={true} src="/ka-ching.mp3" />
+      ) : null}
     </form>
   );
 }

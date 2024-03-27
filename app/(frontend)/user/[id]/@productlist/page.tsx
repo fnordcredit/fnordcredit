@@ -2,7 +2,6 @@ import prisma from "@lib/prisma";
 import HideChargeMoneyForm from "../ChargeMoneyForm";
 import ProductButton from "./ProductButton";
 import { updateCash } from "@actions/ProductList/updateCash";
-import { buyProduct } from "@actions/ProductList/buyProduct";
 
 export default async function ProductView({
   params,
@@ -40,7 +39,6 @@ export default async function ProductView({
             {cat.products.map((product) => (
               <ProductButton
                 product={product}
-                action={buyProduct}
                 userId={parseInt(params.id, 10)}
                 key={product.id}
               />
