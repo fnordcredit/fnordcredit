@@ -95,12 +95,11 @@ function ListTransactions({ transactions }: { transactions: Transaction[] }) {
     return mdiHelp;
   };
   const description = (t: Transaction) => {
-    if (t.transactionType === TransactionType.AccountCharged)
-      return "Account Charged";
+    if (t.transactionType === TransactionType.AccountCharged) return "Charged";
     if (t.transactionType === TransactionType.ProductBought)
-      return t?.product?.name ?? "Product Bought";
+      return t?.product?.name ?? "Bought";
     if (t.transactionType === TransactionType.AccountTransfer)
-      return "Transfer";
+      return "Transfered";
     return "Unknown";
   };
   return (
@@ -108,7 +107,7 @@ function ListTransactions({ transactions }: { transactions: Transaction[] }) {
       <h6 className="px-6">Recent Transactions</h6>
       {transactions.map((t) => (
         <div
-          className="flex w-full px-8 text-gray-500 dark:text-gray-300"
+          className="w-full px-8 text-gray-500 dark:text-gray-300 flex"
           key={t.createdAt.toString()}
         >
           <Icon path={icon(t)} size={1} />
@@ -157,9 +156,11 @@ export default async function InfoCard({ params }: { params: { id: string } }) {
     },
   });
   return (
-    <>
-      <div className="pattern-1 flex rounded-t-3xl border-b border-b-black bg-primary-800 p-2 drop-shadow-md">
-        <Avatar image={user.avatar} alt={user.name} />
+    <div>
+      <div className="w-full max-xl:flex pattern-1 flex xl:rounded-t-3xl xl:border-b border-b-black xl:bg-primary-800 xl:p-2 xl:drop-shadow-md sm:max-2xl:pl-20">
+        <div>
+          <Avatar image={user.avatar} alt={user.name} />
+        </div>
         <h2 className="mx-6 my-auto flex-grow text-2xl font-bold text-white">
           {user.name}
         </h2>
@@ -171,7 +172,7 @@ export default async function InfoCard({ params }: { params: { id: string } }) {
           {formatCurrency(user.credit)}
         </span>
       </div>
-      <div className="rounded-b-3xl bg-white drop-shadow-md dark:bg-primary-500">
+      <div className="rounded-b-3xl bg-white drop-shadow-md dark:bg-primary-500 z-50 max-xl:max-w-96 xl:block max-xl:float-left max-xl:absolute sm:max-xl:ml-6 max-sm:ml-2 hidden">
         <h3 className="px-4 pt-4 text-xl">Welcome {user.name}!</h3>
         <ListTransactions transactions={user.transactions} />
         <div className="w-full">
@@ -186,6 +187,6 @@ export default async function InfoCard({ params }: { params: { id: string } }) {
           </MenuItem>
         </div>
       </div>
-    </>
+    </div>
   );
 }
