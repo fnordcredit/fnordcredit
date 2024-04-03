@@ -61,7 +61,7 @@ export default function InfoCard({ user, action }: InfoCardProps) {
   return (
     <form action={formAction} onSubmit={clientHandler} ref={ref}>
       <input type="hidden" value={String(state)} name="opened" />
-      <div className="w-full max-xl:flex pattern-1 flex xl:rounded-t-3xl xl:border-b border-b-black xl:bg-primary-800 xl:p-2 xl:drop-shadow-md sm:max-2xl:pl-20">
+      <div className="w-full max-xl:flex pattern-1 flex xl:rounded-t-3xl xl:border-b border-b-black bg-primary-800 xl:p-2 xl:drop-shadow-md sm:max-2xl:pl-20">
         <button type="submit" className="z-10 xl:pointer-events-none">
           <Icon
             size={0.5}
@@ -84,8 +84,8 @@ export default function InfoCard({ user, action }: InfoCardProps) {
       </div>
       <div
         className={
-          "rounded-b-3xl bg-white drop-shadow-md dark:bg-primary-500 z-50 max-xl:max-w-96 xl:block max-xl:float-left max-xl:absolute sm:max-xl:ml-6 max-sm:ml-2" +
-          (state || clientState ? "" : " hidden")
+          "rounded-b-3xl bg-white drop-shadow-md dark:bg-primary-500 z-50 max-xl:max-w-96 xl:block xl:visible xl:opacity-100 max-xl:float-left max-xl:absolute sm:max-xl:ml-6 max-sm:ml-2 transition-all duration-500 ease-in" +
+          (state || clientState ? "" : " opacity-0 invisible")
         }
       >
         <h3 className="px-4 pt-4 text-xl">Welcome {user.name}!</h3>
