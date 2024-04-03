@@ -11,8 +11,9 @@ import TransactionsList from "./TransactionsList";
 import { Transaction, User } from "@prisma/client";
 import Icon from "@mdi/react";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { FormEvent, ReactNode, useState } from "react";
 import { useFormState } from "react-dom";
+import { useClickAway } from "@uidotdev/usehooks";
 
 function MenuItem({
   href,
@@ -39,7 +40,7 @@ type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 interface InfoCardProps {
   user: Omit<Omit<Omit<User, "createdAt">, "debtLimit">, "email"> & {
     transactions: (Omit<
-      Omit<Omit<Omit<Transaction, "id">, "userId">, "transferUserId">,
+      Omit<Omit<Transaction, "userId">, "transferUserId">,
       "productId"
     > & { product: { name: string } | null })[];
   };
@@ -48,8 +49,17 @@ interface InfoCardProps {
 
 export default function InfoCard({ user, action }: InfoCardProps) {
   const [state, formAction] = useFormState(action, false);
+  const [clientState, setClientState] = useState(false);
+  // Bypass the form action request when js is enabled
+  const clientHandler = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setClientState(!clientState);
+  };
+  const ref = useClickAway<HTMLFormElement>(() => {
+    setClientState(false);
+  });
   return (
-    <form action={formAction}>
+    <form action={formAction} onSubmit={clientHandler} ref={ref}>
       <input type="hidden" value={String(state)} name="opened" />
       <div className="w-full max-xl:flex pattern-1 flex xl:rounded-t-3xl xl:border-b border-b-black xl:bg-primary-800 xl:p-2 xl:drop-shadow-md sm:max-2xl:pl-20">
         <button type="submit" className="z-10 xl:pointer-events-none">
@@ -57,7 +67,7 @@ export default function InfoCard({ user, action }: InfoCardProps) {
             size={0.5}
             path={mdiTriangleDown}
             className="float-end mt-12 ml-1 inline xl:hidden"
-            vertical={state}
+            vertical={state || clientState}
           />
           <Avatar image={user.avatar} alt={user.name} />
         </button>
@@ -75,7 +85,7 @@ export default function InfoCard({ user, action }: InfoCardProps) {
       <div
         className={
           "rounded-b-3xl bg-white drop-shadow-md dark:bg-primary-500 z-50 max-xl:max-w-96 xl:block max-xl:float-left max-xl:absolute sm:max-xl:ml-6 max-sm:ml-2" +
-          (state ? "" : " hidden")
+          (state || clientState ? "" : " hidden")
         }
       >
         <h3 className="px-4 pt-4 text-xl">Welcome {user.name}!</h3>

@@ -20,6 +20,7 @@ export default async function InfoCardServer({
       credit: true,
       transactions: {
         select: {
+          id: true,
           product: {
             select: {
               name: true,

@@ -4,6 +4,7 @@ import Icon from "@mdi/react";
 import { TransactionType } from "@prisma/client";
 
 type Transaction = {
+  id: number;
   createdAt: Date;
   creditDelta: number;
   transactionType: TransactionType;
@@ -81,7 +82,7 @@ export default function TransactionsList({
       {transactions.map((t) => (
         <div
           className="w-full px-8 text-gray-500 dark:text-gray-300 flex"
-          key={t.createdAt.toString()}
+          key={t.id}
         >
           <Icon path={icon(t)} size={1} />
           <span className="w-12 px-1">{formatCurrency(t.creditDelta)}</span>
