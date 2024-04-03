@@ -15,7 +15,7 @@ export default function Layout({
   return (
     <>
       <AppBar
-        className="max-xl:bg-transparent sm:max-xl:-mb-16 sm:flex hidden"
+        className="max-xl:bg-transparent sm:max-xl:-mb-16 sm:flex hidden max-xl:w-0"
         titleClassName="xl:block hidden"
       ></AppBar>
       <div className="xl:flex">
