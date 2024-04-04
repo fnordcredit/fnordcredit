@@ -1,0 +1,77 @@
+.container {
+  position: fixed;
+  bottom: 0;
+  margin: 0 auto;
+}
+
+.snackbar {
+  position: relative;
+  bottom: 1rem;
+  padding: 0.25rem 0.5rem;
+  margin: 0 auto;
+  border-radius: 8px;
+  color: white;
+  font-size: 1.5rem;
+  animation: fadeIn 0.5s;
+  cursor: pointer;
+  @media (prefers-reduced-motion) {
+    animation: none !important;
+  }
+  a {
+    padding-left: 0.5rem;
+    svg {
+      display: inline;
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+  .progress {
+    animation: progress linear 3.5s;
+    background: rgba(0,0,0,0.25);
+    height: 0.5rem;
+    border-radius: 8px;
+    @media (prefers-reduced-motion) {
+      display: none !important;
+    }
+  }
+}
+
+.error {
+  background: #ff5555;
+}
+
+.success {
+  background: #55CC33;
+}
+
+.closed {
+  animation: fadeOut 0.5s;
+  bottom: -3.5rem;
+  @media (prefers-reduced-motion) {
+    animation: none !important;
+  }
+}
+
+@keyframes fadeIn {
+  0% { bottom: -3.5rem; }
+  100% { bottom: 1rem; }
+}
+
+@keyframes fadeOut {
+  0% { bottom: 1rem; }
+  100% { bottom: -3.5rem; }
+}
+
+@keyframes progress {
+  0% { width: 0%; }
+  10% { width: 10%; }
+  20% { width: 20%; }
+  30% { width: 30%; }
+  40% { width: 40%; }
+  50% { width: 50%; }
+  60% { width: 60%; }
+  70% { width: 70%; }
+  80% { width: 80%; }
+  90% { width: 90%; }
+  100% { width: 100%; }
+}
