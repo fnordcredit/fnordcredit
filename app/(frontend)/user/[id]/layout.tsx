@@ -14,12 +14,15 @@ export default function Layout({
 }: LayoutProps) {
   return (
     <>
-      <AppBar>
-        <></>
-      </AppBar>
-      <div className="flex">
-        <div className="mt-4 w-1/4 p-4">{infocard}</div>
-        <div className="mx-auto my-4 w-9/12 p-4">
+      <AppBar
+        className="max-xl:bg-transparent sm:max-xl:-mb-16 sm:flex hidden max-xl:w-0"
+        titleClassName="xl:block hidden"
+      ></AppBar>
+      <div className="xl:flex">
+        <div className="w-full xl:mt-4 2xl:w-1/4 xl:w-1/3 xl:p-4">
+          {infocard}
+        </div>
+        <div className="mx-auto my-4 md:w-11/12 xl:w-9/12 p-2 sm:p-4">
           {productlist}
           {children}
         </div>

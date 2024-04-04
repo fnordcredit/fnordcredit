@@ -15,6 +15,7 @@ export type MenuItem = {
 export type SlideInMenuProps = {
   title: string;
   navigation: MenuItem[];
+  className?: string;
 };
 
 export default function SlideInMenu(props: SlideInMenuProps) {
@@ -25,7 +26,10 @@ export default function SlideInMenu(props: SlideInMenuProps) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="mx-2 shadow-white hover:text-white hover:drop-shadow-lg"
+        className={
+          "mx-2 shadow-white hover:text-white hover:drop-shadow-lg " +
+            props.className ?? ""
+        }
       >
         <span className="sr-only">Open menu</span>
         <Icon className="h-6 w-6" aria-hidden="true" path={mdiMenu} />

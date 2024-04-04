@@ -3,9 +3,22 @@ import { mdiApi, mdiCellphoneCog, mdiGithub, mdiHome } from "@mdi/js";
 import Link from "next/link";
 import { ReactNode } from "react";
 
-export default function AppBar({ children }: { children?: ReactNode }) {
+interface AppBarProps {
+  children?: ReactNode;
+  className?: string;
+  titleClassName?: string;
+  menuClassName?: string;
+  noTitle?: boolean;
+}
+
+export default function AppBar({ children, ...props }: AppBarProps) {
   return (
-    <div className="mx-auto flex h-16 bg-primary-500 px-8 py-3 text-slate-200 drop-shadow-lg">
+    <div
+      className={
+        "flex h-16 bg-primary-500 px-8 py-3 text-slate-200 drop-shadow-lg " +
+          props.className ?? ""
+      }
+    >
       <SlideInMenu
         title="Navigation"
         navigation={[
@@ -23,8 +36,12 @@ export default function AppBar({ children }: { children?: ReactNode }) {
             text: "Contribute on Github",
           },
         ]}
+        className={props.menuClassName}
       />
-      <Link href="/" className="my-auto font-semibold">
+      <Link
+        href="/"
+        className={`my-auto font-semibold ${props.titleClassName ?? ""}`}
+      >
         Fnordcredit
       </Link>
       {children}
