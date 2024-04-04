@@ -71,7 +71,7 @@ export default function InfoCard({ user, action }: InfoCardProps) {
           />
           <Avatar image={user.avatar} alt={user.name} />
         </button>
-        <h2 className="mx-6 my-auto flex-grow text-2xl font-bold text-white">
+        <h2 className="mx-2 sm:mx-6 my-auto flex-grow text-2xl font-bold text-white">
           {user.name}
         </h2>
         <span
